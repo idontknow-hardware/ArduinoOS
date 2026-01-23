@@ -3,12 +3,10 @@
 Lista wydań:
 
 - **pre1f1.1** – dodano wskaźnik baterii.  
-  Uwaga: edytor kodu nie ma jeszcze wszystkich poleceń, które są planowane.
-  ## wydana 23.01.2026
+  Uwaga: edytor kodu nie ma jeszcze wszystkich poleceń, które są planowane.  
+  *Wydana: 23.01.2026*
 
 - **pre2f1.1** *(coming soon!)* – planowana obsługa 2 ekranów LCD.
-
-
 # ArduinoOS
 
 **ArduinoOS** – prosty system operacyjny na Arduino, stworzony przez `idontknow-arduino` (2026).
