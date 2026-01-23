@@ -1,7 +1,13 @@
-# wydania
+## Wydania
+
 Lista wydań:
-- pre1f1.1(dodano wskaźnik baterii)
-- pre2f1.1(comming soon! obsluga 2 ekranów LCD!)
+
+- **pre1f1.1** – dodano wskaźnik baterii.  
+  Uwaga: edytor kodu nie ma jeszcze wszystkich poleceń, które są planowane.
+  ## wydana 23.01.2026
+
+- **pre2f1.1** *(coming soon!)* – planowana obsługa 2 ekranów LCD.
+
 
 # ArduinoOS
 
