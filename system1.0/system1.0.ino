@@ -1,8 +1,8 @@
 
 
-#include <Keypad.h>
-#include <LiquidCrystal_I2C.h>
-#include <Wire.h>
+#include <Keypad.h>// inicjalizacja keypad.h
+#include <LiquidCrystal_I2C.h>//initalizacja Liquid Crystal I2C
+#include <Wire.h>// inicjalizacja wire.h
 #if defined(ARDUINO) && ARDUINO >= 100
 #define printByte(args)  write(args);
 #else
@@ -45,6 +45,7 @@ bool y2p = 0;
 int x1 = 0;
 int x2 = 0;
 int menuk = 0;
+int menu2 = 0;
 String skladnik1 = "0";
 String skladnik2 = "0";
 int dzialanie = 0;
@@ -83,6 +84,11 @@ unsigned long zapamietanyCzas5 = 0;
 unsigned long roznicaCzasu5 = 0;
 unsigned long czas = 0;
 unsigned long czas2 = 1000;
+unsigned long ostatniP = 0;
+unsigned long ostatniP2 = 0;
+unsigned long zmianam = 0;
+int pomiar1 = 0;
+int pomiar2 = 0;
 int ostatniwynik = 0;
 int x_kursora = 0;
 bool y_kursora = 0;
@@ -131,6 +137,9 @@ int wolne = 0;
 LiquidCrystal_I2C lcd(0x27,16,2);
 
 
+LiquidCrystal_I2C lcd2(0x26,16,2);
+
+
 void setup(){
   
   for(int i = 6; i < 200;i++){
@@ -161,10 +170,14 @@ lcd.createChar(4, dino2);
 lcd.createChar(5, dino3);
 lcd.createChar(6, kaktus);
 lcd.home();
+lcd2.init();
+lcd2.print("halo");
 int k = 0;
   Serial.begin(9600);
   Serial.print(F("halo"));
-  if(Serial.available() > 0){
+  lcd2.backlight();
+
+  if(Serial == 0){
     digitalWrite(LED3, HIGH);
     }else{
    
@@ -293,7 +306,7 @@ void loop(){
     lcd.setCursor(0, 1);
     if(zajete2 == 0){
     lcd.print(F("2. puste"));}else{
-      lcd.print(F(""));}}else if (next == 1) {
+      lcd.print(F("uzytkwnik2"));}}else if (next == 1) {
       if(zajete1 == 0){
         
         lcd.clear();
@@ -858,6 +871,45 @@ EEPROM.put(6, zawartosc);
 uspienie = 1;
 }}}
 if (uspienie == 0) {
+                                                                          if(millis() - ostatniP > 1000){
+                                                                            
+  lcd2.clear();
+  long mv = readVcc();
+  float voltage = mv / 1000.0;
+  
+
+  int percent = map(mv, 4800, 5150, 0, 100);
+  percent = constrain(percent, 0, 100);
+  
+  lcd2.setCursor(0, 0);
+
+
+if(menu2 == 0){
+  lcd2.print(percent);
+  lcd2.print("%");
+  lcd2.print("baterii");
+  lcd2.print("|");
+  lcd2.print(aplikacja);
+  lcd2.print("app");
+  lcd2.setCursor(0, 1);
+  lcd2.print(godziny);
+  lcd2.print(":");
+  lcd2.print(minuty);
+  lcd2.print(":");
+  lcd2.print(sekundy);}else if(menu2 == 1){
+    if(percent < 30){
+      lcd2.print("niski poziom baterii!");}else{
+        lcd2.print("brak powiadomien");}}
+  
+ 
+  
+  
+ ostatniP = millis();
+} if(millis() - zmianam > 10000){
+  menu2++;
+  if(menu2 > 1){
+    menu2 = 0;}
+    zmianam = millis();}
  if(aplikacja == 0) {
   if(menu == 0) {
   lcd.setCursor(0,0);
@@ -1225,11 +1277,58 @@ long mv = readVcc();
                                                                       delay(50);
                                                                       }else if(EEPROM.read(i) == 5){
                                                                         y_kursora = !y_kursora;
-                                                                        lcd.setCursor(x_kursora, y_kursora);}}}}else if (uspienie  == 1) {
+                                                                        lcd.setCursor(x_kursora, y_kursora);}}}}else if (uspienie  != 0) {
+                                                                          if(millis() - ostatniP > 1000){
+                                                                            
+  lcd2.clear();
+  long mv = readVcc();
+  float voltage = mv / 1000.0;
+  
+
+  int percent = map(mv, 4800, 5150, 0, 100);
+  percent = constrain(percent, 0, 100);
+  
+  lcd2.setCursor(0, 0);
+
+
+if(menu2 == 0){
+  lcd2.print(percent);
+  lcd2.print("%");
+  lcd2.print("baterii");
+  lcd2.print("|");
+  lcd2.print(aplikacja);
+  lcd2.print("app");
+  lcd2.setCursor(0, 1);
+  lcd2.print(godziny);
+  lcd2.print(":");
+  lcd2.print(minuty);
+  lcd2.print(":");
+  lcd2.print(sekundy);}else if(menu2 == 1){
+    if(percent < 30){
+      lcd2.print("niski poziom baterii!");}else{
+        lcd2.print("brak powiadomien");}}
+  
+ 
+  
+  
+ ostatniP = millis();
+} if(millis() - zmianam > 10000){
+  menu2++;
+  if(menu2 > 1){
+    menu2 = 0;}
+    zmianam = millis();}
+
             lcd.noBacklight();
         lcd.clear();
         digitalWrite(LED3, HIGH);
+        
+        if(czas> uspienie_czas * 2000){
+         uspienie = 2; 
        }
+       } if(uspienie == 2){
+        lcd2.noBacklight();
+        lcd2.clear();}
+        
     aktualnyCzas = millis();
   
   roznicaCzasu = aktualnyCzas - zapamietanyCzas;
