@@ -266,8 +266,9 @@ void nextFrame(){
   if(frame == 0){
  lcd.printByte(3);}else if(frame == 1){
   lcd.printByte(4);}else if(frame == 2){
+    lcd.printByte(3);}else if(frame == 3){
     lcd.printByte(5);}
-  if(frame > 2){
+  if(frame > 3){
     frame = 0;}}
 long readVcc() {
 
@@ -908,7 +909,7 @@ if (uspienie == 0) {
     lcd.setCursor(0, 1);
     lcd.print(F("4.czas dzialania"));}else if(menuu == 2){
       lcd.setCursor(0 ,0);
-      lcd.print(F("5. temperatura"));}}else if (wybor == 1){
+      lcd.print(F("5. bateria"));}}else if (wybor == 1){
     lcd.setCursor(0, 0);
     lcd.print(F("po ilu minutach uspienie?"));
     lcd.setCursor(0, 1);
@@ -944,7 +945,7 @@ for(int i = 0; i < EEPROM.length(); i++){
       lcd.print(EEPROM.length());
       lcd.print(F(" B zajete"));
       lcd.setCursor(0, 1);
-      lcd.print(F("sys v: pre1f1.1"));}else if(wybor == 4){
+      lcd.print(F("sys v: pre1af1.1"));}else if(wybor == 4){
         lcd.setCursor(0,0);
         lcd.print(millis());
         delay(100);
