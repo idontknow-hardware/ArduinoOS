@@ -4,6 +4,7 @@ Lista wydań:
 
 - **pre1f1.1** – dodano wskaźnik baterii.  
   Uwaga: edytor kodu nie ma jeszcze wszystkich poleceń, które są planowane.
+  Uwaga nr. 2: zawiera błędy! Zalecana instalacja pre1af1.1!
   *Wydana: 23.01.2026*
 - **pre1af1.1** – naprawiono literówkę w wskazniku baterii oraz błąd w animacji dinozaura w grze.
   *Wydana: 23.01.2026*
