@@ -1,3 +1,104 @@
-ArduinoOS - prosty system operacyjny Arduino!
-Wymagania minimalne:
-- Arduino Uno
+# ArduinoOS
+
+**ArduinoOS** – prosty system operacyjny na Arduino, stworzony przez `idontknow-arduino` (2026).
+
+Na ten moment projekt jest w całości po polsku. W przyszłości planowane jest dodanie wersji angielskiej.
+
+---
+
+## Wymagania minimalne
+
+- Arduino Uno  
+- Ekran LCD  16 * 2
+- Keypad 4×4  
+- Arduino IDE do wgrania kodu
+
+## Wymagania zalecane
+
+- Arduino Uno  
+- Ekran LCD  16 * 2
+- Keypad 4×4  
+- 3 diody LED  
+
+## Wymagane biblioteki
+
+- `LiquidCrystal_I2C`  
+- `Wire`  
+- `Keypad` (obsługa klawiatury 4×4)
+
+---
+
+## Instalacja i uruchomienie
+
+1. Pobierz to repozytorium:
+   - przez przycisk **Code → Download ZIP** i rozpakuj, albo  
+   - przez `git clone`, jeśli używasz gita.
+
+2. Otwórz główny plik `.ino` w **Arduino IDE**.
+
+3. W Arduino IDE:
+   - wybierz odpowiednią płytkę (**Narzędzia → Płytka → Arduino Uno**),  
+   - wybierz port (**Narzędzia → Port**).
+
+4. Wgraj szkic na Arduino (przycisk **Wgraj**).
+
+---
+
+## Sterowanie i użycie systemu
+
+### Menu główne
+
+- `1` – wybór użytkownika  
+- `2` – wybór użytkownika 2  
+- `1–8` – wybór ulubionych aplikacji  
+- `9` – lista wszystkich aplikacji  
+
+### Gra „Dinozaur”
+
+- `5` – skok / restart gry  
+- `6` – reset high score  
+
+### W menu „Wszystkie aplikacje” (`9`)
+
+- `1` – wybierz aplikację  
+- `2` – dodaj do ulubionych  
+- `A` – lista w górę  
+- `D` – lista w dół  
+- (przycisk powrotu – opisz tutaj, jeśli masz dedykowany klawisz)
+
+---
+## Podłączenie
+
+**I²C (ekran)**  
+- Arduino **SCL** → SCL ekranu I²C  
+- Arduino **SDA** → SDA ekranu I²C  
+
+**Keypad 4×4**  
+- Arduino **2** → C4 (kolumna 4)  
+- Arduino **3** → C3 (kolumna 3)  
+- Arduino **4** → C2 (kolumna 2)  
+- Arduino **5** → C1 (kolumna 1)  
+- Arduino **6** → R1 (wiersz 1)  
+- Arduino **7** → R2 (wiersz 2)  
+- Arduino **8** → R3 (wiersz 3)  
+- Arduino **9** → R4 (wiersz 4)  
+
+**Diody LED**  
+- LED 1 – dłuższa noga (anoda) → Arduino **10**  
+- LED 2 – dłuższa noga (anoda) → Arduino **11**  
+- LED 3 – dłuższa noga (anoda) → Arduino **12**  
+
+Pamiętaj o podłączeniu:
+- wspólnej **masy (GND)** dla Arduino, ekranu I²C i LED,  
+- **rezystorów** do diod LED (np. 220–330 Ω w szereg z anodą).
+
+## Licencja
+
+Projekt jest dostępny na licencji **GNU General Public License w wersji 3 (GPLv3)**.  
+Szczegóły znajdują się w pliku `LICENSE`.
+
+---
+
+
+
+© 2025–2026 `idontknow-arduino`
