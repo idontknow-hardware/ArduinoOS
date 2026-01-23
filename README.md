@@ -7,6 +7,10 @@ Lista wydań:
   *Wydana: 23.01.2026*
 
 - **pre2f1.1** *(coming soon!)* – planowana obsługa 2 ekranów LCD.
+
+- **pre3f1.1** *(mam nadzieję, że do tego czasu chociaż 1 osoba odwiedzi repo)* – dokończenie edytora kodu!  
+  Informacje o skrypcie, którym tworzysz niestandardowe aplikacje, znajdują się w dalszej części README.
+  
 # ArduinoOS
 
 **ArduinoOS** – prosty system operacyjny na Arduino, stworzony przez `idontknow-arduino` (2026).
@@ -74,7 +78,13 @@ Na ten moment projekt jest w całości po polsku. W przyszłości planowane jest
 - `A` – lista w górę  
 - `D` – lista w dół  
 - (przycisk powrotu – opisz tutaj, jeśli masz dedykowany klawisz)
-
+-------
+## Skrypt (stan 23.01.2026)
+- przycisk 1 - printznak (1 potwierdzasz znak, 2 znak w góre(A, B , C itd...), 3 znak w dół(C, B, A itd...))
+- przycisk 2 - wyszyść
+- przycisk 3 - kursor w prawo
+- przycisk 4 - kursor w lewo
+- przycisk 5 - zamiana linii
 ---
 ## Podłączenie
 
