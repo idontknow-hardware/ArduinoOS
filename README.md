@@ -1,3 +1,8 @@
+# wydania
+Lista wydań:
+- pre1f1.1(dodano wskaźnik baterii)
+- pre2f1.1(comming soon! obsluga 2 ekranów LCD!)
+
 # ArduinoOS
 
 **ArduinoOS** – prosty system operacyjny na Arduino, stworzony przez `idontknow-arduino` (2026).
