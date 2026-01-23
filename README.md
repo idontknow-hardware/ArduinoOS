@@ -3,9 +3,10 @@
 Lista wydań:
 
 - **pre1f1.1** – dodano wskaźnik baterii.  
-  Uwaga: edytor kodu nie ma jeszcze wszystkich poleceń, które są planowane.  
+  Uwaga: edytor kodu nie ma jeszcze wszystkich poleceń, które są planowane.
   *Wydana: 23.01.2026*
-
+- **pre1af1.1** - naprawiono błędy z pre1f1.1
+  *Wydana: 23.01.2026*
 - **pre2f1.1** *(coming soon!)* – planowana obsługa 2 ekranów LCD.
 
 - **pre3f1.1** *(mam nadzieję, że do tego czasu chociaż 1 osoba odwiedzi repo)* – dokończenie edytora kodu!  
