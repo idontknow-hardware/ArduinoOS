@@ -8,8 +8,8 @@ Lista wydań:
   *Wydana: 23.01.2026*
 - **pre1af1.1** – naprawiono literówkę w wskazniku baterii oraz błąd w animacji dinozaura w grze.
   *Wydana: 23.01.2026*
-- **pre2f1.1** *(coming soon!)* – planowana obsługa 2 ekranów LCD.
-
+- **pre2f1.1** – dodana obsługa 2 ekranów LCD.
+*Wydana: 23.01.2026*
 - **pre3f1.1** *(mam nadzieję, że do tego czasu chociaż 1 osoba odwiedzi repo)* – dokończenie edytora kodu!  
   Informacje o skrypcie, którym tworzysz niestandardowe aplikacje, znajdują się w dalszej części README.
   
@@ -31,7 +31,7 @@ Na ten moment projekt jest w całości po polsku. W przyszłości planowane jest
 ## Wymagania zalecane
 
 - Arduino Uno  
-- Ekran LCD  16 * 2
+- 2 Ekrany LCD  16 * 2 (2 to wyswietlacz informacji systemowych)
 - Keypad 4×4  
 - 3 diody LED  
 
