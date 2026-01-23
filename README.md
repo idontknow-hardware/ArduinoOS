@@ -79,13 +79,20 @@ Na ten moment projekt jest w całości po polsku. W przyszłości planowane jest
 - `D` – lista w dół  
 - (przycisk powrotu – opisz tutaj, jeśli masz dedykowany klawisz)
 -------
-## Skrypt (stan 23.01.2026)
-- przycisk 1 - printznak (1 potwierdzasz znak, 2 znak w góre(A, B , C itd...), 3 znak w dół(C, B, A itd...))
-- przycisk 2 - wyszyść
-- przycisk 3 - kursor w prawo
-- przycisk 4 - kursor w lewo
-- przycisk 5 - zamiana linii
----
+## Skrypt (stan na 23.01.2026)
+
+- **Przycisk 1 – `printznak`**  
+  - `1` – potwierdzasz aktualny znak  
+  - `2` – zmiana znaku w górę (A, B, C itd.)  
+  - `3` – zmiana znaku w dół (C, B, A itd.)
+
+- **Przycisk 2** – wyczyść
+
+- **Przycisk 3** – kursor w prawo
+
+- **Przycisk 4** – kursor w lewo
+
+- **Przycisk 5** – zmiana linii (przejście do nowej linii)
 ## Podłączenie
 
 **I²C (ekran)**  
