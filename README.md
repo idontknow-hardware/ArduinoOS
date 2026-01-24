@@ -14,6 +14,8 @@ Lista wydań:
 - *Wydana: 24.01.2026*
 - **pre3f1.1** *(mam nadzieję, że do tego czasu chociaż 1 osoba odwiedzi repo)* – dokończenie edytora kodu!  
   Informacje o skrypcie, którym tworzysz niestandardowe aplikacje, znajdują się w dalszej części README.
+- **pre4f1.1** - usuwanie aplikacji
+- **pre5f1.1** - narzędzie diagnostyczne
   
 # ArduinoOS
 
