@@ -10,6 +10,8 @@ Lista wydań:
   *Wydana: 23.01.2026*
 - **pre2f1.1** – dodana obsługa 2 ekranów LCD.
 *Wydana: 23.01.2026*
+- **pre2af1.1** - naprawa błędów
+- *Wydana: 24.01.2026*
 - **pre3f1.1** *(mam nadzieję, że do tego czasu chociaż 1 osoba odwiedzi repo)* – dokończenie edytora kodu!  
   Informacje o skrypcie, którym tworzysz niestandardowe aplikacje, znajdują się w dalszej części README.
   
