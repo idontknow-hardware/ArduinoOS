@@ -997,7 +997,7 @@ for(int i = 0; i < EEPROM.length(); i++){
       lcd.print(EEPROM.length());
       lcd.print(F(" B zajete"));
       lcd.setCursor(0, 1);
-      lcd.print(F("sys v: pre1af1.1"));}else if(wybor == 4){
+      lcd.print(F("sys v: pre2af1.1"));}else if(wybor == 4){
         lcd.setCursor(0,0);
         lcd.print(millis());
         delay(100);
