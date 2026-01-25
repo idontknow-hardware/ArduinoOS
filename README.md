@@ -65,14 +65,15 @@ Na ten moment projekt jest w całości po polsku. W przyszłości planowane jest
 ## Pomoc w instalacji drugiego ekranu I2C
 płytka z grubsza:
 +-------------------------------------------------------------+
-|                                          +-----+            |
-|                                          |poten|     GND    |---
-|                                          + - - +      VCC   |---
-|                                               [2] [] []SDA  |---
-|                                              [1] [] []SCL   |---
-|                                             A0 A1 A2        |
+| ppppppppppppppppppppppppppppppppppppppppp+-----+pppppppppppp|
+|pppppppppppppppppppppppppppppppppppppppppp|poten|pppppGNDpppp|---
+|pppppppppppppppppppppppppppppppppppppppppp+ - - +ppppppVCCppp|---
+|ppppppppppppppppppppppppppppppppppppppppppppppp[2] [] []SDA p|---
+|pppppppppppppppppppppppppppppppppppppppppppppp[1] [] []SCL pp|---
+|pppppppppppppppppppppppppppppppppppppppppppp A0 A1 A2 ppppppp|
 +-------------------------------------------------------------+
 aby zmienić adres na 0x26 należy przylutować kabel z początkiem w [1] i końcem w [2]
+p - puste
 ## Sterowanie i użycie systemu
 
 ### Menu główne
