@@ -3,7 +3,7 @@ name: Bug report przykład
 about: Create a report to help us improve
 title: BUG
 labels: ''
-assignees: idontknow-arduino
+assignees: idontknow-hardware
 
 ---
 
