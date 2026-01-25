@@ -16,7 +16,7 @@ Lista wydań:
   Informacje o skrypcie, którym tworzysz niestandardowe aplikacje, znajdują się w dalszej części README.
 - **pre4f1.1** - usuwanie aplikacji
 - **pre5f1.1** - narzędzie diagnostyczne
-  
+  **PS: ArduinoOS jest rozwijany od grudnia 2025 jako prywatny projekt, a teraz został udostępniony w formie otwartej do dalszego rozwoju dnia: 23.01.2026.**
 # ArduinoOS
 
 **ArduinoOS** – prosty system operacyjny na Arduino, stworzony przez `idontknow-arduino` (2026).
