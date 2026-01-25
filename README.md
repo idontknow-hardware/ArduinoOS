@@ -66,7 +66,7 @@ Na ten moment projekt jest w całości po polsku. W przyszłości planowane jest
 płytka z grubsza:
 +-------------------------------------------------------------+
 |                                          +-----+            |
-|                                          |poten |     GND   |---
+|                                          |poten|     GND    |---
 |                                          + - - +      VCC   |---
 |                                               [2] [] []SDA  |---
 |                                              [1] [] []SCL   |---
