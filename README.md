@@ -14,6 +14,7 @@ Lista wydań:
 - *Wydana: 24.01.2026*
 - **pre3f1.1** *(mam nadzieję, że do tego czasu chociaż 1 osoba odwiedzi repo)* – dokończenie edytora kodu!  
   Informacje o skrypcie, którym tworzysz niestandardowe aplikacje, znajdują się w dalszej części README.
+  *Wydana: 26.01.2026*
 - **pre4f1.1** - usuwanie aplikacji
 - **pre5f1.1** - narzędzie diagnostyczne
   **PS: ArduinoOS jest rozwijany od grudnia 2025 jako prywatny projekt, a teraz został udostępniony w formie otwartej do dalszego rozwoju dnia: 23.01.2026.**
@@ -21,7 +22,10 @@ Lista wydań:
 
 **ArduinoOS** – prosty system operacyjny na Arduino, stworzony przez `idontknow-hardware` (2026).
 
-Na ten moment projekt jest w całości po polsku. W przyszłości planowane jest dodanie wersji angielskiej.
+Na ten moment projekt jest w całości po polsku. W przyszłości planowane jest dodanie wersji angielskiej.(W ArduinoOS 2!)
+**ArduinoOS in English** - Simple operating system for Arduino, created by `idontknow-hardware` (2026).
+
+For the moment, the project is fully in Polish. An English language version is officially planned for the upcoming **ArduinoOS 2**.
 
 ---
 
@@ -96,7 +100,7 @@ p - puste
 - `D` – lista w dół  
 - (przycisk powrotu – opisz tutaj, jeśli masz dedykowany klawisz)
 -------
-## Skrypt (stan na 23.01.2026)
+## Skrypt 
 
 - **Przycisk 1 – `printznak`**  
   - `1` – potwierdzasz aktualny znak  
@@ -110,6 +114,11 @@ p - puste
 - **Przycisk 4** – kursor w lewo
 
 - **Przycisk 5** – zmiana linii (przejście do nowej linii)
+- **Przycisk 6** - ustaw wartość
+- **Przycisk 7** - zapisz wartość
+- **Przycisk 8** - wczytaj wartość(a = c)
+- **Przycisk 9** - dodać
+- **Przycisk A** - odjąć
 ## Podłączenie
 
 **I²C (ekran)**  
