@@ -153,4 +153,4 @@ Szczegóły znajdują się w pliku `LICENSE`.
 
 
 
-© 2025–2026 `idontknow-hardware`
+© 2026 `idontknow-hardware`
