@@ -19,7 +19,7 @@ Lista wydań:
   **PS: ArduinoOS jest rozwijany od grudnia 2025 jako prywatny projekt, a teraz został udostępniony w formie otwartej do dalszego rozwoju dnia: 23.01.2026.**
 # ArduinoOS
 
-**ArduinoOS** – prosty system operacyjny na Arduino, stworzony przez `idontknow-arduino` (2026).
+**ArduinoOS** – prosty system operacyjny na Arduino, stworzony przez `idontknow-hardware` (2026).
 
 Na ten moment projekt jest w całości po polsku. W przyszłości planowane jest dodanie wersji angielskiej.
 
