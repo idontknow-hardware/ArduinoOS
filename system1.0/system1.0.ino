@@ -8,7 +8,7 @@
 #else
 #define printByte(args)  print(args,BYTE);
 #endif
-#include <EEPROM.h>
+#include <EEPROM.h>// EEPROM
 #define LED 10
 #define LED2 11
 #define LED3 12
@@ -19,6 +19,9 @@ int minuty = EEPROM.read(2);
 int godziny = EEPROM.read(3);
 int zajete1 = EEPROM.read(4);
 int zajete2 = EEPROM.read(5);
+int a = 0;
+int b = 0;
+int c = 0;
 uint16_t wynik = 0;
 bool scroll = 0;
 int i1 = 0;
@@ -401,7 +404,7 @@ if(klawisz == 49){
                                                         if(y_myszki == 0){
                                                           aplikacja = 10;}}else{
                                                             aplikacja = 11;}}}else if(aplikacja == 10){
-                                                              if(EEPROM.read(ik - 1) != 1){
+                                                              if(EEPROM.read(ik - 1) != 1 and EEPROM.read(ik - 1) != 6 and EEPROM.read(ik - 2) != 6){
                                                             lcd.setCursor(0, 1);
                                                             lcd.print(F("printznak"));
                                                             EEPROM.put(ik, 1);
@@ -411,7 +414,9 @@ if(klawisz == 49){
                                                               }else{
                                                             if(EEPROM.read(ik == 1)){
                                                               
-                                                              EEPROM.put(ik, iz);}
+                                                              EEPROM.put(ik, iz);} if(EEPROM.read(ik == 6)){
+                                                                EEPROM.put(ik, 255);}else if(EEPROM.read(ik - 1) == 6){
+                                                                  EEPROM.put(ik, 1);}
                                                               ik++;}}
   
   
@@ -655,7 +660,7 @@ if(klawisz == 49){
                                       EEPROM.put(217, ulubionaap8);}else{
                                         ulubionaap8 = 11;
                                         EEPROM.put(217, ulubionaap8);}}}}else if(aplikacja == 10){
-                                                             if(EEPROM.read(ik - 1) != 1){
+                                                             if(EEPROM.read(ik - 1) != 1 and EEPROM.read(ik - 1) != 6 and EEPROM.read(ik - 2) != 6){
                                                               ik++;
                                                               lcd.setCursor(0, 1);
                                                             lcd.print(F("wyszysc"));
@@ -663,8 +668,12 @@ if(klawisz == 49){
                                                             delay(100);
                                                             lcd.clear();}else if(EEPROM.read(ik - 1) == 1){
                                                               iz = iz + 1;
-
-                                                              }}}
+      
+                                                              } if(EEPROM.read(ik - 1) == 6){
+                                                                EEPROM.put(ik, 254);
+                                                                ik++;} if (EEPROM.read(ik - 2) == 6){
+                                                                  EEPROM.put(ik, 2);
+                                                                  ik++;}}}
   if(klawisz == 35) {
 
 
@@ -735,12 +744,15 @@ EEPROM.put(6, zawartosc);
                             }else if(aplikacja == 10){
                               if(EEPROM.read(ik - 1) == 1){
                                 iz = iz - 1;}else{
+                                  if(EEPROM.read(ik - 2) != 6 and EEPROM.read(ik - 1) != 1 and EEPROM.read(ik - 1) != 6){
                                   ik++;
                                   lcd.setCursor(0, 1);
                                   lcd.print(F("przesun kursor(prawo)"));
                                   EEPROM.put(ik, 3);
                                   delay(100);
-                                  lcd.clear();}}
+                                  lcd.clear();}else if(EEPROM.read(ik - 2) == 6){
+                                    EEPROM.put(ik, 3);
+                                    ik++;}}}
 }else if(klawisz == 65){
               if(aplikacja == 0){
               lcd.clear();
@@ -756,7 +768,12 @@ EEPROM.put(6, zawartosc);
                           }else if(aplikacja == 9){
                             lcd.clear();
                             menuw = menuw + 1;
-                            }}else if(klawisz == 68){
+                            }else if(aplikacja == 10){
+                             lcd.print("odejmij");
+                             lcd.clear();
+                             delay(100);
+                             EEPROM.put(ik, 10);
+                             ik++;}}else if(klawisz == 68){
                 if(aplikacja == 0){
               lcd.clear();
               menu = menu - 1;}else if(aplikacja == 2){
@@ -793,12 +810,15 @@ EEPROM.put(6, zawartosc);
                           }else if(aplikacja == 2){
                             wybor = 4;
                             lcd.clear();}else if(aplikacja == 10){
+                              if(EEPROM.read(ik - 2) != 6){
                               ik++;
                                   lcd.setCursor(0, 1);
                                   lcd.print(F("przesun kursor(lewo)"));
                                   EEPROM.put(ik, 4);
                                   delay(100);
-                                  lcd.clear();}}else{
+                                  lcd.clear();}else if(EEPROM.read(ik - 2) == 6){
+                                    EEPROM.put(ik, 4);
+                                    ik++;}}}else{
                                 lcd.scrollDisplayRight();}}else if(klawisz == 53){
                             if(aplikacja == 4){
                               if(x <= 0 && y == 1){
@@ -824,12 +844,15 @@ EEPROM.put(6, zawartosc);
                             wybor = 5;}else if(aplikacja == 9){
                               y_myszki = ! y_myszki;
                               lcd.clear();}else if(aplikacja == 10){
+                                if(EEPROM.read(ik - 2) != 6){
                                 ik++;
                                   lcd.setCursor(0, 1);
                                   lcd.print(F("odwrotne"));
                                   EEPROM.put(ik, 5);
                                   delay(100);
-                                  lcd.clear();}}else if(klawisz == 54){
+                                  lcd.clear();}else if(EEPROM.read(ik - 2) == 6){
+                                    EEPROM.put(ik, 5);
+                                    ik++;}}}else if(klawisz == 54){
                                     if(scroll == 0){
                                     if(aplikacja == 0){
                                       aplikacja = ulubionaap6;
@@ -841,7 +864,16 @@ EEPROM.put(6, zawartosc);
                             if(menuk == 0){
                             skladnik1 += 6;}else if(menuk == 2){
                               skladnik2 += 6;}
-                          }}else{
+                          }else if(aplikacja == 10){
+                          if(EEPROM.read(ik - 2) != 6){
+                            ik++;
+                                  lcd.setCursor(0, 1);
+                                  lcd.print(F("ustaw wartosc"));
+                                  EEPROM.put(ik, 6);
+                                  delay(100);
+                                  lcd.clear();}else if(EEPROM.read(ik - 2) == 6){
+                                    EEPROM.put(ik, 6);
+                                    ik++;}}}else{
                                         lcd.scrollDisplayLeft();}}else if(klawisz == 48){
                                         scroll = !scroll;}else if(klawisz == 55){
                                           if(aplikacja == 0){
@@ -850,21 +882,45 @@ EEPROM.put(6, zawartosc);
                             if(menuk == 0){
                             skladnik1 += 7;}else if(menuk == 2){
                               skladnik2 += 7;}
-                          }}else if(klawisz == 56){
+                          }else if(aplikacja == 10){
+                            if(EEPROM.read(ik - 2) == 6){
+                              EEPROM.put(ik, 7);
+                              ik++;}else if(EEPROM.read(ik - 2) != 6){
+                                lcd.print("zapisz wartosc");
+                                delay(100);
+                                lcd.clear();
+                                EEPROM.put(ik, 7);
+                                ik++;}}}else if(klawisz == 56){
                                               if(aplikacja == 0){
                                                 aplikacja = ulubionaap8;
                                                 lcd.clear();}else if(aplikacja == 8){
                             if(menuk == 0){
                             skladnik1 += 8;}else if(menuk == 2){
                               skladnik2 += 8;}
-                          }}else if(klawisz == 57){
+                          }else if(aplikacja == 10){
+                            if(EEPROM.read(ik - 2) == 6){
+                              EEPROM.put(ik, 8);
+                              ik++;}else if(EEPROM.read(ik - 2) != 6){
+                                lcd.print("wczytaj wartosc(a = c)");
+                                delay(100);
+                                lcd.clear();
+                                EEPROM.put(ik, 8);
+                                ik++;}}}else if(klawisz == 57){
                             if(aplikacja == 8){
                             if(menuk == 0){
                             skladnik1 += 9;}else if(menuk == 2){
                               skladnik2 += 9;}
                           }else if(aplikacja == 0){
                             aplikacja = 9;
-                            lcd.clear();}}}else if(!klawisz) {
+                            lcd.clear();}else if(aplikacja == 10){
+                              if(EEPROM.read(ik - 2) == 6){
+                                EEPROM.put(ik, 9);
+                                ik++;}else if(EEPROM.read(ik - 2) != 6){
+                                  lcd.print("dodac");
+                                  delay(100);
+                                  lcd.clear();
+                                  EEPROM.put(ik, 9);
+                                  ik++;}}}}else if(!klawisz) {
           if (aplikacja == 0){
       czas ++;
       if(czas >= uspienie_czas * 1000){
@@ -878,7 +934,7 @@ if (uspienie == 0) {
   float voltage = mv / 1000.0;
   
 
-  int percent = map(mv, 4800, 5150, 0, 100);
+  int percent = map(mv, 4000, 5150, 0, 100);
   percent = constrain(percent, 0, 100);
   
   lcd2.setCursor(0, 0);
@@ -984,7 +1040,7 @@ for(int i = 0; i < EEPROM.length(); i++){
   if(EEPROM.read(i) == 0){
     wolne++;}}
         if(Serial.read() == 'V'){
-          Serial.println(F("wersja systemu to 1.0"));
+          Serial.println(F("wersja systemu to pre3f1.1"));
           Serial.println(F(""));
           Serial.print(EEPROM.length() - wolne);
           Serial.print(F("/"));
@@ -997,7 +1053,7 @@ for(int i = 0; i < EEPROM.length(); i++){
       lcd.print(EEPROM.length());
       lcd.print(F(" B zajete"));
       lcd.setCursor(0, 1);
-      lcd.print(F("sys v: pre2af1.1"));}else if(wybor == 4){
+      lcd.print(F("sys v: pre3f1.1"));}else if(wybor == 4){
         lcd.setCursor(0,0);
         lcd.print(millis());
         delay(100);
@@ -1007,7 +1063,7 @@ long mv = readVcc();
   float voltage = mv / 1000.0;
   
 
-  int percent = map(mv, 4800, 5150, 0, 100);
+  int percent = map(mv, 4000, 5150, 0, 100);
   percent = constrain(percent, 0, 100);
   lcd.setCursor(0, 0);
   lcd.print("VCC: ");
@@ -1277,7 +1333,24 @@ long mv = readVcc();
                                                                       delay(50);
                                                                       }else if(EEPROM.read(i) == 5){
                                                                         y_kursora = !y_kursora;
-                                                                        lcd.setCursor(x_kursora, y_kursora);}}}}else if (uspienie  != 0) {
+                                                                        lcd.setCursor(x_kursora, y_kursora);}else if(EEPROM.read(i) == 6){
+                                                                          if(EEPROM.read(i + 1) == 255){
+                                                                            a = EEPROM.read(i + 2);
+                                                                           Serial.print(a);
+                                                                            }else if(EEPROM.read(i + 1) == 254){
+                                                                              b = EEPROM.read(i + 2);
+                                                                              Serial.println(b);
+                                                                              }
+                                                                              i = i + 2;}else if(EEPROM.read(i) == 7){
+                                                                                EEPROM.put(219, b);
+                                                                                EEPROM.put(220, b);
+                                                                                EEPROM.put(221, c);}else if(EEPROM.read(i) == 8){
+                                                                                  a = EEPROM.read(221);
+                                                                                  b = EEPROM.read(220);}else if(EEPROM.read(i) == 9){
+                                                                                    c = a + b;
+                                                                                    Serial.println(c);}else if(EEPROM.read(i) == 10){
+                                                                                      c = a - b;
+                                                                                      Serial.println(c);}}}}else if (uspienie  != 0) {
                                                                           if(millis() - ostatniP > 1000){
                                                                             
   lcd2.clear();
@@ -1285,7 +1358,7 @@ long mv = readVcc();
   float voltage = mv / 1000.0;
   
 
-  int percent = map(mv, 4800, 5150, 0, 100);
+  int percent = map(mv, 4000, 5150, 0, 100);
   percent = constrain(percent, 0, 100);
   
   lcd2.setCursor(0, 0);
