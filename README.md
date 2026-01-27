@@ -120,10 +120,10 @@ p - puste
 - **Przycisk 9** - dodać
 - **Przycisk A** - odjąć
 ## Podłączenie
-
+Dla oryginalnego Arduino Uno piny SDA/SCL są jednocześnie oznaczone jako A4/A5, nie ma potrzeby szukania oddzielnych pinów z oznaczeniami I2C.
 **I²C (ekran)**  
-- Arduino **SCL** → SCL ekranu I²C  
-- Arduino **SDA** → SDA ekranu I²C  
+- Arduino **SCL** → SCL ekranu I²C  (A5 w oryginale, moja podróbka ma osobny pin)
+- Arduino **SDA** → SDA ekranu I²C  (A4 w oryginale, moja podróbka ma osobny pin)
 
 **Keypad 4×4**  
 - Arduino **2** → C4 (kolumna 4)  
