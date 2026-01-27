@@ -271,7 +271,8 @@ int getAplikacja(int numer){
                 lcd.print(F("2 gracze"));}else if(numer == 8){
                   lcd.print(F("kalkulator"));}else if(numer == 10){
                     lcd.print(F("edytor kodu"));}else if(numer == 11){
-                      lcd.print(F("wlasna aplikacja1"));}}
+                      lcd.print(F("wlasna aplikacja1"));}else if(numer == 12){
+                        lcd.print(F("usuwanie"));}}
 
 void nextFrame(){
   aktualnyCzas5 = millis();
@@ -403,7 +404,8 @@ if(klawisz == 49){
                                                       if(y_myszki == 0){
                                                         if(y_myszki == 0){
                                                           aplikacja = 10;}}else{
-                                                            aplikacja = 11;}}}else if(aplikacja == 10){
+                                                            aplikacja = 11;}}else if(menuw == 5){
+                                                              aplikacja = 12;}}else if(aplikacja == 10){
                                                               if(EEPROM.read(ik - 1) != 1 and EEPROM.read(ik - 1) != 6 and EEPROM.read(ik - 2) != 6){
                                                             lcd.setCursor(0, 1);
                                                             lcd.print(F("printznak"));
@@ -473,7 +475,9 @@ if(klawisz == 49){
                                       ulubionaap1 = 10;
                                       EEPROM.put(210, ulubionaap1);}else{
                                         ulubionaap1 = 11;
-                                        EEPROM.put(210, ulubionaap1);}}}else if(ulubionaap2 == 0){
+                                        EEPROM.put(210, ulubionaap1);}}else if(menuw == 5){
+                                          ulubionaap1 = 12;
+                                          EEPROM.put(210, ulubionaap1);}}else if(ulubionaap2 == 0){
                                     if(menuw == 0){
                               if(y_myszki == 0){
                                 ulubionaap2 = 1;
@@ -500,7 +504,9 @@ if(klawisz == 49){
                                       EEPROM.put(211, ulubionaap2);
                                   }else{
                                         ulubionaap2 = 11;
-                                        EEPROM.put(211, ulubionaap2);}}}else if(ulubionaap3 == 0){
+                                        EEPROM.put(211, ulubionaap2);}}else if(menuw == 5){
+                                          ulubionaap2 = 12;
+                                          EEPROM.put(211, ulubionaap2);}}else if(ulubionaap3 == 0){
                                     if(menuw == 0){
                               if(y_myszki == 0){
                                 ulubionaap3 = 1;
@@ -528,7 +534,9 @@ if(klawisz == 49){
                                       EEPROM.put(212, ulubionaap3);
                                   }else{
                                         ulubionaap3 = 11;
-                                        EEPROM.put(212, ulubionaap3);}}}else if(ulubionaap4 == 0){
+                                        EEPROM.put(212, ulubionaap3);}}else if(menuw == 5){
+                                          ulubionaap3 = 12;
+                                          EEPROM.put(212, ulubionaap3);}}else if(ulubionaap4 == 0){
                                     if(menuw == 0){
                               if(y_myszki == 0){
                                 ulubionaap4 = 1;
@@ -554,7 +562,9 @@ if(klawisz == 49){
                                       ulubionaap4 = 10;
                                       EEPROM.put(213, ulubionaap4);}else{
                                         ulubionaap4 = 11;
-                                        EEPROM.put(213, ulubionaap4);}}}else if(ulubionaap5 == 0){
+                                        EEPROM.put(213, ulubionaap4);}}else if(menuw == 5){
+                                          ulubionaap4 = 12;
+                                          EEPROM.put(213, ulubionaap4);}}else if(ulubionaap5 == 0){
                                     if(menuw == 0){
                               if(y_myszki == 0){
                                 ulubionaap5 = 1;
@@ -580,7 +590,9 @@ if(klawisz == 49){
                                       ulubionaap5 = 10;
                                       EEPROM.put(214, ulubionaap5);}else{
                                         ulubionaap5 = 11;
-                                        EEPROM.put(214, ulubionaap5);}}}else if(ulubionaap6 == 0){
+                                        EEPROM.put(214, ulubionaap5);}}else if(menuw == 5){
+                                          ulubionaap5 = 12;
+                                          EEPROM.put(214, ulubionaap5);}}else if(ulubionaap6 == 0){
                                     if(menuw == 0){
                               if(y_myszki == 0){
                                 ulubionaap6 = 1;
@@ -606,7 +618,9 @@ if(klawisz == 49){
                                       ulubionaap6 = 10;
                                       EEPROM.put(215, ulubionaap6);}else{
                                         ulubionaap6 = 11;
-                                        EEPROM.put(215, ulubionaap6);}}}else if(ulubionaap7 == 0){
+                                        EEPROM.put(215, ulubionaap6);}}else if(menuw == 5){
+                                          ulubionaap6 = 12;
+                                          EEPROM.put(215, ulubionaap6);}}else if(ulubionaap7 == 0){
                                     if(menuw == 0){
                               if(y_myszki == 0){
                                 ulubionaap7 = 1;
@@ -633,7 +647,9 @@ if(klawisz == 49){
                                       EEPROM.put(216, ulubionaap7);
                                   }else{
                                         ulubionaap7 = 11;
-                                        EEPROM.put(216, ulubionaap7);}}}else if(ulubionaap8 == 0){
+                                        EEPROM.put(216, ulubionaap7);}}else if(menuw == 5){
+                                          ulubionaap7 = 12;
+                                          EEPROM.put(216, ulubionaap7);}}else if(ulubionaap8 == 0){
                                       if(menuw == 0){
                               if(y_myszki == 0){
                                 ulubionaap8 = 1;
@@ -659,7 +675,9 @@ if(klawisz == 49){
                                       ulubionaap8 = 10;
                                       EEPROM.put(217, ulubionaap8);}else{
                                         ulubionaap8 = 11;
-                                        EEPROM.put(217, ulubionaap8);}}}}else if(aplikacja == 10){
+                                        EEPROM.put(217, ulubionaap8);}}else if(menuw == 5){
+                                          ulubionaap8 = 12;
+                                          EEPROM.put(217, ulubionaap8);}}}else if(aplikacja == 10){
                                                              if(EEPROM.read(ik - 1) != 1 and EEPROM.read(ik - 1) != 6 and EEPROM.read(ik - 2) != 6){
                                                               ik++;
                                                               lcd.setCursor(0, 1);
@@ -1040,7 +1058,7 @@ for(int i = 0; i < EEPROM.length(); i++){
   if(EEPROM.read(i) == 0){
     wolne++;}}
         if(Serial.read() == 'V'){
-          Serial.println(F("wersja systemu to pre3f1.1"));
+          Serial.println(F("wersja systemu to pre4f1.1"));
           Serial.println(F(""));
           Serial.print(EEPROM.length() - wolne);
           Serial.print(F("/"));
@@ -1053,7 +1071,7 @@ for(int i = 0; i < EEPROM.length(); i++){
       lcd.print(EEPROM.length());
       lcd.print(F(" B zajete"));
       lcd.setCursor(0, 1);
-      lcd.print(F("sys v: pre3f1.1"));}else if(wybor == 4){
+      lcd.print(F("sys v: pre4f1.1"));}else if(wybor == 4){
         lcd.setCursor(0,0);
         lcd.print(millis());
         delay(100);
@@ -1277,7 +1295,9 @@ long mv = readVcc();
                                                             lcd.setCursor(0, 0);
                                                             lcd.print(F("edytor kodu"));
                                                             lcd.setCursor(0, 1);
-                                                            lcd.print(F("wlasna aplikacja1"));}}else if(aplikacja == 10){
+                                                            lcd.print(F("wlasna aplikacja1"));}else if(menuw == 5){
+                                                              lcd.setCursor(0, 0);
+                                                              lcd.print(F("usuwanie"));}}else if(aplikacja == 10){
                                                             lcd.setCursor(0, 0);
                                                             lcd.print(F("podaj komende"));}else if(aplikacja == 11){
                                                               for(int i = 229; i < 419; i++){
@@ -1350,7 +1370,25 @@ long mv = readVcc();
                                                                                     c = a + b;
                                                                                     Serial.println(c);}else if(EEPROM.read(i) == 10){
                                                                                       c = a - b;
-                                                                                      Serial.println(c);}}}}else if (uspienie  != 0) {
+                                                                                      Serial.println(c);}}}else if(aplikacja == 12){
+                                                                                        for(int i = 219; i < 419; i++){
+                                                                                          EEPROM.put(i, 0);
+                                                                                          lcd.setCursor(0, 0);
+                                                                                          lcd.print("usuwanie bajtu");
+                                                                                          lcd.setCursor(0, 1);
+                                                                                          lcd.print(i);
+                                                                                          if(EEPROM.read(i + 1) != 0){
+                                                                                          delay(200);}
+                                                                                          lcd.clear();
+                                                                                          if(i == 418){
+                                                                                            lcd.setCursor(0, 0);
+                                                                                            lcd.print("usuwanie");
+                                                                                            lcd.setCursor(0, 1);
+                                                                                            lcd.print("aplikacji zakonczone");
+                                                                                            delay(100);
+                                                                                            aplikacja = 0;
+                                                                                            lcd.clear();}}
+                                                                                          }}else if (uspienie  != 0) {
                                                                           if(millis() - ostatniP > 1000){
                                                                             
   lcd2.clear();
