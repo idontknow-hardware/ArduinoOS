@@ -24,7 +24,20 @@ Lista wydań:
   
 - **pre5f1.1** - narzędzie diagnostyczne(menu loading przycisk 0)
   *Wydana: 28.01.2026*
-  
+- **1.1** - Wszystko, co było w pre-release’ach, czyli:
+
+   - dodano wskaźnik baterii,
+
+   - naprawiono literówkę we wskaźniku baterii oraz błąd w animacji dinozaura w grze,
+
+   - dodano obsługę 2 ekranów LCD,
+
+   - dokończono edytor kodu,
+
+   - dodano usuwanie aplikacji,
+
+   - dodano narzędzie diagnostyczne.
+
   **PS: ArduinoOS jest rozwijany od grudnia 2025 jako prywatny projekt, a teraz został udostępniony w formie otwartej do dalszego rozwoju dnia: 23.01.2026.**
 # ArduinoOS
 
