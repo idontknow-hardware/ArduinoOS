@@ -1,23 +1,30 @@
 ## Wydania
-
+a w nazwie wersji oznacza poprawkę (hotfix) do danego pre-release.
 Lista wydań:
 
 - **pre1f1.1** – dodano wskaźnik baterii.  
   Uwaga: edytor kodu nie ma jeszcze wszystkich poleceń, które są planowane.
   Uwaga nr. 2: zawiera błędy! Zalecana instalacja pre1af1.1!
   *Wydana: 23.01.2026*
+  
 - **pre1af1.1** – naprawiono literówkę w wskazniku baterii oraz błąd w animacji dinozaura w grze.
   *Wydana: 23.01.2026*
+  
 - **pre2f1.1** – dodana obsługa 2 ekranów LCD.
 *Wydana: 23.01.2026*
 - **pre2af1.1** - naprawa błędów
 - *Wydana: 24.01.2026*
+- 
 - **pre3f1.1** – dokończenie edytora kodu!  
   Informacje o skrypcie, którym tworzysz niestandardowe aplikacje, znajdują się w dalszej części README.
   *Wydana: 26.01.2026*
+  
 - **pre4f1.1** - usuwanie aplikacji
   *Wydana: 27.01.2026*
-- **pre5f1.1** - narzędzie diagnostyczne
+  
+- **pre5f1.1** - narzędzie diagnostyczne(menu loading przycisk 0)
+  *Wydana: 28.01.2026*
+  
   **PS: ArduinoOS jest rozwijany od grudnia 2025 jako prywatny projekt, a teraz został udostępniony w formie otwartej do dalszego rozwoju dnia: 23.01.2026.**
 # ArduinoOS
 
@@ -77,6 +84,7 @@ płytka z grubsza:
 |pppppppppppppppppppppppppppppppppppppppppppppp[1] [] []SCL pp|---
 |pppppppppppppppppppppppppppppppppppppppppppp A0 A1 A2 ppppppp|
 +-------------------------------------------------------------+
+Uwaga: schemat jest poglądowy i może różnić się w zależności od modułu I2C.
 aby zmienić adres na 0x26 należy przylutować kabel z początkiem w [1] i końcem w [2]
 p - puste
 ## Sterowanie i użycie systemu
@@ -102,7 +110,7 @@ p - puste
 - (przycisk powrotu – opisz tutaj, jeśli masz dedykowany klawisz)
 -------
 ## Skrypt 
-
+Skrypt umożliwia tworzenie prostych aplikacji i operacji logicznych bezpośrednio z poziomu ArduinoOS.
 - **Przycisk 1 – `printznak`**  
   - `1` – potwierdzasz aktualny znak  
   - `2` – zmiana znaku w górę (A, B, C itd.)  
