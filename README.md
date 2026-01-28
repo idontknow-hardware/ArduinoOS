@@ -1,3 +1,17 @@
+## Ogłoszenia rozwojowe
+
+1. ArduinoOS v1.x (Legacy)
+Wersja 1.1 jest pierwszym i ostatnim stabilnym wydaniem linii 1.x.
+Projekt w tej formie nie będzie otrzymywał nowych funkcji (tylko ewentualne poprawki krytyczne).
+
+2. ArduinoOS 2
+Po przerwie planowane jest rozpoczęcie prac nad ArduinoOS 2 — nową wersją systemu z lepszą architekturą, przygotowaną pod wielojęzyczność i dalszy rozwój.
+
+3. System dla Raspberry Pi Pico
+Równolegle planowany jest projekt systemu dla Raspberry Pi Pico, tworzony wspólnie z innym autorem(@chackAJMCPE).
+
+4. Projekt-niespodzianka
+Trwają wstępne prace nad nowym projektem. Szczegóły zostaną ujawnione w przyszłości.
 ## Wydania
 a w nazwie wersji oznacza poprawkę (hotfix) do danego pre-release.
 Lista wydań:
