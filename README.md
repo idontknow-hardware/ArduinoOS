@@ -18,7 +18,6 @@ Lista wydań:
 - **pre4f1.1** - usuwanie aplikacji
   *Wydana: 27.01.2026*
 - **pre5f1.1** - narzędzie diagnostyczne
-- **pre6f1.1** - pomoc
   **PS: ArduinoOS jest rozwijany od grudnia 2025 jako prywatny projekt, a teraz został udostępniony w formie otwartej do dalszego rozwoju dnia: 23.01.2026.**
 # ArduinoOS
 
