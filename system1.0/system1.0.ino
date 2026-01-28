@@ -198,13 +198,19 @@ int k = 0;
   delay(500);
   lcd.print(F("Ready"));
   delay(500);
+
   if(wolne == EEPROM.length()){
     lcd.clear();
     lcd.print(F("no data in memory"));
     uspienie_czas = 1;}
+bool diagnostyka = 0;
       int procent = 0;
       int x = 0;
   for (int i = 0;i <= random(1, 10); i++){
+    if(diagnostyka == 0){
+    int klawisz = klawiatura.getKey();
+    if(klawisz == 48){
+      diagnostyka = 1;}
 lcd.setCursor(0,0);
     analogWrite(LED, k);
   lcd.clear();
@@ -246,7 +252,37 @@ for(int i = 0; i < 16; i++){
   
           procent = procent + random(25);
  
-   delay(500);}
+   delay(500);}else if(diagnostyka == 1){
+    lcd.clear();
+    lcd.print("test ekranu1");
+    for(int i = 0; i < 150; i++){
+
+      lcd.print("znak");
+      lcd.print(i);
+      lcd.print(":");
+      lcd.printByte(i);
+      delay(250);
+      lcd.clear();}
+      lcd.print("test ekranu2");
+          for(int i = 0; i < 150; i++){
+
+      lcd2.print("znak");
+      lcd2.print(i);
+      lcd2.print(":");
+      lcd2.printByte(i);
+      delay(250);
+      lcd2.clear();}
+      lcd.clear();
+      lcd.print("test LED");
+      digitalWrite(LED, HIGH);
+      digitalWrite(LED2, HIGH);
+      digitalWrite(LED3, HIGH);
+      delay(500);
+      digitalWrite(LED, LOW);
+      digitalWrite(LED2, LOW);
+      digitalWrite(LED3, LOW);
+      break;
+    }}
    lcd.clear();
    procent = 100;
    lcd.setCursor(0, 0);
@@ -259,6 +295,7 @@ for(int i = 0; i < 16; i++){
   delay(500);
   lcd.clear();
     digitalWrite(LED, LOW);
+
 }
 int getAplikacja(int numer){
   if(numer == 1){
@@ -1058,7 +1095,7 @@ for(int i = 0; i < EEPROM.length(); i++){
   if(EEPROM.read(i) == 0){
     wolne++;}}
         if(Serial.read() == 'V'){
-          Serial.println(F("wersja systemu to pre4f1.1"));
+          Serial.println(F("wersja systemu to pre5f1.1"));
           Serial.println(F(""));
           Serial.print(EEPROM.length() - wolne);
           Serial.print(F("/"));
@@ -1071,7 +1108,7 @@ for(int i = 0; i < EEPROM.length(); i++){
       lcd.print(EEPROM.length());
       lcd.print(F(" B zajete"));
       lcd.setCursor(0, 1);
-      lcd.print(F("sys v: pre4f1.1"));}else if(wybor == 4){
+      lcd.print(F("sys v: pre5f1.1"));}else if(wybor == 4){
         lcd.setCursor(0,0);
         lcd.print(millis());
         delay(100);
