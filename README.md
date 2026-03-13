@@ -135,7 +135,7 @@ p - puste
 - `2` – dodaj do ulubionych  
 - `A` – lista w górę  
 - `D` – lista w dół  
-- (przycisk powrotu – opisz tutaj, jeśli masz dedykowany klawisz)
+- `*` - przycisk powrotu
 -------
 ## Skrypt 
 Skrypt umożliwia tworzenie prostych aplikacji i operacji logicznych bezpośrednio z poziomu ArduinoOS.
