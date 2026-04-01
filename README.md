@@ -1,4 +1,5 @@
 ⚠️ UWAGA: Projekt nie jest powiązany z firmą Arduino i nie jest oficjalnym produktem.
+⚠️ NOTE: The project is not affiliated with Arduino and is not an official product.
 ## Ogłoszenia rozwojowe
 
 1. ArduinoOS v1.x (Legacy)
