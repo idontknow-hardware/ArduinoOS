@@ -14,7 +14,7 @@ oficjalnje rozpoczynam prace nad ArduinoOS 2. Nowa wersja systemu będzie miała
 - Arduino Uno
 - czujnik IR
 - pilot
-- 2 ekrany LCD 16*2
+- 2 ekrany LCD i2c 16*2
 - RTC do pokazywania czasu
 ## instalacja
 1. pobierz kod
