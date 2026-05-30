@@ -22,3 +22,14 @@ oficjalnje rozpoczynam prace nad ArduinoOS 2. Nowa wersja systemu będzie miała
 3. kliknij "upload"
 4. poczekaj aż sie zakończy
 ## co jeśli mój pilot nie działa?
+
+## Licencja
+
+Projekt jest dostępny na licencji **GNU General Public License w wersji 3 (GPLv3)**.  
+Szczegóły znajdują się w pliku `LICENSE`.
+
+---
+
+
+
+© 2026 `idontknow-hardware`
