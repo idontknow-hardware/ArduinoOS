@@ -1,194 +1,24 @@
 ⚠️ UWAGA: Projekt nie jest powiązany z firmą Arduino i nie jest oficjalnym produktem.
 ⚠️ NOTE: The project is not affiliated with Arduino and is not an official product.
-## Ogłoszenia rozwojowe
-
-1. ArduinoOS v1.x (Legacy)
-Wersja 1.1 jest pierwszym i ostatnim stabilnym wydaniem linii 1.x.
-Projekt w tej formie nie będzie otrzymywał nowych funkcji (tylko ewentualne poprawki krytyczne).
-
-2. ArduinoOS 2
-Po przerwie planowane jest rozpoczęcie prac nad ArduinoOS 2 — nową wersją systemu z lepszą architekturą, przygotowaną pod wielojęzyczność i dalszy rozwój.
-
-3. System dla Raspberry Pi Pico
-Równolegle planowany jest projekt systemu dla Raspberry Pi Pico, tworzony wspólnie z innym autorem(@chackAJMCPE).
-
-4. Projekt-niespodzianka
-Trwają wstępne prace nad nowym projektem. Szczegóły zostaną ujawnione w przyszłości.
+## ArduinoOS 2
+oficjalnje rozpoczynam prace nad ArduinoOS 2. Nowa wersja systemu będzie miała lepszy kod i wiele nowych funkcji!
 ## Wydania
-a w nazwie wersji oznacza poprawkę (hotfix) do danego pre-release.
-Lista wydań:
 
-- **pre1f1.1** – dodano wskaźnik baterii.  
-  Uwaga: edytor kodu nie ma jeszcze wszystkich poleceń, które są planowane.
-  Uwaga nr. 2: zawiera błędy! Zalecana instalacja pre1af1.1!
-  *Wydana: 23.01.2026*
-  
-- **pre1af1.1** – naprawiono literówkę w wskazniku baterii oraz błąd w animacji dinozaura w grze.
-  *Wydana: 23.01.2026*
-  
-- **pre2f1.1** – dodana obsługa 2 ekranów LCD.
-*Wydana: 23.01.2026*
-- **pre2af1.1** - naprawa błędów
-- *Wydana: 24.01.2026*
-- 
-- **pre3f1.1** – dokończenie edytora kodu!  
-  Informacje o skrypcie, którym tworzysz niestandardowe aplikacje, znajdują się w dalszej części README.
-  *Wydana: 26.01.2026*
-  
-- **pre4f1.1** - usuwanie aplikacji
-  *Wydana: 27.01.2026*
-  
-- **pre5f1.1** - narzędzie diagnostyczne(menu loading przycisk 0)
-  *Wydana: 28.01.2026*
-- **1.1** - Wszystko, co było w pre-release’ach, czyli:
-
-   - dodano wskaźnik baterii,
-
-   - naprawiono literówkę we wskaźniku baterii oraz błąd w animacji dinozaura w grze,
-
-   - dodano obsługę 2 ekranów LCD,
-
-   - dokończono edytor kodu,
-
-   - dodano usuwanie aplikacji,
-
-   - dodano narzędzie diagnostyczne.
-
-  **PS: ArduinoOS jest rozwijany od grudnia 2025 jako prywatny projekt, a teraz został udostępniony w formie otwartej do dalszego rozwoju dnia: 23.01.2026.**
-# ArduinoOS
-
-**ArduinoOS** – prosty system operacyjny na Arduino, stworzony przez `idontknow-hardware` (2026).
-
-Na ten moment projekt jest w całości po polsku. W przyszłości planowane jest dodanie wersji angielskiej.(W ArduinoOS 2!)
-**ArduinoOS in English** - Simple operating system for Arduino, created by `idontknow-hardware` (2026).
-
-For the moment, the project is fully in Polish. An English language version is officially planned for the upcoming **ArduinoOS 2**.
-
----
-
-## Wymagania minimalne
-
-- Arduino Uno  
-- Ekran LCD  16 * 2
-- Keypad 4×4  
-- Arduino IDE do wgrania kodu
-
-## Wymagania zalecane
-
-- Arduino Uno  
-- 2 Ekrany LCD  16 * 2 (2 to wyswietlacz informacji systemowych)
-- Keypad 4×4  
-- 3 diody LED  
-
-## Wymagane biblioteki
-
-- `LiquidCrystal_I2C`  
-- `Wire`  
-- `Keypad` (obsługa klawiatury 4×4)
-
----
-
-## Instalacja i uruchomienie
-
-1. Pobierz to repozytorium:
-   - przez przycisk **Code → Download ZIP** i rozpakuj, albo  
-   - przez `git clone`, jeśli używasz gita.
-
-2. Otwórz główny plik `.ino` w **Arduino IDE**.
-
-3. W Arduino IDE:
-   - wybierz odpowiednią płytkę (**Narzędzia → Płytka → Arduino Uno**),  
-   - wybierz port (**Narzędzia → Port**).
-
-4. Wgraj szkic na Arduino (przycisk **Wgraj**).
-
----
-## Pomoc w instalacji drugiego ekranu I2C
-płytka z grubsza:
-+-------------------------------------------------------------+
-| ppppppppppppppppppppppppppppppppppppppppp+-----+pppppppppppp|
-|pppppppppppppppppppppppppppppppppppppppppp|poten|pppppGNDpppp|---
-|pppppppppppppppppppppppppppppppppppppppppp+ - - +ppppppVCCppp|---
-|ppppppppppppppppppppppppppppppppppppppppppppppp[2] [] []SDA p|---
-|pppppppppppppppppppppppppppppppppppppppppppppp[1] [] []SCL pp|---
-|pppppppppppppppppppppppppppppppppppppppppppp A0 A1 A2 ppppppp|
-+-------------------------------------------------------------+
-Uwaga: schemat jest poglądowy i może różnić się w zależności od modułu I2C.
-aby zmienić adres na 0x26 należy przylutować kabel z początkiem w [1] i końcem w [2]
-p - puste
-## Sterowanie i użycie systemu
-
-### Menu główne
-
-- `1` – wybór użytkownika  
-- `2` – wybór użytkownika 2  
-- `1–8` – wybór ulubionych aplikacji  
-- `9` – lista wszystkich aplikacji  
-
-### Gra „Dinozaur”
-
-- `5` – skok / restart gry  
-- `6` – reset high score  
-
-### W menu „Wszystkie aplikacje” (`9`)
-
-- `1` – wybierz aplikację  
-- `2` – dodaj do ulubionych  
-- `A` – lista w górę  
-- `D` – lista w dół  
-- `*` - przycisk powrotu
--------
-## Skrypt 
-Skrypt umożliwia tworzenie prostych aplikacji i operacji logicznych bezpośrednio z poziomu ArduinoOS.
-- **Przycisk 1 – `printznak`**  
-  - `1` – potwierdzasz aktualny znak  
-  - `2` – zmiana znaku w górę (A, B, C itd.)  
-  - `3` – zmiana znaku w dół (C, B, A itd.)
-
-- **Przycisk 2** – wyczyść
-
-- **Przycisk 3** – kursor w prawo
-
-- **Przycisk 4** – kursor w lewo
-
-- **Przycisk 5** – zmiana linii (przejście do nowej linii)
-- **Przycisk 6** - ustaw wartość
-- **Przycisk 7** - zapisz wartość
-- **Przycisk 8** - wczytaj wartość(a = c)
-- **Przycisk 9** - dodać
-- **Przycisk A** - odjąć
-## Podłączenie
-Dla oryginalnego Arduino Uno piny SDA/SCL są jednocześnie oznaczone jako A4/A5, nie ma potrzeby szukania oddzielnych pinów z oznaczeniami I2C.
-**I²C (ekran)**  
-- Arduino **SCL** → SCL ekranu I²C  (A5 w oryginale, moja podróbka ma osobny pin)
-- Arduino **SDA** → SDA ekranu I²C  (A4 w oryginale, moja podróbka ma osobny pin)
-
-**Keypad 4×4**  
-- Arduino **2** → C4 (kolumna 4)  
-- Arduino **3** → C3 (kolumna 3)  
-- Arduino **4** → C2 (kolumna 2)  
-- Arduino **5** → C1 (kolumna 1)  
-- Arduino **6** → R1 (wiersz 1)  
-- Arduino **7** → R2 (wiersz 2)  
-- Arduino **8** → R3 (wiersz 3)  
-- Arduino **9** → R4 (wiersz 4)  
-
-**Diody LED**  
-- LED 1 – dłuższa noga (anoda) → Arduino **10**  
-- LED 2 – dłuższa noga (anoda) → Arduino **11**  
-- LED 3 – dłuższa noga (anoda) → Arduino **12**  
-
-Pamiętaj o podłączeniu:
-- wspólnej **masy (GND)** dla Arduino, ekranu I²C i LED,  
-- **rezystorów** do diod LED (np. 220–330 Ω w szereg z anodą).
-
-## Licencja
-
-Projekt jest dostępny na licencji **GNU General Public License w wersji 3 (GPLv3)**.  
-Szczegóły znajdują się w pliku `LICENSE`.
-
----
-
-
-
-© 2026 `idontknow-hardware`
+## wymagania minimalne i zalecane
+**minimalne**
+- Arduino Uno
+- czujnik IR
+- pilot
+- 2 ekrany LCD 16*2
+**zalecane**
+- Arduino Uno
+- czujnik IR
+- pilot
+- 2 ekrany LCD 16*2
+- RTC do pokazywania czasu
+## instalacja
+1. pobierz kod
+2. otwórz go w Arduino IDE
+3. kliknij "upload"
+4. poczekaj aż sie zakończy
+## co jeśli mój pilot nie działa?
