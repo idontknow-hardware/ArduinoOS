@@ -3,7 +3,7 @@
 ## ArduinoOS 2
 oficjalnje rozpoczynam prace nad ArduinoOS 2. Nowa wersja systemu będzie miała lepszy kod i wiele nowych funkcji!
 ## Wydania
-
+- pre1f2-1.0 - pierwsza wersja! *Wydano: 30.05.2026*
 ## wymagania minimalne i zalecane
 **minimalne**
 - Arduino Uno
