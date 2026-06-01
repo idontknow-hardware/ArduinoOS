@@ -626,7 +626,7 @@ if(konfig != 255){
           Cursor(0, 2);
           print("Wersja:", "Version:");
           Cursor(0, 3);
-          print_o("pre1f2-1.0");
+          print_o("pre2f2-1.0");
         }if (s_ust == 3) {
           Cursor(0, 2);
           print("jezyk", "language");
