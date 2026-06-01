@@ -4,6 +4,7 @@
 oficjalnje rozpoczynam prace nad ArduinoOS 2. Nowa wersja systemu będzie miała lepszy kod i wiele nowych funkcji!
 ## Wydania
 - pre1f2-1.0 - pierwsza wersja! *Wydano: 30.05.2026*
+- pre2f2-1.0 - dodano ulubione aplikacje i gre dinozaur oraz zmieniono if'y w funkcji input() na switch
 ## wymagania minimalne i zalecane
 **minimalne**
 - Arduino Uno
