@@ -1,60 +1,88 @@
-#define DECODE_NEC 1
-#define EXCLUDE_UNIVERSAL_PROTOCOLS 1
+// lib
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
 #include <EEPROM.h>
 #include <IRremote.h>
- #include <Ds1302.h>
-#define IR_RECEIVE_PIN 2 // Pin, do którego podpięty jest sygnał
+#include <Ds1302.h>
+
+// IR
+#define IR_RECEIVE_PIN 2 // IR
+#define DECODE_NEC 1
+#define EXCLUDE_UNIVERSAL_PROTOCOLS 1
+
+// piny do czegos
+#define RST_PIN = 4;
+#define DAT_PIN = 3;
+#define CLK_PIN = 5;
+
+// i2c
+LiquidCrystal_I2C lcd(0x27,16,2);
+LiquidCrystal_I2C lcd2(0x26,16,2);
+Ds1302 rtc(RST_PIN, CLK_PIN, DAT_PIN);
+
 #if defined(ARDUINO) && ARDUINO >= 100
 #define printByte(args)  write(args);
 #else
 #define printByte(args)  print(args,BYTE);
 #endif
-int jezyk = EEPROM.read(1); // język
+
+// menu
+int jezyk = EEPROM.read(1); // jezyk
+int konfig = EEPROM.read(0);
+int strona = 0;
+int ulubione1 = EEPROM.read(3);
+int ulubione2 = EEPROM.read(4);
+int aplikacje[] = {};
+
+// czas 
+long czas = 0;
+long czas2 = 0;
+long czas3 = 0;
+long roznicaCzasu = 0;
+long ostatniCzas = 0;
+long roznicaCzasu2 = 0;
+long ostatniCzas2 = 0;
+long roznicaCzasu3 = 0;
+long ostatniCzas3 = 0;
+
+byte godzina = 0;
+byte minuta = 0;
+byte dzien = 1;
+byte miesiac = 1;
+byte rok = 0;
+
+// gry? -chackAJMCPE
 int x = 0;
 int y = 0;
 int y_d = 3;
 int x_k = 0;
 int kursor_y = 0;
 int wynik = 0;
-int konfig = EEPROM.read(0);
-int strona = 0;
+
 int poz_u = 0;
 int s_keyboard = 0;
 int i_k = 0;
 int s_ust = 0;
 int s_info = 0;
-int ulubione1 = EEPROM.read(3);
-int ulubione2 = EEPROM.read(4);
+
 bool edycja = 0;
 bool keyboard = 0;
-int aplikacje[] = {};
+
 int poprawne = EEPROM.read(2);
-const int RST_PIN = 4;
-const int DAT_PIN = 3;
-const int CLK_PIN = 5;
-long czas = 0;
-long roznicaCzasu = 0;
-long ostatniCzas = 0;
-long czas2 = 0;
-long roznicaCzasu2 = 0;
-long ostatniCzas2 = 0;
-long czas3 = 0;
-long roznicaCzasu3 = 0;
-long ostatniCzas3 = 0;
-byte godzina = 0;
-byte minuta = 0;
-byte dzien = 1;
-byte miesiac = 1;
-byte rok = 0;
+
+
 uint8_t dino[8] = {0xC, 0xF, 0xC, 0xF, 0x1E, 0x1F, 0xA, 0xA};
 uint8_t kaktus[8] = {0x4, 0x4, 0x5, 0x16, 0xC, 0x5, 0x6, 0x4};
-LiquidCrystal_I2C lcd(0x27,16,2);
-Ds1302 rtc(RST_PIN, CLK_PIN, DAT_PIN);
-LiquidCrystal_I2C lcd2(0x26,16,2);
+
+/*
+  poco dawać 2 stringi!!! 
+  Lepiej zrobic sobie liste z angielskimi wiadomosciami i z polskimi, 
+  wtedy jest mniej kopiowania danych przed callowaniem funkcji i 
+  przy okazji kazdy tekst ładnie koło siebie, umozliwiajac dalsze rozwiniecie (dodatkowe jezyki)
+  -chackAJMCPE
+*/
 void print(String pl, String en) {
-  if(y < 2){ // jeżeli y < 2, to wtedy ekran1 w przeciwnym wypdaku ekran2
+  if(y < 2){ // jezeli y < 2, to wtedy ekran1 w przeciwnym wypdaku ekran2
   if(jezyk == 0){
   lcd.print(pl);}else {
     lcd.print(en);
@@ -65,14 +93,17 @@ void print(String pl, String en) {
   }
   
 }}
+
+// okej, nie ma co tu zarzucic -chackAJMCPE
 void print_o(String napis) {
-  if(y < 2){ // jeżeli y < 2, to wtedy ekran1 w przeciwnym wypdaku ekran2
-  
+  if(y < 2){ // jezeli y < 2, to wtedy ekran1 w przeciwnym wypdaku ekran2
   lcd.print(napis);}else{
   
   lcd2.print(napis);
 }  
 }
+
+// okej, nie ma co tu zarzucic -chackAJMCPE
 void Cursor(int newX, int newY) {
   if(newY < 2){
     lcd.setCursor(newX, newY);
@@ -82,18 +113,15 @@ void Cursor(int newX, int newY) {
   x = newX;
   y = newY;
 }
-int input(){
+
+int IRread(){
   uint32_t out = 0;
   int nacisniety = 0;
-  // Sprawdzamy, czy odebrano jakiś sygnał
+  // Sprawdzamy, czy odebrano jakis sygnal
   if (IrReceiver.decode()) {
     if (IrReceiver.decodedIRData.decodedRawData != 0) {
-       
       Serial.print("Odebrano kod przycisku: ");
-      // Wyświetlamy kod w formacie szesnastkowym (HEX)
-      
-      
-      
+      // Wyswietlamy kod w formacie szesnastkowym (HEX)
       out = IrReceiver.decodedIRData.decodedRawData;
       Serial.print(out);
       switch (out) {
@@ -160,31 +188,31 @@ int input(){
         case -1253376256:
           nacisniety = 21;
           break; //9
+        }
       }
-
-
-
-
-
-
-
-    }
- 
-    // Bardzo ważne: Wznów nasłuchiwanie, aby odebrać kolejny sygnał
+    // Bardzo wazne: Wznow nasluchiwanie, aby odebrac kolejny sygnal
     IrReceiver.resume(); 
   }
-return nacisniety;
+  return nacisniety;
 }
+
 void Clear() {
   lcd.clear();
   lcd2.clear();
 }
+
+/*
+// Zostawiam bo moze sie przydac, ale lepiej po prostu 
+// ustawic keyboard=1 zamiast callowac do funkcji. Mniej JSR
+// -chackAJMCPE
 void OpenKeyboard() {
   keyboard = 1;
 }
+*/
+
 int Keyboard() {
   char key = 0;
-  int klawisz = input();
+  int klawisz = IRread();
   Serial.println(s_keyboard);
   if(klawisz == 7) {
     s_keyboard++;
@@ -197,120 +225,70 @@ int Keyboard() {
   if(keyboard == 1) {
     Cursor(0, 0);
     if (s_keyboard == 0) {
-    print_o("1, 2, 3, 4, 5, 6, 7, 8, 9");
-    int klawisz = input();
-    if (klawisz == 13) {
-      key = '1';
-    }if (klawisz == 14) {
-      key = '2';
-    }if (klawisz == 15) {
-      key = '3';
-    }if (klawisz == 16) {
-      key = '4';
-    }if (klawisz == 17) {
-      key = '5';
-    }if (klawisz == 18) {
-      key = '6';
-    }if (klawisz == 19) {
-      key = '7';
-    }if(klawisz == 20) {
-      key = '8';
-    }if(klawisz == 21) {
-      key = '9';
-    }}if(s_keyboard == 1) {
-    print_o("0, a, b, c, d, e, f, g, h");
-    int klawisz = input();
-    if (klawisz == 13) {
-      key = '0';
-    }if (klawisz == 14) {
-      key = 'a';
-    }if (klawisz == 15) {
-      key = 'b';
-    }if (klawisz == 16) {
-      key = 'c';
-    }if (klawisz == 17) {
-      key = 'd';
-    }if (klawisz == 18) {
-      key = 'e';
-    }if (klawisz == 19) {
-      key = 'f';
-    }if(klawisz == 20) {
-      key = 'g';
-    }if(klawisz == 21) {
-      key = 'h';
-    }     
-    }if(s_keyboard == 2) {
-    print_o("i, j, k, l, m, n, o, p, r");
-    int klawisz = input();
-    if (klawisz == 13) {
-      key = 'i';
-    }if (klawisz == 14) {
-      key = 'j';
-    }if (klawisz == 15) {
-      key = 'k';
-    }if (klawisz == 16) {
-      key = 'l';
-    }if (klawisz == 17) {
-      key = 'm';
-    }if (klawisz == 18) {
-      key = 'n';
-    }if (klawisz == 19) {
-      key = 'o';
-    }if(klawisz == 20) {
-      key = 'p';
-    }if(klawisz == 21) {
-      key = 'r';
-    }     
-    }if(s_keyboard == 3) {
-    print_o("s, t, u, w, x, y, z, -, +");
-    int klawisz = input();
-    if (klawisz == 13) {
-      key = 's';
-    }if (klawisz == 14) {
-      key = 't';
-    }if (klawisz == 15) {
-      key = 'u';
-    }if (klawisz == 16) {
-      key = 'w';
-    }if (klawisz == 17) {
-      key = 'x';
-    }if (klawisz == 18) {
-      key = 'y';
-    }if (klawisz == 19) {
-      key = 'z';
-    }if(klawisz == 20) {
-      key = '+';
-    }if(klawisz == 21) {
-      key = '-';
-    }     
-    }if(s_keyboard == 4) {
-    print_o("=, !, @, #, $, %, ^, &, *");
-    int klawisz = input();
-    if (klawisz == 13) {
-      key = '=';
-    }if (klawisz == 14) {
-      key = '!';
-    }if (klawisz == 15) {
-      key = '@';
-    }if (klawisz == 16) {
-      key = '#';
-    }if (klawisz == 17) {
-      key = '$';
-    }if (klawisz == 18) {
-      key = '%';
-    }if (klawisz == 19) {
-      key = '^';
-    }if(klawisz == 20) {
-      key = '&';
-    }if(klawisz == 21) {
-      key = ' ';
-    }     
+      print_o("1, 2, 3, 4, 5, 6, 7, 8, 9");
+      int klawisz = IRread();
+      // taka optymalizacja -chackAJMCPE
+      if(klawisz > 13) {
+        key = (klawisz - 13) + '1';
+      }
     }
-  
+    if(s_keyboard == 1) {
+      print_o("0, a, b, c, d, e, f, g, h");
+      int klawisz = IRread();
+      if (klawisz == 13) {
+        key = '0';
+      }
+      // taka optymalizacja -chackAJMCPE
+      if (klawisz >= 14 && klawisz <= 22) {
+        key = (klawisz - 14) + 'a';
+      }   
+    }
+    if(s_keyboard == 2) {
+      print_o("i, j, k, l, m, n, o, p, r");
+      int klawisz = IRread();
+      // taka optymalizacja -chackAJMCPE
+      if(klawisz >= 14 && klawisz <= 22) {
+      key = (klawisz - 14) + 'i';
+      }  
+    }
+    if(s_keyboard == 3) {
+      print_o("s, t, u, w, x, y, z, -, +");
+      int klawisz = IRread();
+      // taka optymalizacja -chackAJMCPE
+      if((klawisz > 13) && (klawisz <= 19)) {
+        key = (klawisz - 13) + 's';
+      }  
+      if(klawisz == 20) {
+        key = '+';
+      }
+      if(klawisz == 21) {
+        key = '-';
+      }     
+    }
+    if(s_keyboard == 4) {
+      print_o("=, !, @, #, $, %, ^, &, *");
+      int klawisz = IRread();
+      if (klawisz == 13) {
+        key = '=';
+      }
+      if (klawisz == 14) {
+        key = '!';
+      }
+      if (klawisz == 15) {
+        key = '@';
+      }
+      // taka optymalizacja -chackAJMCPE
+      if(klawisz > 15) {
+        key = (klawisz - 16) + '#';
+      }    
+    }
   }
-  if(key != 0){
-  return key;}
+  if(key != 0) return key;
 }
+
+
+
+
 void printAPPS(){
   Cursor(3, 2);
   if (ulubione1 == 1) {
@@ -331,56 +309,57 @@ void printAPPS(){
     print("Dinozaur", "Dino");
   } 
 }
+
+
 void setup() {
 
   Serial.begin(9600);
   randomSeed(analogRead(0));
   x_k = random(15);
   IrReceiver.begin(IR_RECEIVE_PIN, ENABLE_LED_FEEDBACK);
-lcd.init();
-lcd.backlight();
-lcd2.init();
-lcd2.backlight();
-lcd.createChar(0, dino);
-lcd.createChar(1, kaktus);
-lcd2.createChar(0, dino);
-lcd2.createChar(1, kaktus);
-Serial.println("");
-Serial.print("kompilacja: ");
-Serial.print(__DATE__);
-Serial.print(" ");
-Serial.print(__TIME__);
+  lcd.init();
+  lcd.backlight();
+  lcd2.init();
+  lcd2.backlight();
+  lcd.createChar(0, dino);
+  lcd.createChar(1, kaktus);
+  lcd2.createChar(0, dino);
+  lcd2.createChar(1, kaktus);
+  Serial.print("\r\n");
+  Serial.print("Date of build: ");
+  Serial.print(__DATE__);
+  Serial.print(" ");
+  Serial.print(__TIME__);
   rtc.init();
-int l = 0;
-for (int i = 0; i < EEPROM.length(); i++) {
-  if(EEPROM.read(i) == 0) {
-    l++;
+  int l = 0;
+  for (int i = 0; i < EEPROM.length(); i++) {
+    if(EEPROM.read(i) == 0) {
+      l++;
+    }
   }
-}
-lcd.setCursor(0, 0);
-lcd.print(l);
+  lcd.setCursor(0, 0);
+  lcd.print(l);
 
-print(F(" bajtow wolnych") , F(" bytes free"));
-delay(2000);
-lcd.clear();
-print(F("? plikow ok"), F("? files ok"));
-Cursor(0, 1);
-print(F("? plikow wolnych"), F("? files free"));
-Cursor(0, 2);
-print(F("? plikow uszkodzonych"), F("? files corrupted"));
-delay(3000);
+  print(F(" bajtow wolnych") , F(" bytes free"));
+  delay(2000);
+  lcd.clear();
+  print(F("? plikow ok"), F("? files ok"));
+  Cursor(0, 1);
+  print(F("? plikow wolnych"), F("? files free"));
+  Cursor(0, 2);
+  print(F("? plikow uszkodzonych"), F("? files corrupted"));
+  delay(3000);
   Clear();
-Serial.println("uruchomiono w:");
-Serial.print(millis());
-Serial.print("ms");
-Serial.print(" czyli ");
-Serial.print(millis() / 1000);
-Serial.print("s");
+  Serial.println("uruchomiono w:");
+  Serial.print(millis());
+  Serial.print("ms");
+  Serial.print(" czyli ");
+  Serial.print(millis() / 1000);
+  Serial.print("s");
 }
 
 void loop() {
-
-if(konfig != 255){
+  if(konfig != 255){
   if(strona == 0){
   Cursor(0, 2);
   print(F("konfiguracja"), F("setup"));
@@ -388,12 +367,12 @@ if(konfig != 255){
   print_o(F("0/3"));
   Cursor(0, 0);
   print(F("zacznij - 5"), F("begin - 5"));
-  int klawisz = input();
+  int klawisz = IRread();
   if(klawisz != 0){
     if(klawisz == 17){
  strona = 1;  
  Clear();  }}}if (strona == 1){
-  int klawisz = input();
+  int klawisz = IRread();
   Cursor(0, 2);
   print(F("wybierz jezyk"), F("choose language"));
   Cursor(0, 3);
@@ -417,7 +396,7 @@ if(konfig != 255){
     Clear();
   }
  }if(strona == 2) {
-  int klawisz = input();
+  int klawisz = IRread();
   Cursor(0, 2);
   print(F("Pamiec EEPROM"), F("EEPROM memory"));
   Cursor(0, 3);
@@ -455,7 +434,7 @@ if(konfig != 255){
   EEPROM.put(4, 2);
  }
   }else {
-    int klawisz = input();
+    int klawisz = IRread();
     if (klawisz == 2) {
       aplikacje[0] = 0;
       Clear();
@@ -501,7 +480,7 @@ if(konfig != 255){
       printAPPS();
       Cursor(0, 0);
       print("3. Wszystkie aplikacje", "3. All apps");
-      int klawisz = input();
+      int klawisz = IRread();
       if (klawisz == 13) {
         aplikacje[0] = ulubione1;
         Clear();
@@ -542,7 +521,7 @@ if(konfig != 255){
       print("2. Info o systemie", "2. About system");
       Cursor(0, 0);
       print("3. jezyk", "3. language");
-      int klawisz = input();
+      int klawisz = IRread();
       
       if (klawisz == 13) {
         s_ust = 1;
@@ -650,7 +629,7 @@ if(konfig != 255){
         print("Dinozaur", "Dino");
         Cursor(15, kursor_y);
         print_o("<");
-        int klawisz = input();
+        int klawisz = IRread();
         if (klawisz == 14) {
           kursor_y++;
           Clear();
@@ -693,7 +672,7 @@ if(konfig != 255){
           }
         }
       }if (aplikacje[0] == 4) {
-        int klawisz = input();
+        int klawisz = IRread();
         Cursor(0, y_d);
         lcd2.printByte(0);
         Cursor(x_k, 3);
@@ -740,7 +719,7 @@ if(konfig != 255){
         }
       }
     }}
-  
+
 
 
 
