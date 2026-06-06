@@ -1,224 +1,93 @@
-// lib
+#define DECODE_NEC 1
+#define EXCLUDE_UNIVERSAL_PROTOCOLS 1
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
 #include <EEPROM.h>
 #include <IRremote.h>
-#include <Ds1302.h>
-
-// IR
-#define IR_RECEIVE_PIN 2 // IR
-#define DECODE_NEC 1
-#define EXCLUDE_UNIVERSAL_PROTOCOLS 1
-
-// piny do czegos
-#define RST_PIN = 4;
-#define DAT_PIN = 3;
-#define CLK_PIN = 5;
-
-// i2c
-LiquidCrystal_I2C lcd(0x27,16,2);
-LiquidCrystal_I2C lcd2(0x26,16,2);
-Ds1302 rtc(RST_PIN, CLK_PIN, DAT_PIN);
-
+ #include <Ds1302.h>
+#define IR_RECEIVE_PIN 2 // Pin, do którego podpięty jest sygnał
 #if defined(ARDUINO) && ARDUINO >= 100
 #define printByte(args)  write(args);
 #else
 #define printByte(args)  print(args,BYTE);
 #endif
-
-// menu
-int jezyk = EEPROM.read(1); // jezyk
-int konfig = EEPROM.read(0);
-int strona = 0;
-int ulubione1 = EEPROM.read(3);
-int ulubione2 = EEPROM.read(4);
-int aplikacje[] = {};
-
-// czas 
-long czas = 0;
-long czas2 = 0;
-long czas3 = 0;
-long roznicaCzasu = 0;
-long       }if (aplikacje[0] == 4) {
-        int klawisz = IRread();
-        Cursor(0, y_d);
-        lcd2.printByte(0);
-        Cursor(x_k, 3);
-        lcd2.printByte(1);
-        Cursor(0, 0);
-        print("wynik: ", "score: "); // wynik: 
-        lcd.print(wynik);
-        print_o(", ");
-        lcd.print(EEPROM.read(5)); = 0;
-long roznicaCzasu2 = 0;
-long ostatniCzas2 = 0;
-long roznicaCzasu3 = 0;
-long ostatniCzas3 = 0;
-
-byte godzina = 0;
-byte minuta = 0;
-byte dzien = 1;
-byte miesiac = 1;
-byte rok = 0;
-
-// gry? -chackAJMCPE
+int jezyk = EEPROM.read(1); // język
+int plik = 64;
+bool n_plik = 0;
+bool e_plik = 0;
+int t_pliku = 0;
+int s_pliku = 0;
+int i_pliku = 0;
+int i_notka = 12;
+bool naz_pliku = 0;
 int x = 0;
 int y = 0;
 int y_d = 3;
 int x_k = 0;
 int kursor_y = 0;
 int wynik = 0;
-
+int konfig = EEPROM.read(0);
+int strona = 0;
 int poz_u = 0;
 int s_keyboard = 0;
 int i_k = 0;
 int s_ust = 0;
 int s_info = 0;
-
+int ulubione1 = EEPROM.read(3);
+int ulubione2 = EEPROM.read(4);
 bool edycja = 0;
 bool keyboard = 0;
-
+int aplikacje[] = {};
 int poprawne = EEPROM.read(2);
-
+int s_wa = 0;
+const int RST_PIN = 4;
+const int DAT_PIN = 3;
+const int CLK_PIN = 5;
+long czas = 0;
+long roznicaCzasu = 0;
+long ostatniCzas = 0;
+long czas2 = 0;
+long roznicaCzasu2 = 0;
+long ostatniCzas2 = 0;
+long czas3 = 0;
+long roznicaCzasu3 = 0;
+long ostatniCzas3 = 0;
+byte godzina = 0;
+byte minuta = 0;
+byte dzien = 1;
+byte miesiac = 1;
+byte rok = 0;
 uint8_t dino[8] = {0xC, 0xF, 0xC, 0xF, 0x1E, 0x1F, 0xA, 0xA};
 uint8_t kaktus[8] = {0x4, 0x4, 0x5, 0x16, 0xC, 0x5, 0x6, 0x4};
-
-// tekst -chackAJMCPE
-// progmem zeby bylo w ROMie a nie w RAMie
-const char tekstPL[][16] PROGMEM = {
-  "Zegar",
-  "Ustawienia",
-  "Dinozaur",
-  " bajtow wolnych",
-  "? plikow ok", // 5
-  "? plikow wolnych",
-  "? plikow uszkodzonych",
-  "konfiguracja",
-  "0/3",
-  "zacznij - 5", // 10
-  "wybierz jezyk",
-  "1/3",
-  "PL - 4",
-  "EN - 6",
-  "Dalej - 5", // 15
-  "Pamiec EEPROM",
-  "2/3",
-  "wykasowac EEPROM?",
-  "5 - tak, dalej",
-  "wykasowano...", // 20
-  "wykasowano pomyslnie!",
-  "zakonczono konfiguracje",
-  "3/3",
-  "?% baterii",
-  "?% zuzycia RAMu", // 25
-  "1. czas",
-  "2. Info o systemie",
-  "3. jezyk",
-  "ustaw czas i date",
-  "Wersja:", // 30
-  "pre2f2-1.0",
-  "jezyk",
-  "Zegar",
-  "Ustawienia",
-  "Dinozaur", // 35
-  "wynik: ",
-  "przegrales!"
-};
-
-const char tekstEN[][16] PROGMEM = {
-  "Clock",
-  "Settings",
-  "ChromeDino",
-  " bytes free",
-  "? files ok", // 5
-  "? files free",
-  "? files corrupted",
-  "setup",
-  "0/3",
-  "begin - 5", // 10
-  "choose language",
-  "1/3",
-  "PL - 4",
-  "EN - 6",
-  "Go - 5", // 15
-  "EEPROM memory",
-  "2/3",
-  "Erase EEPROM?",
-  "5 - yes, go",
-  "erased...", // 20
-  "erased succesfull!",
-  "ended config",
-  "3/3",
-  "?% battery",
-  "?% RAM usage", // 25
-  "1. time",
-  "2. About system",
-  "3. language",
-  "set time and date",
-  "Version:", // 30
-  "pre2f2-1.0",
-  "language",
-  "Clock",
-  "Settings",
-  "Dino", // 35
-  "score: ",
-  "you lose!"
-};
-
-
-
-/*
-  poco dawać 2 stringi!!! 
-  Lepiej zrobic sobie liste z angielskimi wiadomosciami i z polskimi, 
-  wtedy jest mniej kopiowania danych przed callowaniem funkcji i 
-  przy okazji kazdy tekst ładnie koło siebie, umozliwiajac dalsze rozwiniecie (dodatkowe jezyki)
-  -chackAJMCPE
-*/
+uint8_t plik_u[8] = {0x64, 0xE, 0x1F, 0xE, 0xE, 0xE, 0xE, 0x0};
+uint8_t plik_c[8] = {0x0, 0x0, 0x0, 0x10, 0x1B, 0x15, 0x0, 0x0};
+uint8_t notatka[8] = {0x0, 0x1F, 0x15, 0x1B, 0x15, 0x1B, 0x1F, 0x0};
+uint8_t aplikacja[8] = {0x0, 0x1F, 0x0, 0x8, 0x15, 0x2, 0x1F, 0x0};
+uint8_t dane[8] = {0x1C, 0x14, 0x14, 0x1C, 0x8, 0x18, 0x8, 0x8};
+uint8_t kod[8] = {0x1D, 0x0, 0x1F, 0x0, 0x1F, 0x0, 0x1E, 0x1D};
+LiquidCrystal_I2C lcd(0x27,16,2);
+Ds1302 rtc(RST_PIN, CLK_PIN, DAT_PIN);
+LiquidCrystal_I2C lcd2(0x26,16,2);
 void print(String pl, String en) {
-  if (y < 2) { // jezeli y < 2, to wtedy ekran1 w przeciwnym wypdaku ekran2
-    if (jezyk == 0) lcd.print(pl);
-    else lcd.print(en); 
-  } else {
-    if (jezyk == 0) lcd2.print(pl);
-    else lcd2.print(en);   
+  if(y < 2){ // jeżeli y < 2, to wtedy ekran1 w przeciwnym wypdaku ekran2
+  if(jezyk == 0){
+  lcd.print(pl);}else {
+    lcd.print(en);
+  }}else{
+  if(jezyk == 0){
+  lcd2.print(pl);}else {
+    lcd2.print(en);   
   }
-}
-
-
-// moze nie za bardzo zooptymalizowana ale na pewno uzywa mniej ramu! -chackAJMCPE
-// max string length 16
-void printb(uint16_t stringnum) {
-  char buffer[16];
-  if (y < 2) { // jezeli y < 2, to wtedy ekran1 w przeciwnym wypdaku ekran2
-    if (jezyk == 0) {
-      strcpy_P(buffer, (char*)pgm_read_word(&(tekstPL[stringnum])));
-      lcd.print(buffer);
-    } else {
-      strcpy_P(buffer, (char*)pgm_read_word(&(tekstEN[stringnum])));
-      lcd.print(buffer);
-    }
-  } else {
-    if (jezyk == 0) {
-      strcpy_P(buffer, (char*)pgm_read_word(&(tekstPL[stringnum])));
-      lcd2.print(buffer);
-    } else {
-      strcpy_P(buffer, (char*)pgm_read_word(&(tekstEN[stringnum])));
-      lcd2.print(buffer);
-    }
-  }
-}
-
-
-// okej, nie ma co tu zarzucic -chackAJMCPE
+  
+}}
 void print_o(String napis) {
-  if(y < 2){ // jezeli y < 2, to wtedy ekran1 w przeciwnym wypdaku ekran2
+  if(y < 2){ // jeżeli y < 2, to wtedy ekran1 w przeciwnym wypdaku ekran2
+  
   lcd.print(napis);}else{
   
   lcd2.print(napis);
 }  
 }
-
-// okej, nie ma co tu zarzucic -chackAJMCPE
 void Cursor(int newX, int newY) {
   if(newY < 2){
     lcd.setCursor(newX, newY);
@@ -228,15 +97,18 @@ void Cursor(int newX, int newY) {
   x = newX;
   y = newY;
 }
-
-int IRread(){
+int input(){
   uint32_t out = 0;
   int nacisniety = 0;
-  // Sprawdzamy, czy odebrano jakis sygnal
+  // Sprawdzamy, czy odebrano jakiś sygnał
   if (IrReceiver.decode()) {
     if (IrReceiver.decodedIRData.decodedRawData != 0) {
-      Serial.print("Odebrano kod przycisku: ");
-      // Wyswietlamy kod w formacie szesnastkowym (HEX)
+       
+      Serial.print(F("Odebrano kod przycisku: "));
+      // Wyświetlamy kod w formacie szesnastkowym (HEX)
+      
+      
+      
       out = IrReceiver.decodedIRData.decodedRawData;
       Serial.print(out);
       switch (out) {
@@ -252,19 +124,19 @@ int IRread(){
         case -1153106176:
           nacisniety = 4; //PREV
           break;
-        case -1086259456:
+        case 3208707840:
           nacisniety = 5; // NEXT
           break;
         case -1136394496:
           nacisniety = 6; // PLAY / PAUSE
           break;
-        case -133693696:
+        case 4161273600:
           nacisniety = 7; // VOL-
           break;
-        case -367657216:
+        case 3927310080:
           nacisniety = 8; // VOL+
           break;
-        case -167117056:
+        case 4127850240:
           nacisniety = 9; // EQ
           break;
         case -384368896:
@@ -303,36 +175,35 @@ int IRread(){
         case -1253376256:
           nacisniety = 21;
           break; //9
-        }
       }
-    // Bardzo wazne: Wznow nasluchiwanie, aby odebrac kolejny sygnal
+
+
+
+
+
+
+
+    }
+ 
+    // Bardzo ważne: Wznów nasłuchiwanie, aby odebrać kolejny sygnał
     IrReceiver.resume(); 
   }
-  return nacisniety;
+return nacisniety;
 }
-
 void Clear() {
   lcd.clear();
   lcd2.clear();
 }
-
-/*
-// Zostawiam bo moze sie przydac, ale lepiej po prostu 
-// ustawic keyboard=1 zamiast callowac do funkcji. Mniej JSR
-// -chackAJMCPE
 void OpenKeyboard() {
   keyboard = 1;
 }
-*/
-
 int Keyboard() {
-  char key = 0;
-  int klawisz = IRread();
-  Serial.println(s_keyboard);
-  if(klawisz == 7) {
+  int key = 0;
+  int klawisz = input();
+  if(klawisz == 8) {
     s_keyboard++;
     Clear();
-  }if (klawisz == 6) {
+  }if (klawisz == 7) {
     s_keyboard--;
     Clear();
   }
@@ -340,251 +211,336 @@ int Keyboard() {
   if(keyboard == 1) {
     Cursor(0, 0);
     if (s_keyboard == 0) {
-      print_o("1, 2, 3, 4, 5, 6, 7, 8, 9");
-      int klawisz = IRread();
-      // taka optymalizacja -chackAJMCPE
-      if(klawisz > 13) {
-        key = (klawisz - 13) + '1';
-      }
+    print_o(F("1,2,3,4,5,6,7,8,9"));
+    int klawisz = input();
+    if (klawisz == 13) {
+      key = '1';
+    }if (klawisz == 14) {
+      key = '2';
+    }if (klawisz == 15) {
+      key = '3';
+    }if (klawisz == 16) {
+      key = '4';
+    }if (klawisz == 17) {
+      key = '5';
+    }if (klawisz == 18) {
+      key = '6';
+    }if (klawisz == 19) {
+      key = '7';
+    }if(klawisz == 20) {
+      key = '8';
+    }if(klawisz == 21) {
+      key = '9';
+    }}if(s_keyboard == 1) {
+    print_o(F("0,a,b,c,d,e,f,g,h"));
+    int klawisz = input();
+    if (klawisz == 13) {
+      key = '0';
+    }if (klawisz == 14) {
+      key = 'a';
+    }if (klawisz == 15) {
+      key = 'b';
+    }if (klawisz == 16) {
+      key = 'c';
+    }if (klawisz == 17) {
+      key = 'd';
+    }if (klawisz == 18) {
+      key = 'e';
+    }if (klawisz == 19) {
+      key = 'f';
+    }if(klawisz == 20) {
+      key = 'g';
+    }if(klawisz == 21) {
+      key = 'h';
+    }     
+    }if(s_keyboard == 2) {
+    print_o(F("i,j,k,l,m,n,o,p,r"));
+    int klawisz = input();
+    if (klawisz == 13) {
+      key = 'i';
+    }if (klawisz == 14) {
+      key = 'j';
+    }if (klawisz == 15) {
+      key = 'k';
+    }if (klawisz == 16) {
+      key = 'l';
+    }if (klawisz == 17) {
+      key = 'm';
+    }if (klawisz == 18) {
+      key = 'n';
+    }if (klawisz == 19) {
+      key = 'o';
+    }if(klawisz == 20) {
+      key = 'p';
+    }if(klawisz == 21) {
+      key = 'r';
+    }     
+    }if(s_keyboard == 3) {
+    print_o(F("s,t,u,w,x,y,z,-,+"));
+    int klawisz = input();
+    if (klawisz == 13) {
+      key = 's';
+    }if (klawisz == 14) {
+      key = 't';
+    }if (klawisz == 15) {
+      key = 'u';
+    }if (klawisz == 16) {
+      key = 'w';
+    }if (klawisz == 17) {
+      key = 'x';
+    }if (klawisz == 18) {
+      key = 'y';
+    }if (klawisz == 19) {
+      key = 'z';
+    }if(klawisz == 20) {
+      key = '+';
+    }if(klawisz == 21) {
+      key = '-';
+    }     
+    }if(s_keyboard == 4) {
+    print_o(F("=,!,@,#,$,%,^,&,*"));
+    int klawisz = input();
+    if (klawisz == 13) {
+      key = '=';
+    }if (klawisz == 14) {
+      key = '!';
+    }if (klawisz == 15) {
+      key = '@';
+    }if (klawisz == 16) {
+      key = '#';
+    }if (klawisz == 17) {
+      key = '$';
+    }if (klawisz == 18) {
+      key = '%';
+    }if (klawisz == 19) {
+      key = '^';
+    }if(klawisz == 20) {
+      key = '&';
+    }if(klawisz == 21) {
+      key = ' ';
+    }     
     }
-    if(s_keyboard == 1) {
-      print_o("0, a, b, c, d, e, f, g, h");
-      int klawisz = IRread();
-      if (klawisz == 13) {
-        key = '0';
-      }
-      // taka optymalizacja -chackAJMCPE
-      if (klawisz >= 14 && klawisz <= 22) {
-        key = (klawisz - 14) + 'a';
-      }   
-    }
-    if(s_keyboard == 2) {
-      print_o("i, j, k, l, m, n, o, p, r");
-      int klawisz = IRread();
-      // taka optymalizacja -chackAJMCPE
-      if(klawisz >= 14 && klawisz <= 22) {
-      key = (klawisz - 14) + 'i';
-      }  
-    }
-    if(s_keyboard == 3) {
-      print_o("s, t, u, w, x, y, z, -, +");
-      int klawisz = IRread();
-      // taka optymalizacja -chackAJMCPE
-      if((klawisz > 13) && (klawisz <= 19)) {
-        key = (klawisz - 13) + 's';
-      }  
-      if(klawisz == 20) {
-        key = '+';
-      }
-      if(klawisz == 21) {
-        key = '-';
-      }     
-    }
-    if(s_keyboard == 4) {
-      print_o("=, !, @, #, $, %, ^, &, *");
-      int klawisz = IRread();
-      if (klawisz == 13) {
-        key = '=';
-      }
-      if (klawisz == 14) {
-        key = '!';
-      }
-      if (klawisz == 15) {
-        key = '@';
-      }
-      // taka optymalizacja -chackAJMCPE
-      if(klawisz > 15) {
-        key = (klawisz - 16) + '#';
-      }    
-    }
+  
   }
-  if(key != 0) return key;
+  
+  return key;
 }
-
-
-
-
 void printAPPS(){
   Cursor(3, 2);
   if (ulubione1 == 1) {
-    printb(1); // zegar
+    print(F("Zegar"), F("Clock"));
+    
+  }if (ulubione1 == 2) {
+    print(F("Ustawienia"), F("Settings"));
+  }if (ulubione1 == 4) {
+    print(F("Dinozaur"), F("Dino"));
+  }if (ulubione1 == 5) {
+    print(F("Pliki"), F("Files"));
+  }if (ulubione1 == 6) {
+    print(F("Notatnik"), F("Notes"));
   }
-  if (ulubione1 == 2) {
-    printb(2); // ustawienia
-  }
-  if (ulubione1 == 4) {
-    printb(3); // dinozaur
-  }
-
   Cursor(3, 3);
   if (ulubione2 == 1) {
-    printb(1); // zegar
-  }
-  if (ulubione2 == 2) {
-    printb(2); // ustawienia
-  }
-  if (ulubione2 == 4) {
-    printb(3); // dinozaur
-  }
+    print(F("Zegar"), F("Clock"));
+    
+  }if (ulubione2 == 2) {
+    print(F("Ustawienia"), F("Settings"));
+  }if (ulubione2 == 4) {
+    print(F("Dinozaur"), F("Dino"));
+  }if (ulubione2 == 5) {
+    print(F("Pliki"), F("Files"));
+  }if (ulubione2 == 6) {
+    print(F("Notatnik"), F("Notes"));
+  } 
 }
-
-// okej, ale nie bylo za bardzo czytelne, teraz powinno byc -chackAJMCPE
 void setup() {
-  // init
+
   Serial.begin(9600);
+  randomSeed(analogRead(0));
+  x_k = random(15);
+  IrReceiver.begin(IR_RECEIVE_PIN, ENABLE_LED_FEEDBACK);
+lcd.init();
+lcd.backlight();
+lcd2.init();
+lcd2.backlight();
+lcd.createChar(0, dino);
+lcd.createChar(1, kaktus);
+lcd2.createChar(0, dino);
+lcd2.createChar(1, kaktus);
+lcd2.createChar(2, plik_u);
+lcd2.createChar(3, plik_c);
+lcd2.createChar(4, notatka);
+lcd2.createChar(5, aplikacja);
+lcd2.createChar(6, dane);
+lcd2.createChar(7, kod);
+Serial.println("");
+Serial.print(F("kompilacja: "));
+Serial.print(__DATE__);
+Serial.print(F(" "));
+Serial.print(__TIME__);
   rtc.init();
-  lcd.init();
-  lcd2.init();
-  IrReceiver.begin(IR_RECEIVE_PIN, ENABLE_LED_FEEDBACK); // IR init
-  randomSeed(analogRead(0)); // random seed init
-  x_k = random(15); // Niewiem co to -chackAJMCPE
+int l = 0;
+for (int i = 0; i < EEPROM.length(); i++) {
+  if(EEPROM.read(i) == 0) {
+    l++;
 
-  // backlight on
-  lcd.backlight();
-  lcd2.backlight();
-  
-  // pokaz apki
-  lcd.createChar(0, dino);
-  lcd.createChar(1, kaktus);
-  lcd2.createChar(0, dino);
-  lcd2.createChar(1, kaktus);
-
-  // print wersji na uart
-  Serial.print("\r\n");
-  Serial.print("Date of build: ");
-  Serial.print(__DATE__);
-  Serial.print(" ");
-  Serial.print(__TIME__);
-  
-  // sprawdzanie ile jest wolnych bajtow, mozna optymalizowac ale nie teraz
-  int l = 0;
-  for (int i = 0; i < EEPROM.length(); i++) {
-    if(EEPROM.read(i) == 0) {
-      l++;
-    }
   }
+}
+lcd.setCursor(0, 0);
+lcd.print(l);
 
-  // print danych
-  lcd.setCursor(0, 0);
-  lcd.print(l); // print wolnych bajtow (liczba)
-  printb(4); // print wolnych bajtow (tekst)
-  delay(2000);
-
-  lcd.clear();
-  printb(5); // pliki ok
-
-  Cursor(0, 1);
-  printb(6); // pliki wolne
-
-  Cursor(0, 2);
-  printb(7); // pliki uszkodzone
-  delay(3000);
-
-
+print(F(" bajtow wolnych") , F(" bytes free"));
+delay(2000);
+lcd.clear();
+int ok = 0;
+for (int i = 65; i < EEPROM.length(); i = i + 76) {
+  if (EEPROM.read(i) == 1) {
+    ok++;
+  }}
+int free = 0;
+for (int i = 64; i < EEPROM.length(); i = i + 76) {
+  if (EEPROM.read(i) == 0 or EEPROM.read(i + 1) == 2) {
+    free++;
+  }
+}
+int cor = 0;
+for (int i = 65; i < EEPROM.length(); i = i + 76) {
+  if (EEPROM.read(i) >= 3) {
+    cor++;
+  }
+}
+lcd.print(ok);
+print(F(" plikow ok"), F(" files ok"));
+Cursor(0, 1);
+lcd.print(free);
+print(F(" plikow wolnych"), F(" files free"));
+Cursor(0, 2);
+lcd2.print(cor);
+print(F(" plikow uszkodzonych"), F(" files corrupted"));
+delay(3000);
   Clear();
-  Serial.println("uruchomiono w:");
-  Serial.print(millis());
-  Serial.print("ms");
-  Serial.print(" czyli ");
-  Serial.print(millis() / 1000);
-  Serial.print("s");
+Serial.println(F("uruchomiono w:"));
+Serial.print(millis());
+Serial.print(F("ms"));
+Serial.print(F(" czyli "));
+Serial.print(millis() / 1000);
+Serial.print(F("s"));
+Cursor(0, 2);
+print(F("Uwaga!"), F("Caution!"));
+Cursor(0, 3);
+print(F("Jesli usuniesz"), F("If you delete "));
+Cursor(0, 0);
+print(F(" plik"), F("file"));
+Cursor(0, 1);
+print(F(" mozesz go nadpisac tworzac nowy!"), F(" you can overwrite it making new!"));
+delay(2000);
+for (int i = 0; i < 20; i++){
+lcd.scrollDisplayLeft();
+delay(500);}
+Clear();
 }
 
-
-// Oj, tu bylo duzo poprawek formatowania i kodu, 
-// nie chce mi sie dokumentowac co dokladnie zmienilem. -chackAJMCPE
 void loop() {
-  if (konfig != 255) {
-    if (strona == 0) { // ekran ustawien
-      // cos na ekran
-      Cursor(0, 2);
-      printb(7); // konfiguracja
-      Cursor(0, 3);
-      print_o(F("0/3"));
-      Cursor(0, 0);
-      printb(9); // zacznij - 5
 
-      // przycisk
-      int klawisz = IRread(); 
-      if (klawisz == 17) {
-        strona = 1;  
-        Clear();  
+if(konfig != 255){
+  if(strona == 0){
+  Cursor(0, 2);
+  print(F("konfiguracja"), F("setup"));
+  Cursor(0, 3);
+  print_o(F("0/3"));
+  Cursor(0, 0);
+  print(F("zacznij - 5"), F("begin - 5"));
+  int klawisz = input();
+  if(klawisz != 0){
+    if(klawisz == 17){
+ strona = 1;  
+ Clear();  }}}if (strona == 1){
+  int klawisz = input();
+  Cursor(0, 2);
+  print(F("wybierz jezyk"), F("choose language"));
+  Cursor(0, 3);
+  print_o(F("1/3"));
+  Cursor(0, 0);
+  print(F("PL - 4"), F("PL - 4"));
+  Cursor(0, 1);
+  print(F("EN - 6"), F("EN - 6"));
+  print(F("Dalej - 5"), F("Go - 5"));
+  if(klawisz == 16) {
+    jezyk = 0;
+    EEPROM.put(1, jezyk);
+    Clear();
+  }
+  if(klawisz == 18) {
+    jezyk = 1;
+   EEPROM.put(1, jezyk);
+   Clear();
+  } if(klawisz == 17) {
+    strona = 2;
+    Clear();
+  }
+ }if(strona == 2) {
+  int klawisz = input();
+  Cursor(0, 2);
+  print(F("Pamiec EEPROM"), F("EEPROM memory"));
+  Cursor(0, 3);
+  print_o(F("2/3"));
+  Cursor(0, 0);
+  print(F("wykasowac EEPROM?"), F("Erase EEPROM?"));
+  Cursor(0, 1);
+  print(F("5 - tak, dalej"), F("5 - yes, go"));
+  if(klawisz == 17) {
+    for(int i = 0; i < EEPROM.length(); i++) {
+      EEPROM.put(i, 0);
+      Clear();
+      Cursor(0, 0);
+      print(F("wykasowano..."), F("erased..."));
+           Cursor(0, 1);
+      lcd.print(i);
+ 
+      print(F(" bajt"), F(" byte"));
+      delay(1);
+    }
+    EEPROM.put(1, jezyk);
+    Clear();
+    print(F("wykasowano pomyslnie!"), F("erased succesfull!"));
+    delay(100);
+    strona = 3;
+    Clear();
+  }
+ }if (strona == 3) {
+  Cursor(0, 2);
+  print(F("zakonczono konfiguracje"), F("ended config"));
+  print_o(F("3/3"));
+  EEPROM.put(0, 255);
+  EEPROM.put(2, 1);
+  EEPROM.put(3, 1);
+  EEPROM.put(4, 2);
+    for (int i = 63; i < EEPROM.length(); i = i + 76) {
+      
+    for (int i_P = 1; i_P < 76; i_P++) {
+      Serial.println(i + i_P);
+      Serial.println("i:");
+      Serial.print(i);
+
+      if (i_P == 1) {
+        EEPROM.put(i + i_P, 0);
+
+      }if (i_P == 2) {
+        EEPROM.put(i + i_P, 1);
+      }if (i_P > 2 and i_P < 12) {
+        EEPROM.put(i + i_P, 'a');
+      }if (i_P > 11) {
+        EEPROM.put(i + i_P, 0);
       }
     }
-    if (strona == 1) { // ekran jezyka
-      // cos na ekran
-      Cursor(0, 2);
-      printb(10); // wybierz jezyk
-      Cursor(0, 3);
-      print_o(F("1/3"));
-      Cursor(0, 0);
-      printb(12); // PL - 4
-      Cursor(0, 1);
-      printb(13); // EN - 6
-      printb(14); // Dalej - 5
-
-      int klawisz = IRread(); // zczytaj przyciski
-
-      switch (klawisz) {
-        case 16: {
-          jezyk = 0;
-        }
-        case 18: {
-          jezyk = 1;
-        }
-        case 17: {
-          strona = 2;
-        }
-      }
-      if (klawisz) Clear();
-      if (klawisz == 18 || klawisz == 16) EEPROM.put(1, jezyk);
-    }
-    if(strona == 2) { // ekran wykasowywania
-      // cos na ekran
-      Cursor(0, 2);
-      printb(15); // Pamiec EEPROM
-      Cursor(0, 3);
-      print_o(F("2/3"));
-      Cursor(0, 0);
-      printb(17); // wykasowac EEPROM?
-      Cursor(0, 1);
-      printb(18); // 5 - tak, dalej
-
-      int klawisz = IRread(); // zczytaj przyciski
-      if(klawisz == 17) {
-        for(int i = 0; i < EEPROM.length(); i++) {
-          EEPROM.put(i, 0);
-          Clear();
-          Cursor(0, 0);
-          printb(19); // wykasowano...
-          Cursor(0, 1);
-          lcd.print(i);
-          print_o(" bajt");
-          delay(1);
-        }
-        EEPROM.put(1, jezyk);
-        Clear();
-        printb(20); // wykasowano pomyslnie!
-        delay(100);
-        strona = 3;
-        Clear();
-      }
-    }
-    if (strona == 3) {
-      Cursor(0, 2);
-      printb(21); // zakonczono konfiguracje
-      print_o(F("3/3"));
-      EEPROM.put(0, 255);
-      EEPROM.put(2, 1);
-      EEPROM.put(3, 1);
-      EEPROM.put(4, 2);
-    }
-  } else {
-    int klawisz = IRread();
+  }
+ }
+  }else {
+    int klawisz = input();
     if (klawisz == 2) {
       aplikacje[0] = 0;
       Clear();
-      Serial.println("test");
+      Serial.println(F("test"));
       s_ust = 0;
     }
     Cursor(0, 1);
@@ -600,13 +556,13 @@ void loop() {
   lcd.print(now.hour);
   lcd.print(F(":"));
   lcd.print(now.minute);} if (s_info == 1) {
-    printb(23); // ?% baterii
+    print(F("?% baterii"), F("?% battery"));
   }if (s_info == 2) {
-    printb(24); // pozostalo ? minut na baterii
+    print(F("pozostalo ? minut na baterii"), F("? minutes on battery"));
   }if (s_info == 3) {
-    printb(25); // brak powiadomien
+    print(F("brak powiadomien"), F("no notifications"));
   }if (s_info == 4) {
-    printb(26); // ?% zuzycia RAMu
+    print(F("?% zuzycia RAMu"), F("?% RAM usage"));
   }if (s_info == 5) {
     s_info = 0;
   }
@@ -625,8 +581,8 @@ void loop() {
       print_o("2.");
       printAPPS();
       Cursor(0, 0);
-      printb(26); // 3. Wszystkie aplikacje
-      int klawisz = IRread();
+      print("3. Wszystkie aplikacje", "3. All apps");
+      int klawisz = input();
       if (klawisz == 13) {
         aplikacje[0] = ulubione1;
         Clear();
@@ -662,12 +618,12 @@ void loop() {
       if (s_ust == 0) {
 
       Cursor(0, 2);
-      printb(26);
+      print("1. czas", "1. time");
       Cursor(0, 3);
-      printb(27);
+      print("2. Info o systemie", "2. About system");
       Cursor(0, 0);
-      printb(28);
-      int klawisz = IRread();
+      print("3. jezyk", "3. language");
+      int klawisz = input();
       
       if (klawisz == 13) {
         s_ust = 1;
@@ -686,7 +642,7 @@ void loop() {
       } if (s_ust == 1) {
       
         Cursor(0, 2);
-        printb(29); // ustaw czas i date
+        print("ustaw czas i date", "set time and date");
         Cursor(0, 3);
         lcd2.print(godzina);
         lcd2.print(":");
@@ -749,12 +705,12 @@ void loop() {
         }
         }if (s_ust == 2) {
           Cursor(0, 2);
-          printb(30); // Wersja:
+          print("Wersja:", "Version:");
           Cursor(0, 3);
           print_o("pre2f2-1.0");
         }if (s_ust == 3) {
           Cursor(0, 2);
-          printb(32); // jezyk
+          print("jezyk", "language");
           lcd2.print(jezyk);
           if (klawisz == 13) {
             jezyk = 0;
@@ -767,15 +723,22 @@ void loop() {
         }
 
       }if (aplikacje[0] == 3) {
+        if (s_wa == 0) {
         Cursor(0, 2);
-        printb(33);
+        print("Zegar", "Clock");
         Cursor(0, 3);
-        printb(34);
+        print("Ustawienia", "Settings");
         Cursor(0, 0);
-        printb(35);
-        Cursor(15, kursor_y);
+        print("Dinozaur", "Dino");
+}if (s_wa == 1) {
+          Cursor(0, 2);
+          print("Pliki", "Files");
+          Cursor(0, 3);
+          print("Notatnik", "Notes");
+        }
+                Cursor(15, kursor_y);
         print_o("<");
-        int klawisz = IRread();
+        int klawisz = input();
         if (klawisz == 14) {
           kursor_y++;
           Clear();
@@ -787,14 +750,22 @@ void loop() {
           Clear();
         }if (klawisz == 17) {
           Clear();
+          if (s_wa == 0) {
           if (kursor_y == 2) {
             aplikacje[0] = 1;
           }if (kursor_y == 3) {
             aplikacje[0] = 2;
           }if (kursor_y == 0) {
             aplikacje[0] = 4;
+          }} if (s_wa == 1) {
+            if (kursor_y == 2) {
+              aplikacje[0] = 5;
+            }if (kursor_y == 3) {
+              aplikacje[0] = 6;
+            }
           }
         }if (klawisz == 16) {
+          if (s_wa == 0) {
             if (kursor_y == 2) {
             ulubione1 = 1;
             EEPROM.put(3, 1);
@@ -804,8 +775,17 @@ void loop() {
           }if (kursor_y == 0) {
             ulubione1 = 4;
             EEPROM.put(3, 4);
+          }}if (s_wa == 1) {
+            if (kursor_y == 2) {
+              EEPROM.put(3, 5);
+              ulubione1 = 5;
+            }if (kursor_y == 3) {
+              EEPROM.put(3, 6);
+              ulubione1 = 6;
+            }
           }
         }if (klawisz == 18) {
+          if (s_wa == 0) {
             if (kursor_y == 2) {
             ulubione2 = 1;
             EEPROM.put(4, 1);
@@ -814,17 +794,32 @@ void loop() {
             EEPROM.put(4, 2);
           }if (kursor_y == 0) {
             ulubione2 = 4;
-            EEPROM.put(4, 2);
+            EEPROM.put(4, 4);
+          }}if (s_wa == 1) {
+            if (kursor_y == 2) {
+              EEPROM.put(4, 5);
+              ulubione2 = 5;
+            }if (kursor_y == 3) {
+              EEPROM.put(4, 6);
+              ulubione2 = 6;
+            }
           }
         }
+        if (klawisz == 1) {
+          s_wa--;
+          Clear();
+        }if (klawisz == 3) {
+          s_wa++;
+          Clear();
+        }
       }if (aplikacje[0] == 4) {
-        int klawisz = IRread();
+        int klawisz = input();
         Cursor(0, y_d);
         lcd2.printByte(0);
         Cursor(x_k, 3);
         lcd2.printByte(1);
         Cursor(0, 0);
-        printb(36); // wynik: 
+        print("wynik: ", "score: ");
         lcd.print(wynik);
         print_o(", ");
         lcd.print(EEPROM.read(5));
@@ -845,7 +840,7 @@ void loop() {
           }
           if (x_k <= 0 & y_d == 3) {
             Cursor(0, 2);
-            printb(37); // przegrales!
+            print("przegrales!", "you lose!");
           if (wynik > EEPROM.read(5)) {
           EEPROM.put(5, wynik);
         }
@@ -863,9 +858,269 @@ void loop() {
           }
 
         }
-      }
-    }}
+      }if (aplikacje[0] == 5) {
+        int klawisz = input();
+        if (n_plik == 0) {
+        if (e_plik == 0) {
+        if (klawisz == 1) {
+          plik = plik - 76;
 
+          Clear();
+        }if (klawisz == 3) {
+          plik = plik + 76;
+
+          Clear();
+        }
+        if (EEPROM.read(plik) != 0) {
+
+          Cursor(0, 2);
+          if (EEPROM.read(plik + 1) == 2) {
+          lcd2.printByte(2);}else if(EEPROM.read(plik + 1) >= 3) {
+            lcd2.printByte(3);
+          }else {
+            if (EEPROM.read(plik) == 1) {
+              lcd2.printByte(4);
+            }if (EEPROM.read(plik) == 2) {
+              lcd2.printByte(5);
+            }if (EEPROM.read(plik) == 3) {
+              lcd2.printByte(6);
+            }if (EEPROM.read(plik) == 4) {
+              lcd2.printByte(7);
+            }
+          }
+          lcd2.print(char(EEPROM.read(plik + 3)));
+          lcd2.print(char(EEPROM.read(plik + 4)));
+          lcd2.print(char(EEPROM.read(plik + 5)));
+          lcd2.print(char(EEPROM.read(plik + 6)));
+          lcd2.print(char(EEPROM.read(plik + 7)));
+          lcd2.print(char(EEPROM.read(plik + 8)));
+          lcd2.print(char(EEPROM.read(plik + 9)));
+          lcd2.print(char(EEPROM.read(plik + 10)));
+          lcd2.print(char(EEPROM.read(plik + 11)));
+        }
+        Cursor(0, 0);
+        print("+ - nowy plik", "+ - new file");
+        Cursor(0, 3);
+        print("- - opcje", "- - settings");
+        if (klawisz == 8) {
+          n_plik = 1;
+          Clear();
+        }
+        if (klawisz == 7) {
+          e_plik = 1;
+          Clear();
+        }}else {
+          if (naz_pliku == 0){
+          Cursor(0, 2);
+          if (EEPROM.read(plik + 1) == 1) {
+          print("1. Usun", "1. Delete");}else {
+            print("1. Przywroc", "1. Restore");
+          }
+          Cursor(0, 3);
+          print("2. Zmien nazwe", "2. Change name");
+          Cursor(0, 0);
+          print(F("3. Otworz, 4. Powrot"), F("3. Open, 4. Back"));
+          int klawisz = input();
+          if (klawisz == 13) {
+            if (EEPROM.read(plik + 1) == 1) {
+              EEPROM.put(plik + 1, 2);
+            }else {
+              EEPROM.put(plik + 1, 1);
+            }
+          }if (klawisz == 14) {
+            naz_pliku = 1;
+          }if (klawisz == 15) {
+            if (EEPROM.read(plik) == 1) {
+              aplikacje[0] = 6;
+            }
+          }if (klawisz == 16) {
+            e_plik = 0;
+            Clear();
+          }} else {
+                        Cursor(0, 2);
+            print("nazwa pliku", "file name");
+            Cursor(0, 3);
+            OpenKeyboard();
+            char t = Keyboard();
+            
+            if (int(t) != 0) {
+              char t1 = t;
+              i_pliku++;
+              if (i_pliku == 0){
+              EEPROM.put(plik + 3, t1);}
+              if (i_pliku == 1){
+                EEPROM.put(plik + 4, t1);
+              }if (i_pliku == 2) {
+                EEPROM.put(plik + 5, t1);
+              }if (i_pliku == 3) {
+                EEPROM.put(plik + 6, t1);
+              }if (i_pliku == 4) {
+                EEPROM.put(plik + 7, t1);
+              }if (i_pliku == 5) {
+                EEPROM.put(plik + 8, t1);
+              }if (i_pliku == 6) {
+                EEPROM.put(plik + 9, t1);
+              }if (i_pliku == 7) {
+                EEPROM.put(plik + 10, t1);
+              }if (i_pliku == 8) {
+                EEPROM.put(plik + 11, t1);
+
+              }if (i_pliku > 8) {
+                e_plik = 0;
+                naz_pliku = 0;
+                i_pliku = 0;
+                Clear();
+
+              }
+              
+              lcd2.print(char(EEPROM.read(plik + 3)));
+              lcd2.print(char(EEPROM.read(plik + 4)));
+              lcd2.print(char(EEPROM.read(plik + 5)));
+              lcd2.print(char(EEPROM.read(plik + 6)));
+              lcd2.print(char(EEPROM.read(plik + 7)));
+              lcd2.print(char(EEPROM.read(plik + 8)));
+              lcd2.print(char(EEPROM.read(plik + 9)));
+              lcd2.print(char(EEPROM.read(plik + 10)));
+              lcd2.print(char(EEPROM.read(plik + 11)));
+              }
+          }
+        }}else {
+          if (s_pliku == 0) {
+            i_notka = 12;
+          for (int i = 64; i < EEPROM.length(); i = i + 76) {
+            if (EEPROM.read(i + 1) == 0) {
+              plik = i;
+              Serial.println("plik:");
+          Serial.println(plik);
+              break;
+            }else if (EEPROM.read(i + 1) == 2) {
+              plik = i;
+              break;
+            }
+
+          
+          }
+          Cursor(0, 2);
+          print("wybierz typ", "choose type");
+          Cursor(0, 3);
+          print("wybrany typ: ", "choosed type: ");
+          Cursor(0, 0);
+          if (t_pliku == 1) {
+            print("notatka", "note");
+          }if (t_pliku == 2) {
+            print("aplikacja", "app");
+          }if (t_pliku == 3) {
+            print("dane", "data");
+          }if (t_pliku == 4) {
+            print("kod", "code");
+          }
+          print("(5 - dalej)", "(5 - next)");
+          if (klawisz == 13) {
+            t_pliku = 1;
+            Clear();
+          }if (klawisz == 14) {
+            t_pliku = 2;
+            Clear();
+          }if (klawisz == 15) {
+            t_pliku = 3;
+            Clear();
+          }if (klawisz == 16) {
+            t_pliku = 4;
+            Clear();
+          }if (klawisz == 17) {
+            s_pliku = 1;
+            Clear();
+          }}else {
+            Cursor(0, 2);
+            print(F("nazwa pliku"), F("file name"));
+            Cursor(0, 3);
+            OpenKeyboard();
+            char t = Keyboard();
+            
+            if (int(t) != 0) {
+              char t1 = t;
+              i_pliku++;
+              if (i_pliku == 0){
+              EEPROM.put(plik + 3, t1);}
+              if (i_pliku == 1){
+                EEPROM.put(plik + 4, t1);
+              }if (i_pliku == 2) {
+                EEPROM.put(plik + 5, t1);
+              }if (i_pliku == 3) {
+                EEPROM.put(plik + 6, t1);
+              }if (i_pliku == 4) {
+                EEPROM.put(plik + 7, t1);
+              }if (i_pliku == 5) {
+                EEPROM.put(plik + 8, t1);
+              }if (i_pliku == 6) {
+                EEPROM.put(plik + 9, t1);
+              }if (i_pliku == 7) {
+                EEPROM.put(plik + 10, t1);
+              }if (i_pliku == 8) {
+                EEPROM.put(plik + 11, t1);
+
+              }if (i_pliku > 8) {
+                EEPROM.put(plik, t_pliku);
+                EEPROM.put(plik + 1, 1);
+                n_plik = 0;
+                Clear();
+                s_pliku = 1;
+                i_pliku = 0;
+              }
+              
+              lcd2.print(char(EEPROM.read(plik + 3)));
+              lcd2.print(char(EEPROM.read(plik + 4)));
+              lcd2.print(char(EEPROM.read(plik + 5)));
+              lcd2.print(char(EEPROM.read(plik + 6)));
+              lcd2.print(char(EEPROM.read(plik + 7)));
+              lcd2.print(char(EEPROM.read(plik + 8)));
+              lcd2.print(char(EEPROM.read(plik + 9)));
+              lcd2.print(char(EEPROM.read(plik + 10)));
+              lcd2.print(char(EEPROM.read(plik + 11)));
+              }
+
+          }
+        }
+      }if (aplikacje[0] == 6) {
+        if (EEPROM.read(plik) != 1) {
+          plik = plik + 76;
+        }
+        Clear();
+                for (int i = 0; i < i_notka - 13; i++) {
+        lcd2.scrollDisplayLeft();}
+        for (int i = 12; i < 76; i++) {
+        lcd2.print(char(EEPROM.read(plik + i)));}
+              
+            int klawisz = input();
+      if (klawisz == 9) {
+        i_notka--;
+        Serial.println(i_notka);
+      }if (klawisz == 2) {
+        aplikacje[0] = 0;
+        Clear();
+      }if (klawisz == 7) {
+        s_keyboard--;
+      }if (klawisz == 8) {
+        s_keyboard++;
+      }
+      OpenKeyboard();
+      char t = Keyboard();
+      if (int(t) != 0) {
+        EEPROM.put(plik + i_notka, t);
+        if (i_notka < 76) {
+          i_notka++;
+        }else {
+          print("nie ma miejsca!", "no space!");
+        }
+        
+
+      }
+
+        
+      }
+
+    }}
+  
 
 
 
