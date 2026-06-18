@@ -36,6 +36,8 @@ jeśli to nie zadziała:
 6. Otrzymasz komunikat "Otrzymano kod przycisku:" oraz kod
 7. Skopiuj kod
 8. Prześlij kod do Arduino
+## Pliki
+system plików w ArduinoOS 2 umożliwia tworzenie do 13 plików (jeśli chodzi o Arduino Uno). Uwaga! Jeśli używałeś wcześniej wersji sprzed pre3f2-1.0 to uruchom wgrywanie-plikow aby stworzyć system plików w EEPROM. Jeśli nie używałeś starszych wersji to po prostu przejdź przez setup, a program w menu "konfiguracja zakonczona" zrobi system plików (dlatego trzeba tak długo czekać)
 ## Licencja
 
 Projekt jest dostępny na licencji **GNU General Public License w wersji 3 (GPLv3)**.  
