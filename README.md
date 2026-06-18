@@ -1,8 +1,8 @@
 ⚠️ UWAGA: Projekt nie jest powiązany z firmą Arduino i nie jest oficjalnym produktem.
 ⚠️ NOTE: The project is not affiliated with Arduino and is not an official product.
 ## Spis treści
-1. Info o systemie:
-2. Wydania:
+1. Info o systemie: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#arduinoos-2
+2. Wydania: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#wydania
 3. wymagania: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#wymagania-minimalne-i-zalecane
 4. Instalacja: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#instalacja
 5. Co jeśli pilot nie działa?: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#co-je%C5%9Bli-m%C3%B3j-pilot-nie-dzia%C5%82a
