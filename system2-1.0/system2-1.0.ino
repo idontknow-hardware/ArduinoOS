@@ -1,31 +1,49 @@
 #define DECODE_NEC 1
 #define EXCLUDE_UNIVERSAL_PROTOCOLS 1
+#define EXCLUDE_EXOTIC_PROTOCOLS    1
+#define NO_LED_FEEDBACK_CODE        1
+
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
 #include <EEPROM.h>
 #include <IRremote.h>
  #include <Ds1302.h>
 #define IR_RECEIVE_PIN 2 // Pin, do którego podpięty jest sygnał
-#if defined(ARDUINO) && ARDUINO >= 100
-#define printByte(args)  write(args);
-#else
-#define printByte(args)  print(args,BYTE);
-#endif
 int jezyk = EEPROM.read(1); // język
 int plik = 64;
 bool n_plik = 0;
 bool e_plik = 0;
+bool mode = 0;
+bool opcje = 0;
+bool wylacz = 0;
+uint8_t uruchamianie = 0;
 int t_pliku = 0;
 int s_pliku = 0;
 int i_pliku = 0;
 int i_notka = 12;
+int i_kodu = 12;
+int i_kodu_p = 64;
+bool warunki = 0;
+char t_kodu = ' ';
+char t1_kodu = ' ';
+uint8_t wartosc1 = 0;
+uint8_t wartosc2 = 0;
+uint8_t wartosc3 = 0;
+uint8_t wartosc4 = 0;
+uint8_t wybrana_w = 0;
+uint8_t ostatnia_akcja = 0;
+uint8_t ob_kom = 0;
+uint8_t wartosc = 0;
+uint8_t bajt = 0;
+uint8_t x_kod = 0;
+uint8_t y_kod = 0;
 bool naz_pliku = 0;
 int x = 0;
 int y = 0;
 int y_d = 3;
 int x_k = 0;
 int kursor_y = 0;
-int wynik = 0;
+uint8_t wynik = 0;
 int konfig = EEPROM.read(0);
 int strona = 0;
 int poz_u = 0;
@@ -39,6 +57,7 @@ bool edycja = 0;
 bool keyboard = 0;
 int aplikacje[] = {};
 int poprawne = EEPROM.read(2);
+bool ostrzezenie = EEPROM.read(6);
 int s_wa = 0;
 const int RST_PIN = 4;
 const int DAT_PIN = 3;
@@ -97,106 +116,61 @@ void Cursor(int newX, int newY) {
   x = newX;
   y = newY;
 }
-int input(){
-  uint32_t out = 0;
-  int nacisniety = 0;
+
+uint8_t input() {
+  uint8_t nacisniety = 0;
+  
   // Sprawdzamy, czy odebrano jakiś sygnał
   if (IrReceiver.decode()) {
-    if (IrReceiver.decodedIRData.decodedRawData != 0) {
+
+    if (IrReceiver.decodedIRData.command != 0) {
        
-      Serial.print(F("Odebrano kod przycisku: "));
-      // Wyświetlamy kod w formacie szesnastkowym (HEX)
+      Serial.print(F("Odebrano komende: "));
+
+      uint8_t cmd = IrReceiver.decodedIRData.command;
+      Serial.println(cmd);
       
-      
-      
-      out = IrReceiver.decodedIRData.decodedRawData;
-      Serial.print(out);
-      switch (out) {
-        case -1169817856:
-          nacisniety = 1;
-          break; // CH-
-        case -1186529536:
-          nacisniety = 2;
-          break; //CH
-        case -1203241216:
-          nacisniety = 3;
-          break;//CH+
-        case -1153106176:
-          nacisniety = 4; //PREV
-          break;
-        case 3208707840:
-          nacisniety = 5; // NEXT
-          break;
-        case -1136394496:
-          nacisniety = 6; // PLAY / PAUSE
-          break;
-        case 4161273600:
-          nacisniety = 7; // VOL-
-          break;
-        case 3927310080:
-          nacisniety = 8; // VOL+
-          break;
-        case 4127850240:
-          nacisniety = 9; // EQ
-          break;
-        case -384368896:
-          nacisniety = 10; // 0
-          break;
-        case -434503936:
-          nacisniety = 11; // 100+
-          break;
-        case -233963776:
-          nacisniety = 12; //200+
-          break;
-        case -217252096:
-          nacisniety = 13; // 1
-          break;
-        case -417792256:
-          nacisniety = 14;
-          break; // 2
-        case -1587609856:
-          nacisniety = 15;
-          break; // 3
-        case 4144561920:
-          nacisniety = 16;
-          break; // 4
-        case -484638976:
-          nacisniety = 17;
-          break; // 5
-        case -1520763136:
-          nacisniety = 18;
-          break; // 6
-        case -1119682816:
-          nacisniety = 19;
-          break; // 7
-        case -1387069696:
-          nacisniety = 20;
-          break; //8
-        case -1253376256:
-          nacisniety = 21;
-          break; //9
+
+      switch (cmd) {
+        case 0x45: nacisniety = 1;  break; // CH-
+        case 0x46: nacisniety = 2;  break; // CH
+        case 0x47: nacisniety = 3;  break; // CH+
+        case 0x44: nacisniety = 4;  break; // PREV
+        case 0x40: nacisniety = 5;  break; // NEXT
+        case 0x43: nacisniety = 6;  break; // PLAY / PAUSE
+        case 0x7: nacisniety = 7;  break; // VOL-
+        case 0x15: nacisniety = 8;  break; // VOL+
+        case 0x9: nacisniety = 9;  break; // EQ
+        case 0x16: nacisniety = 10; break; // 0
+        case 0x19: nacisniety = 11; break; // 100+
+        case 0xD: nacisniety = 12; break; // 200+
+        case 0xC: nacisniety = 13; break; // 1
+        case 0x18: nacisniety = 14; break; // 2
+        case 0x5E: nacisniety = 15; break; // 3
+        case 0x8: nacisniety = 16; break; // 4
+        case 0x1C: nacisniety = 17; break; // 5
+        case 0x5A: nacisniety = 18; break; // 6
+        case 0x42: nacisniety = 19; break; // 7
+        case 0x52: nacisniety = 20; break; // 8
+        case 0x4A: nacisniety = 21; break; // 9
       }
-
-
-
-
-
-
-
     }
  
     // Bardzo ważne: Wznów nasłuchiwanie, aby odebrać kolejny sygnał
     IrReceiver.resume(); 
   }
-return nacisniety;
+  return nacisniety;
 }
 void Clear() {
   lcd.clear();
   lcd2.clear();
 }
+
 void OpenKeyboard() {
   keyboard = 1;
 }
+
+
 int Keyboard() {
   int key = 0;
   int klawisz = input();
@@ -425,6 +399,7 @@ Serial.print(F("ms"));
 Serial.print(F(" czyli "));
 Serial.print(millis() / 1000);
 Serial.print(F("s"));
+if (ostrzezenie == 1) {
 Cursor(0, 2);
 print(F("Uwaga!"), F("Caution!"));
 Cursor(0, 3);
@@ -438,7 +413,18 @@ for (int i = 0; i < 20; i++){
 lcd.scrollDisplayLeft();
 delay(500);}
 Clear();
+Cursor(0, 0);
+print("nie pokazuj ponownie?(5 - tak)", "dont show again?(5 - yes)");
+for (int i = 0; i < 2000; i++) {
+int klawisz = input();
+if (klawisz == 17) {
+  EEPROM.update(6, 0);
+  break;
+}}}
+
+Clear();
 }
+
 
 void loop() {
 
@@ -467,12 +453,12 @@ if(konfig != 255){
   print(F("Dalej - 5"), F("Go - 5"));
   if(klawisz == 16) {
     jezyk = 0;
-    EEPROM.put(1, jezyk);
+    EEPROM.update(1, jezyk);
     Clear();
   }
   if(klawisz == 18) {
     jezyk = 1;
-   EEPROM.put(1, jezyk);
+   EEPROM.update(1, jezyk);
    Clear();
   } if(klawisz == 17) {
     strona = 2;
@@ -490,7 +476,7 @@ if(konfig != 255){
   print(F("5 - tak, dalej"), F("5 - yes, go"));
   if(klawisz == 17) {
     for(int i = 0; i < EEPROM.length(); i++) {
-      EEPROM.put(i, 0);
+      EEPROM.update(i, 0);
       Clear();
       Cursor(0, 0);
       print(F("wykasowano..."), F("erased..."));
@@ -500,7 +486,7 @@ if(konfig != 255){
       print(F(" bajt"), F(" byte"));
       delay(1);
     }
-    EEPROM.put(1, jezyk);
+    EEPROM.update(1, jezyk);
     Clear();
     print(F("wykasowano pomyslnie!"), F("erased succesfull!"));
     delay(100);
@@ -511,29 +497,32 @@ if(konfig != 255){
   Cursor(0, 2);
   print(F("zakonczono konfiguracje"), F("ended config"));
   print_o(F("3/3"));
-  EEPROM.put(0, 255);
-  EEPROM.put(2, 1);
-  EEPROM.put(3, 1);
-  EEPROM.put(4, 2);
-    for (int i = 63; i < EEPROM.length(); i = i + 76) {
+  EEPROM.update(0, 255);
+  EEPROM.update(2, 1);
+  EEPROM.update(3, 1);
+  EEPROM.update(4, 2);
+  EEPROM.update(6, 1);
+    for (int i = 64; i < EEPROM.length() - 76; i = i + 76) {
       
     for (int i_P = 1; i_P < 76; i_P++) {
+      Serial.print(' ');
       Serial.println(i + i_P);
       Serial.println("i:");
       Serial.print(i);
 
       if (i_P == 1) {
-        EEPROM.put(i + i_P, 0);
+        EEPROM.update(i + i_P, 0);
 
       }if (i_P == 2) {
-        EEPROM.put(i + i_P, 1);
+        EEPROM.update(i + i_P, 1);
       }if (i_P > 2 and i_P < 12) {
-        EEPROM.put(i + i_P, 'a');
+        EEPROM.update(i + i_P, 'a');
       }if (i_P > 11) {
-        EEPROM.put(i + i_P, 0);
+        EEPROM.update(i + i_P, 0);
       }
     }
   }
+  konfig = EEPROM.read(0);
  }
   }else {
     int klawisz = input();
@@ -552,7 +541,7 @@ if(konfig != 255){
   lcd.print(now.month);
   lcd.print(F("/"));
   lcd.print(now.year);
-  lcd.print(" ");
+  lcd.print(' ');
   lcd.print(now.hour);
   lcd.print(F(":"));
   lcd.print(now.minute);} if (s_info == 1) {
@@ -564,6 +553,8 @@ if(konfig != 255){
   }if (s_info == 4) {
     print(F("?% zuzycia RAMu"), F("?% RAM usage"));
   }if (s_info == 5) {
+    print(F("?*C temp. procesora"), F("?*C temp. CPU"));
+  }if (s_info == 6) {
     s_info = 0;
   }
   czas = millis();
@@ -645,13 +636,13 @@ if(konfig != 255){
         print("ustaw czas i date", "set time and date");
         Cursor(0, 3);
         lcd2.print(godzina);
-        lcd2.print(":");
+        lcd2.print(':');
         lcd2.print(minuta);
         Cursor(0, 0);
         lcd.print(dzien);
-        lcd.print("/");
+        lcd.print('/');
         lcd.print(miesiac);
-        lcd.print("/");
+        lcd.print('/');
         lcd.print(rok);
         
         if (klawisz == 13) {
@@ -707,18 +698,18 @@ if(konfig != 255){
           Cursor(0, 2);
           print("Wersja:", "Version:");
           Cursor(0, 3);
-          print_o("pre3f2-1.0");
+          print_o("pre4f2-1.0");
         }if (s_ust == 3) {
           Cursor(0, 2);
           print("jezyk", "language");
           lcd2.print(jezyk);
           if (klawisz == 13) {
             jezyk = 0;
-            EEPROM.put(1, jezyk);
+            EEPROM.update(1, jezyk);
 
           }if (klawisz == 14) {
             jezyk = 1;
-            EEPROM.put(1, jezyk);
+            EEPROM.update(1, jezyk);
           }
         }
 
@@ -768,19 +759,19 @@ if(konfig != 255){
           if (s_wa == 0) {
             if (kursor_y == 2) {
             ulubione1 = 1;
-            EEPROM.put(3, 1);
+            EEPROM.update(3, 1);
           }if (kursor_y == 3) {
             ulubione1 = 2;
-            EEPROM.put(3, 2);
+            EEPROM.update(3, 2);
           }if (kursor_y == 0) {
             ulubione1 = 4;
-            EEPROM.put(3, 4);
+            EEPROM.update(3, 4);
           }}if (s_wa == 1) {
             if (kursor_y == 2) {
-              EEPROM.put(3, 5);
+              EEPROM.update(3, 5);
               ulubione1 = 5;
             }if (kursor_y == 3) {
-              EEPROM.put(3, 6);
+              EEPROM.update(3, 6);
               ulubione1 = 6;
             }
           }
@@ -788,19 +779,19 @@ if(konfig != 255){
           if (s_wa == 0) {
             if (kursor_y == 2) {
             ulubione2 = 1;
-            EEPROM.put(4, 1);
+            EEPROM.update(4, 1);
           }if (kursor_y == 3) {
             ulubione2 = 2;
-            EEPROM.put(4, 2);
+            EEPROM.update(4, 2);
           }if (kursor_y == 0) {
             ulubione2 = 4;
-            EEPROM.put(4, 4);
+            EEPROM.update(4, 4);
           }}if (s_wa == 1) {
             if (kursor_y == 2) {
-              EEPROM.put(4, 5);
+              EEPROM.update(4, 5);
               ulubione2 = 5;
             }if (kursor_y == 3) {
-              EEPROM.put(4, 6);
+              EEPROM.update(4, 6);
               ulubione2 = 6;
             }
           }
@@ -815,9 +806,9 @@ if(konfig != 255){
       }if (aplikacje[0] == 4) {
         int klawisz = input();
         Cursor(0, y_d);
-        lcd2.printByte(0);
+        lcd2.write(0);
         Cursor(x_k, 3);
-        lcd2.printByte(1);
+        lcd2.write(1);
         Cursor(0, 0);
         print("wynik: ", "score: ");
         lcd.print(wynik);
@@ -842,7 +833,7 @@ if(konfig != 255){
             Cursor(0, 2);
             print("przegrales!", "you lose!");
           if (wynik > EEPROM.read(5)) {
-          EEPROM.put(5, wynik);
+          EEPROM.update(5, wynik);
         }
           }if (x_k <= 0 & y_d == 2) {
             x_k = random(15);
@@ -875,17 +866,17 @@ if(konfig != 255){
 
           Cursor(0, 2);
           if (EEPROM.read(plik + 1) == 2) {
-          lcd2.printByte(2);}else if(EEPROM.read(plik + 1) >= 3) {
-            lcd2.printByte(3);
+          lcd2.write(2);}else if(EEPROM.read(plik + 1) >= 3) {
+            lcd2.write(3);
           }else {
             if (EEPROM.read(plik) == 1) {
-              lcd2.printByte(4);
+              lcd2.write(4);
             }if (EEPROM.read(plik) == 2) {
-              lcd2.printByte(5);
+              lcd2.write(5);
             }if (EEPROM.read(plik) == 3) {
-              lcd2.printByte(6);
+              lcd2.write(6);
             }if (EEPROM.read(plik) == 4) {
-              lcd2.printByte(7);
+              lcd2.write(7);
             }
           }
           lcd2.print(char(EEPROM.read(plik + 3)));
@@ -923,15 +914,21 @@ if(konfig != 255){
           int klawisz = input();
           if (klawisz == 13) {
             if (EEPROM.read(plik + 1) == 1) {
-              EEPROM.put(plik + 1, 2);
+              EEPROM.update(plik + 1, 2);
             }else {
-              EEPROM.put(plik + 1, 1);
+              EEPROM.update(plik + 1, 1);
             }
           }if (klawisz == 14) {
             naz_pliku = 1;
           }if (klawisz == 15) {
             if (EEPROM.read(plik) == 1) {
               aplikacje[0] = 6;
+              i_notka = 12;
+              Clear();
+            }if (EEPROM.read(plik) == 4) {
+              aplikacje[0] = 7;
+              i_notka = 12;
+              Clear();
             }
           }if (klawisz == 16) {
             e_plik = 0;
@@ -947,23 +944,23 @@ if(konfig != 255){
               char t1 = t;
               i_pliku++;
               if (i_pliku == 0){
-              EEPROM.put(plik + 3, t1);}
+              EEPROM.update(plik + 3, t1);}
               if (i_pliku == 1){
-                EEPROM.put(plik + 4, t1);
+                EEPROM.update(plik + 4, t1);
               }if (i_pliku == 2) {
-                EEPROM.put(plik + 5, t1);
+                EEPROM.update(plik + 5, t1);
               }if (i_pliku == 3) {
-                EEPROM.put(plik + 6, t1);
+                EEPROM.update(plik + 6, t1);
               }if (i_pliku == 4) {
-                EEPROM.put(plik + 7, t1);
+                EEPROM.update(plik + 7, t1);
               }if (i_pliku == 5) {
-                EEPROM.put(plik + 8, t1);
+                EEPROM.update(plik + 8, t1);
               }if (i_pliku == 6) {
-                EEPROM.put(plik + 9, t1);
+                EEPROM.update(plik + 9, t1);
               }if (i_pliku == 7) {
-                EEPROM.put(plik + 10, t1);
+                EEPROM.update(plik + 10, t1);
               }if (i_pliku == 8) {
-                EEPROM.put(plik + 11, t1);
+                EEPROM.update(plik + 11, t1);
 
               }if (i_pliku > 8) {
                 e_plik = 0;
@@ -988,7 +985,7 @@ if(konfig != 255){
           if (s_pliku == 0) {
             i_notka = 12;
           for (int i = 64; i < EEPROM.length(); i = i + 76) {
-            if (EEPROM.read(i + 1) == 0) {
+            if (EEPROM.read(i) == 0) {
               plik = i;
               Serial.println("plik:");
           Serial.println(plik);
@@ -996,9 +993,16 @@ if(konfig != 255){
             }else if (EEPROM.read(i + 1) == 2) {
               plik = i;
               break;
+
             }
 
           
+          }if (plik == EEPROM.length()) {
+            print("brak miejsca, usun cos!", "no space, delete sth!");
+            s_pliku = 0;
+            i_pliku = 0;
+            n_plik = 0;
+
           }
           Cursor(0, 2);
           print("wybierz typ", "choose type");
@@ -1041,30 +1045,30 @@ if(konfig != 255){
               char t1 = t;
               i_pliku++;
               if (i_pliku == 0){
-              EEPROM.put(plik + 3, t1);}
+              EEPROM.update(plik + 3, t1);}
               if (i_pliku == 1){
-                EEPROM.put(plik + 4, t1);
+                EEPROM.update(plik + 4, t1);
               }if (i_pliku == 2) {
-                EEPROM.put(plik + 5, t1);
+                EEPROM.update(plik + 5, t1);
               }if (i_pliku == 3) {
-                EEPROM.put(plik + 6, t1);
+                EEPROM.update(plik + 6, t1);
               }if (i_pliku == 4) {
-                EEPROM.put(plik + 7, t1);
+                EEPROM.update(plik + 7, t1);
               }if (i_pliku == 5) {
-                EEPROM.put(plik + 8, t1);
+                EEPROM.update(plik + 8, t1);
               }if (i_pliku == 6) {
-                EEPROM.put(plik + 9, t1);
+                EEPROM.update(plik + 9, t1);
               }if (i_pliku == 7) {
-                EEPROM.put(plik + 10, t1);
+                EEPROM.update(plik + 10, t1);
               }if (i_pliku == 8) {
-                EEPROM.put(plik + 11, t1);
+                EEPROM.update(plik + 11, t1);
 
               }if (i_pliku > 8) {
-                EEPROM.put(plik, t_pliku);
-                EEPROM.put(plik + 1, 1);
+                EEPROM.update(plik, t_pliku);
+                EEPROM.update(plik + 1, 1);
                 n_plik = 0;
                 Clear();
-                s_pliku = 1;
+                s_pliku = 0;
                 i_pliku = 0;
               }
               
@@ -1106,7 +1110,7 @@ if(konfig != 255){
       OpenKeyboard();
       char t = Keyboard();
       if (int(t) != 0) {
-        EEPROM.put(plik + i_notka, t);
+        EEPROM.update(plik + i_notka, t);
         if (i_notka < 76) {
           i_notka++;
         }else {
@@ -1117,6 +1121,829 @@ if(konfig != 255){
       }
 
         
+      }if (aplikacje[0] == 7) {
+
+        if (opcje == 0) {
+        Cursor(0, 0);
+        print("200+ - pomoc", "200+ - help");
+        Cursor(0, 2);
+        if (i_kodu > 12) { if (EEPROM.read(i_kodu + plik - 3) == 4) {
+          print_o("endif");
+        }else if(EEPROM.read(i_kodu + plik - 3) == 5) {
+          print_o("create file");
+        }else if (EEPROM.read(i_kodu + plik - 3) == 1) {
+          
+            print_o("print");
+          
+          lcd2.print(' ');
+          lcd2.print(char(EEPROM.read(i_kodu + plik - 2)));}else if(EEPROM.read(i_kodu + plik - 3) == 6) {
+            print_o("lff");}if (plik == EEPROM.length()) {
+            print("brak miejsca, usun cos!", "no space, delete sth!");
+      }else if (EEPROM.read(i_kodu + plik - 3) == 1) {
+          
+            print_o("print");
+          
+          lcd2.print(' ');
+          lcd2.print(char(EEPROM.read(i_kodu + plik - 2)));}else if(EEPROM.read(i_kodu + plik - 3) == 6) {
+            print_o("lff");
+            lcd2.print(' ');
+            lcd2.print(EEPROM.read(i_kodu + plik - 2));
+            print_o(" ");
+            lcd2.print(EEPROM.read(i_kodu + plik - 1));
+          }else if (EEPROM.read(i_kodu + plik - 3) == 2) {
+            print_o("set");
+            lcd2.print(' ');
+            lcd2.print(EEPROM.read(i_kodu + plik - 2));
+            lcd2.print(' ');
+            lcd2.print(EEPROM.read(i_kodu + plik - 1));
+          } else if (EEPROM.read(i_kodu + plik - 3) == 3) {
+          print_o("if=");
+          lcd2.print(' ');
+          lcd2.print(EEPROM.read(i_kodu + plik - 2));
+          lcd2.print(' ');
+          lcd2.print(EEPROM.read(i_kodu + plik - 1));
+        }else if(EEPROM.read(i_kodu + plik - 3) == 7) {
+            print_o("w(t)f");
+            lcd2.print(' ');
+            lcd2.print(EEPROM.read(i_kodu + plik - 2));
+            print_o(" ");
+            lcd2.print(EEPROM.read(i_kodu + plik - 1));
+          }else if(EEPROM.read(i_kodu + plik - 3) == 8){
+            print_o("cursor_s");
+            lcd2.print(' ');
+            lcd2.print(EEPROM.read(i_kodu + plik - 2));
+            print_o(" ");
+            lcd2.print(EEPROM.read(i_kodu + plik - 1));
+          }else if(EEPROM.read(i_kodu + plik - 3) == 9) {
+            print_o("clear");
+          }else if(EEPROM.read(i_kodu + plik - 3) == 10) {
+          print_o("input");
+          lcd2.print(' ');
+          lcd2.print(EEPROM.read(i_kodu + plik - 2));
+          }else if(EEPROM.read(i_kodu + plik - 3) == 11) {
+            print_o("ADD");
+          }else if(EEPROM.read(i_kodu + plik - 3) == 12) {
+            print_o("SUB");
+          }else if(EEPROM.read(i_kodu + plik - 3) == 13) {
+            print_o("*");
+          }else if(EEPROM.read(i_kodu + plik - 3) == 14) {
+            print_o("/");
+          }else if(EEPROM.read(i_kodu + plik - 3) == 15) {
+          print_o("load from port");
+          lcd2.print(' ');
+          lcd2.print(EEPROM.read(i_kodu + plik - 2));
+          }else if(EEPROM.read(i_kodu + plik - 3) == 16) {
+            print_o("cursor_m");
+          }else if(EEPROM.read(i_kodu + plik - 3) == 17) {
+          print_o("send to port");
+          lcd2.print(' ');
+          lcd2.print(EEPROM.read(i_kodu + plik - 2));
+          } }
+        Cursor(0, 3);
+        if (ob_kom == 1) {
+          print_o("print");
+            lcd2.print(' ');
+            lcd2.print(t1_kodu);
+          
+        }
+        if (ob_kom == 2) {
+            print_o("set");
+            lcd2.print(' ');
+            lcd2.print(wybrana_w);
+            lcd2.print(' ');
+            if (wybrana_w == 1) {
+              lcd2.print(wartosc1);
+            }if (wybrana_w == 2) {
+              lcd2.print(wartosc2);
+            }
+            if (wybrana_w == 3) {
+              lcd2.print(wartosc3);
+            }if (wybrana_w == 4) {
+              lcd2.print(wartosc4);
+            }
+        }
+        if (ob_kom == 3) {
+          print_o("if=");
+          lcd2.print(' ');
+          lcd2.print(wybrana_w);
+          lcd2.print(' ');
+          lcd2.print(wartosc);
+        }
+        if (ob_kom == 4) {
+          print_o("endif");
+        }if (ob_kom == 5) {
+          print_o("create file");
+        }if (ob_kom == 6) {
+          print_o("lff");
+          lcd2.print(' ');
+          lcd2.print(wybrana_w);
+          print_o(" ");
+          lcd2.print(bajt);
+
+        }if (ob_kom == 7) {
+          print_o("w(t)f");
+          lcd2.print(' ');
+          lcd2.print(wybrana_w);
+          print_o(" ");
+          lcd2.print(bajt);
+        }if (ob_kom == 8) {
+          print_o("cursor_s");
+          lcd2.print(' ');
+          lcd2.print(x_kod);
+          lcd2.print(' ');
+          lcd2.print(y_kod);
+        }if (ob_kom == 9) {
+          print_o("clear");
+        }if (ob_kom == 10) {
+          print_o("input");
+          lcd2.print(' ');
+          lcd2.print(wybrana_w);
+        }if (ob_kom == 11) {
+          print_o("ADD");
+        }if (ob_kom == 12) {
+          print_o("SUB");
+        }if (ob_kom == 13) {
+          print_o("*");
+        }if (ob_kom == 14) {
+          print_o("/");
+        }if (ob_kom == 15) {
+          print_o("load from port");
+          lcd2.print(' ');
+          lcd2.print(wybrana_w);
+        }if (ob_kom == 16) {
+          print_o("cursor_m");
+        }if (ob_kom == 17) {
+          print_o("send to port");
+          lcd2.print(' ');
+          lcd2.print(wybrana_w);
+        }
+        int klawisz = input();
+        /* lista komend:
+          1 - print
+          2 - set
+          3 - if=
+          4 - endif
+          5 - create file
+          6 - load from file (lff)
+          7 - write to file (w(t)f)
+          8 - kursor statyczny (nie mozna zmienic pozycji)
+          9 - clear
+          10 - input
+          11 - dodawanie (tylko wartosc1 + wartosc2 = wartosc3)
+          12 - odejmowanie (tylko wartosc1 - wartosc2 = wartosc3)
+          13 - mnozenie (tylko wartosc1 * wartosc2 = wartosc3)
+          14 - dzielenie (tylko wartosc1 / wartosc2 = wartosc3)
+          15 - load from port (obecnie nieużywane)
+          16 - kursor ruszający się (można zmienić pozycje, wykorzystuje wartosc3 i wartosc4 dla x i y)
+          17 - send do port (obecnie nieużywane)
+          */
+          if(klawisz == 6) {
+            warunki = !warunki;
+
+          }
+          if (klawisz == 4) {
+            ob_kom = ob_kom - ostatnia_akcja;
+          }
+        if (warunki == 0) {
+        if (klawisz == 13) {
+          ob_kom = ob_kom + 1;
+          ostatnia_akcja = 1;
+          Clear();
+        }if (klawisz == 14) {
+          ob_kom = ob_kom + 2;
+          klawisz = 0; 
+          Clear();
+          ostatnia_akcja = 2;
+        }if (klawisz == 15) {
+          ob_kom = ob_kom + 3; 
+          klawisz = 0;
+          Clear();
+          ostatnia_akcja = 3;
+        }if (klawisz == 16) {
+          ob_kom = ob_kom + 4; 
+          Clear();
+          ostatnia_akcja = 4;
+        }if (klawisz == 17) {
+          ob_kom = ob_kom + 5;
+          Clear(); 
+          ostatnia_akcja = 5;
+        }if (klawisz == 18) {
+          ob_kom = ob_kom + 6;
+          Clear(); 
+          ostatnia_akcja = 6;
+        }if (klawisz == 19) {
+          ob_kom = ob_kom + 7;
+          Clear(); 
+          ostatnia_akcja = 7;
+        }if (klawisz == 20) {
+          ob_kom = ob_kom + 8;
+          Clear();
+          ostatnia_akcja = 8;
+        }if (klawisz == 21) {
+          ob_kom = ob_kom + 9;
+          Clear();
+          ostatnia_akcja = 9;
+        }if (klawisz == 10) {
+          ob_kom = ob_kom * 10;
+        }}else {if (ob_kom == 1) {
+          OpenKeyboard();
+          t_kodu = Keyboard();
+
+          if (t_kodu != 0) {
+            t1_kodu = t_kodu;
+          }
+        }if (ob_kom == 2) {
+          if (wybrana_w == 0) {
+          if (klawisz == 13) {
+            wybrana_w = 1;
+            
+          }if (klawisz == 14) {
+            wybrana_w = 2;
+          }if (klawisz == 15) {
+            wybrana_w = 3;
+          }if (klawisz == 16) {
+            wybrana_w = 4;
+          }}else {
+            if (wybrana_w == 1) {
+              if (klawisz == 13) {
+                wartosc1 = wartosc1 * 10 + 1;
+              }if (klawisz == 14) {
+                wartosc1 = wartosc1 * 10 + 2;
+              }if (klawisz == 15) {
+                wartosc1 = wartosc1 * 10 + 3;
+              }if (klawisz == 16) {
+                wartosc1 = wartosc1 * 10 + 4;
+              }if (klawisz == 17) {
+                wartosc1 = wartosc1 * 10 + 5;
+              }if (klawisz == 18) {
+                wartosc1 = wartosc1 * 10 + 6;
+              }if (klawisz == 19) {
+                wartosc1 = wartosc1 * 10 + 7;
+              }if (klawisz == 20) {
+                wartosc1 = wartosc1 * 10 + 8;
+              }if (klawisz == 21) {
+                wartosc1 = wartosc1 * 10 + 9;
+              }if (klawisz == 10) {
+                wartosc1 = wartosc1 * 10;
+              }
+            }
+            if (wybrana_w == 2) {
+              if (klawisz == 13) {
+                wartosc2 = wartosc2 * 10 + 1;
+              }if (klawisz == 14) {
+                wartosc2 = wartosc2 * 10 + 2;
+              }if (klawisz == 15) {
+                wartosc2 = wartosc2 * 10 + 3;
+              }if (klawisz == 16) {
+                wartosc2 = wartosc2 * 10 + 4;
+              }if (klawisz == 17) {
+                wartosc2 = wartosc2 * 10 + 5;
+              }if (klawisz == 18) {
+                wartosc2 = wartosc2 * 10 + 6;
+              }if (klawisz == 19) {
+                wartosc2 = wartosc2 * 10 + 7;
+              }if (klawisz == 20) {
+                wartosc2 = wartosc2 * 10 + 8;
+              }if (klawisz == 21) {
+                wartosc2 = wartosc2 * 10 + 9;
+              }if (klawisz == 10) {
+                wartosc2 = wartosc2 * 10;
+              }
+            }
+            if (wybrana_w == 3) {
+              if (klawisz == 13) {
+                wartosc3 = wartosc3 * 10 + 1;
+              }if (klawisz == 14) {
+                wartosc3 = wartosc3 * 10 + 2;
+              }if (klawisz == 15) {
+                wartosc3 = wartosc3 * 10 + 3;
+              }if (klawisz == 16) {
+                wartosc3 = wartosc3 * 10 + 4;
+              }if (klawisz == 17) {
+                wartosc3 = wartosc3 * 10 + 5;
+              }if (klawisz == 18) {
+                wartosc3 = wartosc3 * 10 + 6;
+              }if (klawisz == 19) {
+                wartosc3 = wartosc3 * 10 + 7;
+              }if (klawisz == 20) {
+                wartosc3 = wartosc3 * 10 + 8;
+              }if (klawisz == 21) {
+                wartosc3 = wartosc3 * 10 + 9;
+              }if (klawisz == 10) {
+                wartosc3 = wartosc3 * 10;
+              }
+            }
+            if (wybrana_w == 4) {
+              if (klawisz == 13) {
+                wartosc4 = wartosc4 * 10 + 1;
+              }if (klawisz == 14) {
+                wartosc4 = wartosc4 * 10 + 2;
+              }if (klawisz == 15) {
+                wartosc4 = wartosc4 * 10 + 3;
+              }if (klawisz == 16) {
+                wartosc4 = wartosc4 * 10 + 4;
+              }if (klawisz == 17) {
+                wartosc4 = wartosc4 * 10 + 5;
+              }if (klawisz == 18) {
+                wartosc4 = wartosc4 * 10 + 6;
+              }if (klawisz == 19) {
+                wartosc4 = wartosc4 * 10 + 7;
+              }if (klawisz == 20) {
+                wartosc4 = wartosc4 * 10 + 8;
+              }if (klawisz == 21) {
+                wartosc4 = wartosc4 * 10 + 9;
+              }if (klawisz == 10) {
+                wartosc4 = wartosc4 * 10;
+              }
+            }
+          }
+        }if (ob_kom == 3) {
+          if (wybrana_w == 0) {
+          if (klawisz == 13) {
+            wybrana_w = 1;
+            
+          }if (klawisz == 14) {
+            wybrana_w = 2;
+          }if (klawisz == 15) {
+            wybrana_w = 3;
+          }if (klawisz == 16) {
+            wybrana_w = 4;
+          }} else {
+                          if (klawisz == 13) {
+                wartosc = wartosc * 10 + 1;
+              }if (klawisz == 14) {
+                wartosc = wartosc * 10 + 2;
+              }if (klawisz == 15) {
+                wartosc = wartosc * 10 + 3;
+              }if (klawisz == 16) {
+                wartosc = wartosc * 10 + 4;
+              }if (klawisz == 17) {
+                wartosc = wartosc * 10 + 5;
+              }if (klawisz == 18) {
+                wartosc = wartosc * 10 + 6;
+              }if (klawisz == 19) {
+                wartosc = wartosc * 10 + 7;
+              }if (klawisz == 20) {
+                wartosc = wartosc * 10 + 8;
+              }if (klawisz == 21) {
+                wartosc = wartosc * 10 + 9;
+              }if (klawisz == 10) {
+                wartosc = wartosc * 10;
+              }
+          }
+        }if (ob_kom == 6) {
+          if (wybrana_w == 0) {
+          if (klawisz == 13) {
+            wybrana_w = 1;
+            
+          }if (klawisz == 14) {
+            wybrana_w = 2;
+          }if (klawisz == 15) {
+            wybrana_w = 3;
+          }if (klawisz == 16) {
+            wybrana_w = 4;
+          }} else {
+                          if (klawisz == 13) {
+                bajt = bajt * 10 + 1;
+              }if (klawisz == 14) {
+                bajt = bajt * 10 + 2;
+              }if (klawisz == 15) {
+                bajt = bajt * 10 + 3;
+              }if (klawisz == 16) {
+                bajt = bajt * 10 + 4;
+              }if (klawisz == 17) {
+                bajt = bajt * 10 + 5;
+              }if (klawisz == 18) {
+                bajt = bajt * 10 + 6;
+              }if (klawisz == 19) {
+                bajt = bajt * 10 + 7;
+              }if (klawisz == 20) {
+                bajt = bajt * 10 + 8;
+              }if (klawisz == 21) {
+                bajt = bajt * 10 + 9;
+              }if (klawisz == 10) {
+                bajt = bajt * 10;
+              }
+          }
+        }if (ob_kom == 7) {
+          if (wybrana_w == 0) {
+          if (klawisz == 13) {
+            wybrana_w = 1;
+            
+          }if (klawisz == 14) {
+            wybrana_w = 2;
+          }if (klawisz == 15) {
+            wybrana_w = 3;
+          }if (klawisz == 16) {
+            wybrana_w = 4;
+          }} else {
+                          if (klawisz == 13) {
+                bajt = bajt * 10 + 1;
+              }if (klawisz == 14) {
+                bajt = bajt * 10 + 2;
+              }if (klawisz == 15) {
+                bajt = bajt * 10 + 3;
+              }if (klawisz == 16) {
+                bajt = bajt * 10 + 4;
+              }if (klawisz == 17) {
+                bajt = bajt * 10 + 5;
+              }if (klawisz == 18) {
+                bajt = bajt * 10 + 6;
+              }if (klawisz == 19) {
+                bajt = bajt * 10 + 7;
+              }if (klawisz == 20) {
+                bajt = bajt * 10 + 8;
+              }if (klawisz == 21) {
+                bajt = bajt * 10 + 9;
+              }if (klawisz == 10) {
+                bajt = bajt * 10;
+              }
+          }
+        }if (ob_kom == 8) {
+          if(klawisz == 9) {
+            mode = !mode;
+          }if (mode == 0) {
+            if (klawisz == 13) {
+                x_kod = x_kod * 10 + 1;
+              }if (klawisz == 14) {
+                x_kod = x_kod * 10 + 2;
+              }if (klawisz == 15) {
+                x_kod = x_kod * 10 + 3;
+              }if (klawisz == 16) {
+                x_kod = x_kod * 10 + 4;
+              }if (klawisz == 17) {
+                x_kod = x_kod * 10 + 5;
+              }if (klawisz == 18) {
+                x_kod = x_kod * 10 + 6;
+              }if (klawisz == 19) {
+                x_kod = x_kod * 10 + 7;
+              }if (klawisz == 20) {
+                x_kod = x_kod * 10 + 8;
+              }if (klawisz == 21) {
+                x_kod = x_kod * 10 + 9;
+              }if (klawisz == 10) {
+                x_kod = x_kod * 10;
+              }
+          }else {
+            if (klawisz == 13) {
+                y_kod = y_kod * 10 + 1;
+              }if (klawisz == 14) {
+                y_kod = y_kod * 10 + 2;
+              }if (klawisz == 15) {
+                y_kod = y_kod * 10 + 3;
+              }if (klawisz == 16) {
+                y_kod = y_kod * 10 + 4;
+              }if (klawisz == 17) {
+                y_kod = y_kod * 10 + 5;
+              }if (klawisz == 18) {
+                y_kod = y_kod * 10 + 6;
+              }if (klawisz == 19) {
+                y_kod = y_kod * 10 + 7;
+              }if (klawisz == 20) {
+                y_kod = y_kod * 10 + 8;
+              }if (klawisz == 21) {
+                y_kod = y_kod * 10 + 9;
+              }if (klawisz == 10) {
+                y_kod = y_kod * 10;
+              }
+          }
+        }if (ob_kom == 10) {
+          
+          if (klawisz == 13) {
+            wybrana_w = 1;
+            
+          }if (klawisz == 14) {
+            wybrana_w = 2;
+          }if (klawisz == 15) {
+            wybrana_w = 3;
+          }if (klawisz == 16) {
+            wybrana_w = 4;
+          }
+        }if (ob_kom == 15) {
+          if (klawisz == 13) {
+            wybrana_w = 1;
+            
+          }if (klawisz == 14) {
+            wybrana_w = 2;
+          }if (klawisz == 15) {
+            wybrana_w = 3;
+          }if (klawisz == 16) {
+            wybrana_w = 4;
+          }
+        }if (ob_kom == 17) {
+          if (klawisz == 13) {
+            wybrana_w = 1;
+            
+          }if (klawisz == 14) {
+            wybrana_w = 2;
+          }if (klawisz == 15) {
+            wybrana_w = 3;
+          }if (klawisz == 16) {
+            wybrana_w = 4;
+          }
+        }}
+        if (klawisz == 1) {
+          i_kodu = i_kodu - 3;
+          if (i_kodu < 12) {
+            i_kodu = 12;
+          }
+        }
+        if (klawisz == 5) {
+          opcje = 1;
+
+        }
+        if (klawisz == 11) {
+          if (ob_kom == 1) {
+          EEPROM.update(i_kodu + plik, ob_kom);
+          EEPROM.update(i_kodu + plik + 1, t1_kodu);
+          } if (ob_kom == 2) {
+            EEPROM.update(i_kodu + plik, ob_kom);
+            EEPROM.update(i_kodu + plik + 1, wybrana_w);
+            if (wybrana_w == 1) {
+            EEPROM.update(i_kodu + plik + 2, wartosc1);}
+            if (wybrana_w == 2) {
+            EEPROM.update(i_kodu + plik + 2, wartosc2);}
+            if (wybrana_w == 3) {
+            EEPROM.update(i_kodu + plik + 2, wartosc3);}
+            if (wybrana_w == 4) {
+            EEPROM.update(i_kodu + plik + 2, wartosc4);}   
+            
+            wybrana_w = 0;
+            wartosc1 = 0;
+            wartosc2 = 0;
+            wartosc3 = 0;
+            wartosc4 = 0;
+          }if (ob_kom == 3) {
+            EEPROM.update(i_kodu + plik, 3);
+            EEPROM.update(i_kodu + plik + 1, wybrana_w);
+            EEPROM.update(i_kodu + plik + 2, wartosc);
+            
+            wybrana_w = 0;
+            wartosc = 0;
+          }if (ob_kom == 4) {
+            EEPROM.update(i_kodu + plik, 4);
+            
+          }if (ob_kom == 5) {
+            EEPROM.update(i_kodu + plik, 5);
+            
+          }if (ob_kom == 6) {
+            EEPROM.update(i_kodu + plik, 6);
+            EEPROM.update(i_kodu + plik + 1, wybrana_w);
+            EEPROM.update(i_kodu + plik + 2, bajt);
+            
+            wybrana_w = 0;
+            bajt = 0;
+          }if (ob_kom == 7) {
+            EEPROM.update(i_kodu + plik, 7);
+            EEPROM.update(i_kodu + plik + 1, wybrana_w);
+            EEPROM.update(i_kodu + plik + 2, bajt);
+            
+            wybrana_w = 0;
+            bajt = 0;
+          }if (ob_kom == 8) {
+            EEPROM.update(i_kodu + plik, 8);
+            EEPROM.update(i_kodu + plik + 1, x_kod);
+            EEPROM.update(i_kodu + plik + 2, y_kod);
+            x_kod = 0;
+            y_kod = 0;
+            mode = 0;
+          }if (ob_kom == 9) {
+            EEPROM.update(i_kodu + plik, 9);
+          }if (ob_kom == 10) {
+            EEPROM.update(i_kodu + plik, 10);
+            EEPROM.update(i_kodu + plik + 1, wybrana_w);
+            wybrana_w = 0;
+          }if (ob_kom == 11) {
+            EEPROM.update(i_kodu + plik, 11);
+          }if (ob_kom == 12) {
+            EEPROM.update(i_kodu + plik, 12);
+          }if (ob_kom == 13) {
+
+            EEPROM.update(i_kodu + plik, 13);
+
+          }if (ob_kom == 14) {
+            EEPROM.update(i_kodu + plik, 14);
+          }if (ob_kom == 15) {
+            EEPROM.update(i_kodu + plik, 15);
+            EEPROM.update(i_kodu + plik + 1, wybrana_w);
+            wybrana_w = 0;
+          }if (ob_kom == 16) {
+            EEPROM.update(i_kodu + plik, 16);
+          }if (ob_kom == 17) {
+            EEPROM.update(i_kodu + plik, 17);
+            EEPROM.update(i_kodu + plik + 1, wybrana_w);
+            wybrana_w = 0;
+          }
+          Clear();
+          ob_kom = 0; 
+          i_kodu = i_kodu + 3;
+          warunki = 0;
+        }
+      }else {
+        Cursor(0, 2);
+        print(F("1. Uruchom"), F("1. Run"));
+        Cursor(0, 3);
+        print(F("2. Zamien na aplikacje"), F("2. change to app"));
+        int klawisz = input();
+        if (klawisz == 13) {
+          uruchamianie = 1;
+          
+        }if (klawisz == 14) {
+          uruchamianie = 2;
+         
+        }
+        if (uruchamianie == 1) {
+          aplikacje[0] = 8;
+          opcje = 0;
+          i_kodu = 12;
+          Clear();
+        }if (uruchamianie == 2) {
+          EEPROM.update(plik, 2);
+          aplikacje[0] = 8;
+          opcje = 0;
+          i_kodu = 12;
+          Clear();
+        }
+        
+      }}if (aplikacje[0] == 8) {
+        if (EEPROM.read(plik + i_kodu) == 1) {
+          if (x < 2) {
+          lcd2.print(char(EEPROM.read(plik + i_kodu + 1)));}else {
+            lcd.print(char(EEPROM.read(plik + i_kodu + 1)));
+          }
+        }if(EEPROM.read(plik + i_kodu) == 2) {
+          if (EEPROM.read(plik + i_kodu + 1) == 1) {
+            wartosc1 = EEPROM.read(plik + i_kodu + 2);
+          }
+          if (EEPROM.read(plik + i_kodu + 1) == 2) {
+            wartosc2 = EEPROM.read(plik + i_kodu + 2);
+          }
+          if (EEPROM.read(plik + i_kodu + 1) == 3) {
+            wartosc3 = EEPROM.read(plik + i_kodu + 2);
+          }
+          if (EEPROM.read(plik + i_kodu + 1) == 4) {
+            wartosc4 = EEPROM.read(plik + i_kodu + 2);
+          }
+          
+
+        }if (EEPROM.read(plik + i_kodu) == 3) {
+          if (EEPROM.read(plik + i_kodu + 1) == 1) {
+            if (wartosc1 != EEPROM.read(plik + i_kodu + 2)) {
+              Serial.println("1");
+              Serial.println(wartosc1);
+              Serial.println(EEPROM.read(plik + i_kodu + 2));
+              while(EEPROM.read(plik + i_kodu) != 4) {
+                Serial.println("halo");
+                Serial.println(EEPROM.read(plik + i_kodu));
+                i_kodu = i_kodu + 3;
+              }
+            }else {
+              Serial.print("test");
+            }
+          }
+          if (EEPROM.read(plik + i_kodu + 1) == 2) {
+            if (wartosc2 != EEPROM.read(plik + i_kodu + 2)) {
+              Serial.println("2");
+              Serial.println(wartosc2);
+              Serial.println(EEPROM.read(plik + i_kodu + 2));
+              while(EEPROM.read(plik + i_kodu) != 4) {
+                Serial.println("halo");
+                Serial.println(EEPROM.read(plik + i_kodu));
+                i_kodu = i_kodu + 3;
+              }
+            }else {
+              Serial.print("test");
+            }
+          }
+          if (EEPROM.read(plik + i_kodu + 1) == 3) {
+            if (wartosc3 != EEPROM.read(plik + i_kodu + 2)) {
+              Serial.println("3");
+              Serial.println(wartosc3);
+              Serial.println(EEPROM.read(plik + i_kodu + 2));
+              while(EEPROM.read(plik + i_kodu) != 4) {
+                Serial.println("halo");
+                Serial.println(EEPROM.read(plik + i_kodu));
+                i_kodu = i_kodu + 3;
+              }
+            }else {
+              Serial.print("test");
+            }
+          }
+          if (EEPROM.read(plik + i_kodu + 1) == 4) {
+            if (wartosc4 != EEPROM.read(plik + i_kodu + 2)) {
+              Serial.println("4");
+              Serial.println(wartosc4);
+              Serial.println(EEPROM.read(plik + i_kodu + 2));
+              while(EEPROM.read(plik + i_kodu) != 4) {
+                Serial.println("halo");
+                Serial.println(EEPROM.read(plik + i_kodu));
+                i_kodu = i_kodu + 3;
+              }
+            }else {
+              Serial.print("test");
+            }
+          }
+        }if (EEPROM.read(plik + i_kodu) == 5) {
+          if(EEPROM.read(plik + 76) == 0 or EEPROM.read(plik + 77) == 2) {
+            i_kodu_p = plik + 76;
+          EEPROM.update(i_kodu_p, 3);
+          EEPROM.update(i_kodu_p + 1, 1);
+          EEPROM.update(i_kodu_p + 2, 'd');
+          EEPROM.update(i_kodu_p + 3, 'a');
+          EEPROM.update(i_kodu_p + 4, 't');
+          EEPROM.update(i_kodu_p + 5, 'a');
+          for(int i = 6; i < 12; i++) {
+            EEPROM.update(i_kodu_p + i, EEPROM.read(plik + i));
+          } 
+          for(int i = 3; i < 12; i++) {
+            Serial.print(EEPROM.read(i_kodu_p + i));
+          }}else if (EEPROM.read(plik + 76) == 3) {
+            i_kodu_p = plik + 76;
+            Serial.println(F("znaleziono utworzony plik"));
+          }else {
+            print(F("Usun plik nad aplikacja aby aplikacja mogla zapisac dane"), F("Delete file above app so app can save data"));
+          }
+        }if (EEPROM.read(plik + i_kodu) == 6) {
+          bajt = EEPROM.read(plik + i_kodu + 2);         
+          if (EEPROM.read(plik + i_kodu + 1) == 1) {
+            wartosc1 = EEPROM.read(i_kodu_p + 12 + bajt);
+          }
+          if (EEPROM.read(plik + i_kodu + 1) == 2) {
+            wartosc2 = EEPROM.read(i_kodu_p + 12 + bajt);
+          }
+          if (EEPROM.read(plik + i_kodu + 1) == 3) {
+            wartosc3 = EEPROM.read(i_kodu_p + 12 + bajt);
+          }
+          if (EEPROM.read(plik + i_kodu + 1) == 4) {
+            wartosc4 = EEPROM.read(i_kodu_p + 12 + bajt);
+          }
+          Serial.println(F("wartosci po wczytaniu z EEPROM:"));
+          Serial.println(wartosc1);
+          Serial.println(wartosc2);
+          Serial.println(wartosc3);
+          Serial.println(wartosc4);
+        }if (EEPROM.read(plik + i_kodu) == 7) {
+          bajt = EEPROM.read(plik + i_kodu + 2);
+          if (EEPROM.read(plik + i_kodu + 1) == 1) {
+            Serial.println(wartosc1);
+            EEPROM.update(i_kodu_p + 12 + bajt, wartosc1);
+          }
+          if (EEPROM.read(plik + i_kodu + 1) == 2) {
+            Serial.println(wartosc2);
+            EEPROM.update(i_kodu_p + 12 + bajt, wartosc2);
+          }
+          if (EEPROM.read(plik + i_kodu + 1) == 3) {
+            Serial.println(wartosc3);
+            EEPROM.update(i_kodu_p + 12 + bajt, wartosc3);
+          }
+          if (EEPROM.read(plik + i_kodu + 1) == 4) {
+            Serial.println(wartosc4);
+            EEPROM.update(i_kodu_p + 12 + bajt, wartosc4);
+          }
+          Serial.println(F("wartosc zapisanej komorki EEPROM:"));
+          Serial.println(EEPROM.read(i_kodu_p + 12 + bajt));
+          
+        }if (EEPROM.read(plik + i_kodu) == 8) {
+          Cursor(EEPROM.read(plik + i_kodu + 1), EEPROM.read(plik + i_kodu + 2));
+        }if (EEPROM.read(plik + i_kodu) == 9) {
+          Clear();
+        }if (EEPROM.read(plik + i_kodu) == 10) {
+          if (EEPROM.read(plik + i_kodu + 1) == 1) {
+            wartosc1 = input();
+          }if (EEPROM.read(plik + i_kodu + 1) == 2) {
+            wartosc2 = input();
+          }
+          if (EEPROM.read(plik + i_kodu + 1) == 3) {
+            wartosc3 = input();
+          }
+          if (EEPROM.read(plik + i_kodu + 1) == 4) {
+            wartosc4 = input();
+          }
+          Serial.println(F("Input:"));
+          Serial.println(wartosc1);
+          Serial.println(wartosc2);
+          Serial.println(wartosc3);
+          Serial.println(wartosc4);
+        }if (EEPROM.read(plik + i_kodu) == 11) {
+          wartosc3 = wartosc1 + wartosc2;
+
+        }if (EEPROM.read(plik + i_kodu) == 12) {
+          wartosc3 = wartosc1 - wartosc2;
+
+        }if (EEPROM.read(plik + i_kodu) == 13) {
+          wartosc3 = wartosc1 * wartosc2;
+
+        }if (EEPROM.read(plik + i_kodu) == 14) {
+          wartosc3 = wartosc1 / wartosc2;
+
+        }if (EEPROM.read(plik + i_kodu) == 15) {
+          lcd.print("function not useful yet");
+        }if (EEPROM.read(plik + i_kodu) == 16) {
+          Cursor(wartosc3, wartosc4);
+        }if (EEPROM.read(plik + i_kodu) == 17) {
+          lcd.print("function not useful yet");          
+        }
+        i_kodu = i_kodu + 3;
       }
 
     }}
