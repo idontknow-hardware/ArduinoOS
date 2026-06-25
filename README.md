@@ -16,6 +16,7 @@ oficjalnje rozpoczynam prace nad ArduinoOS 2. Nowa wersja systemu będzie miała
 - pre2Of2-1.0 - optymaizacje przez @chackAJMCPE. Zawiera błędy! *Wydano: 5.06.2026*
 - pre3f2-1.0 - Dodano pliki oraz notatnik. *Wydano: 6.06.2026*
 - pre4f2-1.0 - Dodano skrypt, naprawiono błędy związane z plikami, zoptymalizowano funkcje input() i teraz obsługuje przytrzymanie klawisza *Wydano: 25.06.2026*
+- pre5f2-1.0 - Dodano wskaźnik baterii oraz informacje ile zostało czasu *Wydano: 25.06.2026*
 ## wymagania minimalne i zalecane
 **Uwaga! Jako że projekt jest w wersji beta wymagania mogą sie jeszcze zmienić!**
 **minimalne**
