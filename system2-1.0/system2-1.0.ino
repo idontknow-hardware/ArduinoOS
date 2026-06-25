@@ -71,11 +71,16 @@ long ostatniCzas2 = 0;
 long czas3 = 0;
 long roznicaCzasu3 = 0;
 long ostatniCzas3 = 0;
+long czas4 = 0;
+long roznicaCzasu4 = 0;
+long ostatniCzas4 = 0;
 byte godzina = 0;
 byte minuta = 0;
 byte dzien = 1;
 byte miesiac = 1;
 byte rok = 0;
+int procent_o = 0;
+int zostalo = 0;
 uint8_t dino[8] = {0xC, 0xF, 0xC, 0xF, 0x1E, 0x1F, 0xA, 0xA};
 uint8_t kaktus[8] = {0x4, 0x4, 0x5, 0x16, 0xC, 0x5, 0x6, 0x4};
 uint8_t plik_u[8] = {0x64, 0xE, 0x1F, 0xE, 0xE, 0xE, 0xE, 0x0};
@@ -327,6 +332,28 @@ void printAPPS(){
     print(F("Notatnik"), F("Notes"));
   } 
 }
+long readVcc() {
+
+  ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
+  delay(2);
+  ADCSRA |= _BV(ADSC);
+  while (bit_is_set(ADCSRA, ADSC));
+  
+  long result = ADCL;
+  result |= ADCH << 8;
+  result = 1125300L / result; // mV
+  return result;
+}
+int procent() {
+  long mv = readVcc();
+  float voltage = mv / 1000.0;
+  
+  
+
+  int percent = map(mv, 4000, 5161, 0, 100);
+  percent = constrain(percent, 0, 100);
+  return percent;
+}
 void setup() {
 
   Serial.begin(9600);
@@ -394,11 +421,8 @@ print(F(" plikow uszkodzonych"), F(" files corrupted"));
 delay(3000);
   Clear();
 Serial.println(F("uruchomiono w:"));
-Serial.print(millis());
-Serial.print(F("ms"));
-Serial.print(F(" czyli "));
 Serial.print(millis() / 1000);
-Serial.print(F("s"));
+Serial.print('s');
 if (ostrzezenie == 1) {
 Cursor(0, 2);
 print(F("Uwaga!"), F("Caution!"));
@@ -420,7 +444,9 @@ int klawisz = input();
 if (klawisz == 17) {
   EEPROM.update(6, 0);
   break;
-}}}
+}}
+}
+procent_o = procent();
 
 Clear();
 }
@@ -505,10 +531,7 @@ if(konfig != 255){
     for (int i = 64; i < EEPROM.length() - 76; i = i + 76) {
       
     for (int i_P = 1; i_P < 76; i_P++) {
-      Serial.print(' ');
-      Serial.println(i + i_P);
-      Serial.println("i:");
-      Serial.print(i);
+
 
       if (i_P == 1) {
         EEPROM.update(i + i_P, 0);
@@ -529,7 +552,7 @@ if(konfig != 255){
     if (klawisz == 2) {
       aplikacje[0] = 0;
       Clear();
-      Serial.println(F("test"));
+
       s_ust = 0;
     }
     Cursor(0, 1);
@@ -545,9 +568,42 @@ if(konfig != 255){
   lcd.print(now.hour);
   lcd.print(F(":"));
   lcd.print(now.minute);} if (s_info == 1) {
-    print(F("?% baterii"), F("?% battery"));
+    int proc = procent();
+    lcd.print(proc);
+    lcd.print(',');
+    int v = readVcc();
+    lcd.print(v);
+    print(F("% baterii"), F("% battery"));
   }if (s_info == 2) {
-    print(F("pozostalo ? minut na baterii"), F("? minutes on battery"));
+    czas4 = millis();
+    roznicaCzasu4 = czas4 - ostatniCzas4;
+    if (roznicaCzasu4 > 60000) {
+
+      int proc = procent();
+      int roznica = procent_o - proc;
+
+      for(int i = 0; i < proc; i = i + roznica) {
+        zostalo++;
+
+        if(roznica == 0) {
+          break;
+        }
+      }
+      procent_o = procent();
+      ostatniCzas4 = czas4;
+    }
+    if (zostalo < 60) {
+      print_o("0:");
+      lcd.print(zostalo);
+    }else {
+      int zostalo2 = zostalo / 60;
+      lcd.print(zostalo2);
+      zostalo = zostalo - zostalo2 * 60;
+      print_o(":");
+      lcd.print(zostalo);
+    }
+    print(F(" na baterii"), F(" on battery"));
+
   }if (s_info == 3) {
     print(F("brak powiadomien"), F("no notifications"));
   }if (s_info == 4) {
@@ -559,10 +615,9 @@ if(konfig != 255){
   }
   czas = millis();
   roznicaCzasu = czas - ostatniCzas;
-  if (roznicaCzasu > 30000) {
+  if (roznicaCzasu > 50000) {
     lcd.clear();
     ostatniCzas = millis();
-    Serial.println(ostatniCzas);
     s_info++;
   }
     if (aplikacje[0] == 0) {
@@ -589,11 +644,11 @@ if(konfig != 255){
       roznicaCzasu = czas - ostatniCzas;
       Cursor(0, 2);
         Ds1302::DateTime now;
-        Serial.println(roznicaCzasu);
-  if (roznicaCzasu > 30000) {
+
+  if (roznicaCzasu > 60000) {
     Clear();
     ostatniCzas = millis();
-    Serial.println(ostatniCzas);
+
   }
   rtc.getDateTime(&now);
   lcd2.print(now.day);
@@ -698,7 +753,7 @@ if(konfig != 255){
           Cursor(0, 2);
           print("Wersja:", "Version:");
           Cursor(0, 3);
-          print_o("pre4f2-1.0");
+          print_o("pre5f2-1.0");
         }if (s_ust == 3) {
           Cursor(0, 2);
           print("jezyk", "language");
@@ -829,13 +884,13 @@ if(konfig != 255){
             ostatniCzas3 = czas3;
             Clear();
           }
-          if (x_k <= 0 & y_d == 3) {
+          if (x_k <= 0 && y_d == 3) {
             Cursor(0, 2);
             print("przegrales!", "you lose!");
           if (wynik > EEPROM.read(5)) {
           EEPROM.update(5, wynik);
         }
-          }if (x_k <= 0 & y_d == 2) {
+          }if (x_k <= 0 && y_d == 2) {
             x_k = random(15);
             wynik++;
             Clear();
@@ -987,8 +1042,7 @@ if(konfig != 255){
           for (int i = 64; i < EEPROM.length(); i = i + 76) {
             if (EEPROM.read(i) == 0) {
               plik = i;
-              Serial.println("plik:");
-          Serial.println(plik);
+
               break;
             }else if (EEPROM.read(i + 1) == 2) {
               plik = i;
@@ -1098,7 +1152,7 @@ if(konfig != 255){
             int klawisz = input();
       if (klawisz == 9) {
         i_notka--;
-        Serial.println(i_notka);
+
       }if (klawisz == 2) {
         aplikacje[0] = 0;
         Clear();
@@ -1789,59 +1843,39 @@ if(konfig != 255){
         }if (EEPROM.read(plik + i_kodu) == 3) {
           if (EEPROM.read(plik + i_kodu + 1) == 1) {
             if (wartosc1 != EEPROM.read(plik + i_kodu + 2)) {
-              Serial.println("1");
-              Serial.println(wartosc1);
-              Serial.println(EEPROM.read(plik + i_kodu + 2));
+
               while(EEPROM.read(plik + i_kodu) != 4) {
-                Serial.println("halo");
-                Serial.println(EEPROM.read(plik + i_kodu));
+
                 i_kodu = i_kodu + 3;
               }
-            }else {
-              Serial.print("test");
             }
           }
           if (EEPROM.read(plik + i_kodu + 1) == 2) {
             if (wartosc2 != EEPROM.read(plik + i_kodu + 2)) {
-              Serial.println("2");
-              Serial.println(wartosc2);
-              Serial.println(EEPROM.read(plik + i_kodu + 2));
+
               while(EEPROM.read(plik + i_kodu) != 4) {
-                Serial.println("halo");
-                Serial.println(EEPROM.read(plik + i_kodu));
+
                 i_kodu = i_kodu + 3;
               }
-            }else {
-              Serial.print("test");
             }
           }
           if (EEPROM.read(plik + i_kodu + 1) == 3) {
             if (wartosc3 != EEPROM.read(plik + i_kodu + 2)) {
-              Serial.println("3");
-              Serial.println(wartosc3);
-              Serial.println(EEPROM.read(plik + i_kodu + 2));
+
               while(EEPROM.read(plik + i_kodu) != 4) {
-                Serial.println("halo");
-                Serial.println(EEPROM.read(plik + i_kodu));
+
                 i_kodu = i_kodu + 3;
               }
-            }else {
-              Serial.print("test");
             }
           }
           if (EEPROM.read(plik + i_kodu + 1) == 4) {
             if (wartosc4 != EEPROM.read(plik + i_kodu + 2)) {
-              Serial.println("4");
-              Serial.println(wartosc4);
-              Serial.println(EEPROM.read(plik + i_kodu + 2));
               while(EEPROM.read(plik + i_kodu) != 4) {
-                Serial.println("halo");
-                Serial.println(EEPROM.read(plik + i_kodu));
+
                 i_kodu = i_kodu + 3;
               }
-            }else {
-              Serial.print("test");
             }
+
           }
         }if (EEPROM.read(plik + i_kodu) == 5) {
           if(EEPROM.read(plik + 76) == 0 or EEPROM.read(plik + 77) == 2) {
@@ -1854,12 +1888,9 @@ if(konfig != 255){
           EEPROM.update(i_kodu_p + 5, 'a');
           for(int i = 6; i < 12; i++) {
             EEPROM.update(i_kodu_p + i, EEPROM.read(plik + i));
-          } 
-          for(int i = 3; i < 12; i++) {
-            Serial.print(EEPROM.read(i_kodu_p + i));
           }}else if (EEPROM.read(plik + 76) == 3) {
             i_kodu_p = plik + 76;
-            Serial.println(F("znaleziono utworzony plik"));
+
           }else {
             print(F("Usun plik nad aplikacja aby aplikacja mogla zapisac dane"), F("Delete file above app so app can save data"));
           }
@@ -1877,31 +1908,25 @@ if(konfig != 255){
           if (EEPROM.read(plik + i_kodu + 1) == 4) {
             wartosc4 = EEPROM.read(i_kodu_p + 12 + bajt);
           }
-          Serial.println(F("wartosci po wczytaniu z EEPROM:"));
-          Serial.println(wartosc1);
-          Serial.println(wartosc2);
-          Serial.println(wartosc3);
-          Serial.println(wartosc4);
+
         }if (EEPROM.read(plik + i_kodu) == 7) {
           bajt = EEPROM.read(plik + i_kodu + 2);
           if (EEPROM.read(plik + i_kodu + 1) == 1) {
-            Serial.println(wartosc1);
+
             EEPROM.update(i_kodu_p + 12 + bajt, wartosc1);
           }
           if (EEPROM.read(plik + i_kodu + 1) == 2) {
-            Serial.println(wartosc2);
+
             EEPROM.update(i_kodu_p + 12 + bajt, wartosc2);
           }
           if (EEPROM.read(plik + i_kodu + 1) == 3) {
-            Serial.println(wartosc3);
+
             EEPROM.update(i_kodu_p + 12 + bajt, wartosc3);
           }
           if (EEPROM.read(plik + i_kodu + 1) == 4) {
-            Serial.println(wartosc4);
+
             EEPROM.update(i_kodu_p + 12 + bajt, wartosc4);
           }
-          Serial.println(F("wartosc zapisanej komorki EEPROM:"));
-          Serial.println(EEPROM.read(i_kodu_p + 12 + bajt));
           
         }if (EEPROM.read(plik + i_kodu) == 8) {
           Cursor(EEPROM.read(plik + i_kodu + 1), EEPROM.read(plik + i_kodu + 2));
@@ -1919,11 +1944,7 @@ if(konfig != 255){
           if (EEPROM.read(plik + i_kodu + 1) == 4) {
             wartosc4 = input();
           }
-          Serial.println(F("Input:"));
-          Serial.println(wartosc1);
-          Serial.println(wartosc2);
-          Serial.println(wartosc3);
-          Serial.println(wartosc4);
+
         }if (EEPROM.read(plik + i_kodu) == 11) {
           wartosc3 = wartosc1 + wartosc2;
 
