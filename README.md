@@ -17,6 +17,7 @@ oficjalnje rozpoczynam prace nad ArduinoOS 2. Nowa wersja systemu będzie miała
 - pre3f2-1.0 - Dodano pliki oraz notatnik. *Wydano: 6.06.2026*
 - pre4f2-1.0 - Dodano skrypt, naprawiono błędy związane z plikami, zoptymalizowano funkcje input() i teraz obsługuje przytrzymanie klawisza *Wydano: 25.06.2026*
 - pre5f2-1.0 - Dodano wskaźnik baterii oraz informacje ile zostało czasu *Wydano: 25.06.2026*
+- pre6f2-1.0 - Dodano obsługę do trzech przycisków poza pilotem (przypisanie można zmienić w ustawieniach po kliknięciu 4)
 ## wymagania minimalne i zalecane
 **Uwaga! Jako że projekt jest w wersji beta wymagania mogą sie jeszcze zmienić!**
 **minimalne**
@@ -31,6 +32,7 @@ oficjalnje rozpoczynam prace nad ArduinoOS 2. Nowa wersja systemu będzie miała
 - pilot
 - 2 ekrany LCD i2c 16*2
 - RTC do pokazywania czasu
+- 1-3 przyciski poza pilotem
 ## instalacja
 1. pobierz kod
 2. otwórz go w Arduino IDE
