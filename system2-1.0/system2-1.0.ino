@@ -13,6 +13,7 @@
 #define przycisk2 7
 #define przycisk3 8
 int czekaj = 0;
+uint8_t s_w = 0;
 int jezyk = EEPROM.read(1); // język
 int plik = 64;
 bool n_plik = 0;
@@ -682,30 +683,49 @@ if(konfig != 255){
     }if (aplikacje[0] == 2) {
       if (s_ust == 0) {
 
+      if (s_w == 0) {
       Cursor(0, 2);
-      print("1. czas", "1. time");
+      print(F("1. czas"), F("1. time"));
       Cursor(0, 3);
-      print("2. Info o systemie", "2. About system");
+      print(F("2. Info o systemie"), F("2. About system"));
       Cursor(0, 0);
       print("3. jezyk", "3. language");
+
+      }if (s_w == 1) {
+        Cursor(0, 2);
+        print("4. Ustawienia przycisków", "4. Button Settings");
+      }
       int klawisz = input();
-      
       if (klawisz == 13) {
+      
         s_ust = 1;
         Clear();
+
       }
       if (klawisz == 14) {
+        
         s_ust = 2;
         Clear();
       }if (klawisz == 15) {
+        
         s_ust = 3;
-        Clear();
+Clear();
       }if (klawisz == 16) {
+        
         s_ust = 4;
+Clear();
+      }if (klawisz == 1) {
         Clear();
+        s_w--;
+
       }if (klawisz == 2) {
+        Clear();
           aplikacje[0] = 0;
-          Clear();
+
+        }if (klawisz == 3) {
+        Clear();
+          s_w++;
+
         }
       } if (s_ust == 1) {
       
@@ -775,7 +795,7 @@ if(konfig != 255){
           Cursor(0, 2);
           print("Wersja:", "Version:");
           Cursor(0, 3);
-          print_o("pre6f2-1.0");
+          print_o("pre6af2-1.0");
         }if (s_ust == 3) {
           Cursor(0, 2);
           print("jezyk", "language");
