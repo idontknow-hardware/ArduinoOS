@@ -9,6 +9,10 @@
 #include <IRremote.h>
  #include <Ds1302.h>
 #define IR_RECEIVE_PIN 2 // Pin, do którego podpięty jest sygnał
+#define przycisk1 6
+#define przycisk2 7
+#define przycisk3 8
+int czekaj = 0;
 int jezyk = EEPROM.read(1); // język
 int plik = 64;
 bool n_plik = 0;
@@ -74,6 +78,9 @@ long ostatniCzas3 = 0;
 long czas4 = 0;
 long roznicaCzasu4 = 0;
 long ostatniCzas4 = 0;
+uint8_t przycisk1_z = EEPROM.read(7);
+uint8_t przycisk2_z = EEPROM.read(8);
+uint8_t przycisk3_z = EEPROM.read(9);
 byte godzina = 0;
 byte minuta = 0;
 byte dzien = 1;
@@ -124,7 +131,16 @@ void Cursor(int newX, int newY) {
 
 uint8_t input() {
   uint8_t nacisniety = 0;
-  
+  if (digitalRead(przycisk1) == 0) {
+    nacisniety = przycisk1_z;
+
+  }if (digitalRead(przycisk2) == 0) {
+    nacisniety = przycisk2_z;
+
+  }if (digitalRead(przycisk3) == 0) {
+    nacisniety = przycisk3_z;
+
+  }
   // Sprawdzamy, czy odebrano jakiś sygnał
   if (IrReceiver.decode()) {
 
@@ -374,6 +390,9 @@ lcd2.createChar(4, notatka);
 lcd2.createChar(5, aplikacja);
 lcd2.createChar(6, dane);
 lcd2.createChar(7, kod);
+pinMode(przycisk1, INPUT_PULLUP);
+pinMode(przycisk2, INPUT_PULLUP);
+pinMode(przycisk3, INPUT_PULLUP);
 Serial.println("");
 Serial.print(F("kompilacja: "));
 Serial.print(__DATE__);
@@ -528,6 +547,9 @@ if(konfig != 255){
   EEPROM.update(3, 1);
   EEPROM.update(4, 2);
   EEPROM.update(6, 1);
+  EEPROM.update(7, 1);
+  EEPROM.update(8, 2);
+  EEPROM.update(9, 3);
     for (int i = 64; i < EEPROM.length() - 76; i = i + 76) {
       
     for (int i_P = 1; i_P < 76; i_P++) {
@@ -570,9 +592,6 @@ if(konfig != 255){
   lcd.print(now.minute);} if (s_info == 1) {
     int proc = procent();
     lcd.print(proc);
-    lcd.print(',');
-    int v = readVcc();
-    lcd.print(v);
     print(F("% baterii"), F("% battery"));
   }if (s_info == 2) {
     czas4 = millis();
@@ -681,6 +700,9 @@ if(konfig != 255){
       }if (klawisz == 15) {
         s_ust = 3;
         Clear();
+      }if (klawisz == 16) {
+        s_ust = 4;
+        Clear();
       }if (klawisz == 2) {
           aplikacje[0] = 0;
           Clear();
@@ -753,7 +775,7 @@ if(konfig != 255){
           Cursor(0, 2);
           print("Wersja:", "Version:");
           Cursor(0, 3);
-          print_o("pre5f2-1.0");
+          print_o("pre6f2-1.0");
         }if (s_ust == 3) {
           Cursor(0, 2);
           print("jezyk", "language");
@@ -765,6 +787,41 @@ if(konfig != 255){
           }if (klawisz == 14) {
             jezyk = 1;
             EEPROM.update(1, jezyk);
+          }
+        }if (s_ust == 4) {
+          Cursor(0, 3);
+          print("Nacisnij przycisk", "Press button");
+          Cursor(0, 4);
+
+          int klawisz = input();
+          lcd2.print(klawisz);
+
+            if (digitalRead(przycisk1) == 0) {
+              czekaj = 0;
+              EEPROM.update(7, klawisz);
+              przycisk1_z = klawisz;
+            }else {
+              czekaj++;
+            }
+            if (digitalRead(przycisk2) == 0) {
+              czekaj = 0;
+              EEPROM.update(8, klawisz);
+              przycisk2_z = klawisz;
+            }else {
+              czekaj++;
+            }
+            if (digitalRead(przycisk3) == 0) {
+              czekaj = 0;
+              EEPROM.update(9, klawisz);
+              przycisk3_z = klawisz;
+            }else {
+              czekaj++;
+            }
+          if(czekaj > 1000) {
+            aplikacje[0] = 0;
+            s_ust = 0;
+            czekaj = 0;
+            Clear();
           }
         }
 
