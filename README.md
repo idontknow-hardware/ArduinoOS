@@ -53,6 +53,18 @@ jeśli to nie zadziała:
 8. Prześlij kod do Arduino
 ## Pliki
 system plików w ArduinoOS 2 umożliwia tworzenie do 13 plików (jeśli chodzi o Arduino Uno). Uwaga! Jeśli używałeś wcześniej wersji sprzed pre3f2-1.0 to uruchom wgrywanie-plikow aby stworzyć system plików w EEPROM. Jeśli nie używałeś starszych wersji to po prostu przejdź przez setup, a program w menu "konfiguracja zakonczona" zrobi system plików (dlatego trzeba tak długo czekać)
+## Instrukcja obsługi backupu. 
+a) pobieranie na komputer. 
+1. Wybierz plik który chcesz przesłać
+2. kliknij '-'
+3. kliknij '5'
+4. skopiuj uzyskany ciąg liczb w Serial port w Arduino IDE i zapisz gdzieś na komputerze (np. w notatnik)
+b) wczytywanie z komputera
+1. skopiuj z zapisanego miejsca uzyskany ciąg liczb do wejścia Serial port w Arduino IDE
+2. na arduino klilnij wejdź w pliki i kliknij '+'
+3. kliknij enter na komputerze
+4. wybierz opcję 'Załaduj plik'(2)
+5. poczekaj chwilę
 ## Licencja
 
 Projekt jest dostępny na licencji **GNU General Public License w wersji 3 (GPLv3)**.  
