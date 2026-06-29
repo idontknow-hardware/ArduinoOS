@@ -272,6 +272,17 @@ int freeRam () {
   int v; 
   return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
 }
+int tempCPU() {
+    ADMUX = (1 << REFS1) | (1 << REFS0) | (1 << MUX3);
+  delay(20); 
+
+  ADCSRA |= (1 << ADSC); 
+  while (ADCSRA & (1 << ADSC)); 
+
+  int adcVal = ADCW;
+  int tempC = (adcVal * 100 - 26116) / 122;
+  return tempC;
+}
 void setup() {
 
   Serial.begin(9600);
@@ -533,7 +544,10 @@ if(konfig != 255){
     lcd.print(2048 - RAM);
     print(F("B zuzycia RAMu"), F("B RAM usage"));
   }if (s_info == 5) {
-    print(F("?*C temp. procesora"), F("?*C temp. CPU"));
+  int Val = tempCPU();
+
+  lcd.print(Val);
+    print_o(F(" *C temp. CPU"));
   }if (s_info == 6) {
     s_info = 0;
   }
@@ -700,7 +714,7 @@ Clear();
           Cursor(0, 2);
           print("Wersja:", "Version:");
           Cursor(0, 3);
-          print_o("pre7f2-1.0");
+          print_o("pre8f2-1.0");
         }if (s_ust == 3) {
           Cursor(0, 2);
           print("jezyk", "language");
