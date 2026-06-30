@@ -21,6 +21,7 @@ oficjalnje rozpoczynam prace nad ArduinoOS 2. Nowa wersja systemu będzie miała
 - pre6af2-1.0 - Dodano informację w menu ustawień że można zmienić przypisanie przycisków *Wydano 26.06.2026*
 - pre7f2-1.0 - Dodano backup plików *Wydano: 27.06.2026*
 - pre8f2-1.0 - Dodano wskaźnik temperatury procesora *Wydano: 29.06.2026*
+- pre9f2-1.0 - Zooptymalizowano funkcje rysujące, Dodano informacje o czasie działania, Dodano tryb  fullscreen *Wydano 30.06.2026*
 ## wymagania minimalne i zalecane
 **Uwaga! Jako że projekt jest w wersji beta wymagania mogą sie jeszcze zmienić!**
 **minimalne**
