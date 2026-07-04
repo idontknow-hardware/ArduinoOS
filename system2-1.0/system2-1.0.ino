@@ -12,6 +12,12 @@
 #define przycisk1 6
 #define przycisk2 7
 #define przycisk3 8
+#define PIN1 A1
+#define PIN2 A2
+#define PIN3 A3
+uint8_t opcje_port = 0;
+uint8_t powiadomienie = 0;
+uint8_t port_u = EEPROM.read(10);
 bool fullscreen = 0;
 uint8_t kod = 0;
 uint8_t liczba = 0;
@@ -139,7 +145,7 @@ void Cursor(int newX, int newY) {
 }
 
 uint8_t input() {
-  uint8_t nacisniety = 0;
+  uint8_t nacisniety = 0;  
   if (digitalRead(przycisk1) == 0) {
     nacisniety = przycisk1_z;
 
@@ -149,6 +155,22 @@ uint8_t input() {
   }if (digitalRead(przycisk3) == 0) {
     nacisniety = przycisk3_z;
 
+  }  if (port_u == 0) {int wartoscX = analogRead(PIN1) - 505; 
+  int wartoscY = analogRead(PIN2) - 521;
+  int stanSW = digitalRead(PIN3);
+if (wartoscX < -420 and wartoscY > 720 and wartoscY < 900) {
+    nacisniety = 1;
+  }if (wartoscX > 500 and wartoscY > 720 and wartoscY < 900) {
+    nacisniety = 3;
+  }if (wartoscX < 0 and wartoscY > 900) {
+    nacisniety = 2;
+  }
+  Serial.println(wartoscX);
+  Serial.println(wartoscY);}
+  if (port_u == 2) {
+    
+    if (digitalRead(PIN1) == 0) {
+    nacisniety = 2;}
   }
   // Sprawdzamy, czy odebrano jakiś sygnał
   if (IrReceiver.decode()) {
@@ -232,6 +254,8 @@ void printAPPS(){
     print(F("Pliki"), F("Files"));
   }if (ulubione1 == 6) {
     print(F("Notatnik"), F("Notes"));
+  }if (ulubione1 == 9) {
+    print_o("Port");
   }
   Cursor(3, 3);
   if (ulubione2 == 1) {
@@ -245,7 +269,9 @@ void printAPPS(){
     print(F("Pliki"), F("Files"));
   }if (ulubione2 == 6) {
     print(F("Notatnik"), F("Notes"));
-  } 
+  }if (ulubione1 == 9) {
+    print_o("Port");
+  }
 }
 long readVcc() {
 
@@ -326,7 +352,32 @@ Serial.println("");
 Serial.print(F("kompilacja: "));
 Serial.print(__DATE__);
 Serial.print(F(" "));
-Serial.print(__TIME__);
+Serial.println(__TIME__);
+if (port_u == 0) {
+  pinMode(PIN1, INPUT);
+  pinMode(PIN2, INPUT);
+  pinMode(PIN3, INPUT_PULLUP);
+  Serial.println(F("tryb portu: joystick"));
+}if (port_u == 1) {
+  pinMode(PIN1, OUTPUT);
+  pinMode(PIN2, INPUT);
+  digitalWrite(PIN1, LOW);
+  Serial.println(F("tryb portu: czujnik odleglosci"));
+}if (port_u == 2) {
+  pinMode(PIN1, INPUT_PULLUP);
+  Serial.println(F("tryb portu: bali switch"));
+}if (port_u == 3) {
+  pinMode(PIN1, OUTPUT);
+  pinMode(PIN2, OUTPUT);
+  pinMode(PIN3, OUTPUT);
+  digitalWrite(PIN1, HIGH);
+  digitalWrite(PIN2, HIGH);
+  digitalWrite(PIN3, HIGH);
+  Serial.println(F("tryb portu: dioda RGB"));
+}if (port_u > 3) {
+  Serial.println(F("niepoprawnie wybrany tryb portu! Wejdz do aplikacji 'port' aby ustawic poprawnie!"));
+}
+
   rtc.init();
 
 lcd.setCursor(0, 0);
@@ -354,9 +405,9 @@ print_o(cor);
 print(F(" plikow uszkodzonych"), F(" files corrupted"));
 delay(3000);
   Clear();
-//Serial.println(F("uruchomiono w:"));
-// Serial.print(millis() / 1000);
-// Serial.print('s');
+Serial.println(F("uruchomiono w:"));
+Serial.print(millis() / 1000);
+Serial.print('s');
 if (ostrzezenie == 1) {
 Cursor(0, 2);
 print(F("Uwaga!"), F("Caution!"));
@@ -492,6 +543,7 @@ if(konfig != 255){
       Clear();
       fullscreen = 0;
       s_ust = 0;
+      opcje_port = 0;
     }
     if (fullscreen == 0) {
     Cursor(0, 1);
@@ -531,8 +583,28 @@ printDate();} if (s_info == 1) {
     }
     print(F(" na baterii"), F(" on battery"));
 
-  }if (s_info == 3) {
-    print(F("brak powiadomien"), F("no notifications"));
+  }if (s_info == 3) { 
+    if (powiadomienie == 0) {
+    print(F("brak powiadomien"), F("no notifications"));}
+    if (powiadomienie == 1) {
+      print("wykryto obiekt!", "obiect deceted!");
+    }
+    if (port_u == 1) {
+    int Time;
+double Distance;
+digitalWrite(A1, HIGH);
+delayMicroseconds(10);
+digitalWrite(A1, LOW);
+Time = pulseIn(A2, HIGH); 
+Distance = Time / 58;
+Serial.print("Dystans: ");
+Serial.print(Distance);
+Serial.println("cm");
+if (Distance < 50) {
+  powiadomienie = 1;
+}else {
+  powiadomienie = 0;
+}}
   }if (s_info == 4) {
     int RAM = freeRam();
     print_o(2048 - RAM);
@@ -599,7 +671,7 @@ printDate();
         Cursor(0, 2);
         print(F("4. Ustawienia przycisków"), F("4. Button Settings"));
         Cursor(0, 3);
-        print("5. Czas dzialania", "5. Uptime");
+        print(F("5. Czas dzialania"), F("5. Uptime"));
       }
       int klawisz = input();
       if (klawisz == 13) {
@@ -704,7 +776,7 @@ Clear();
           Cursor(0, 2);
           print("Wersja:", "Version:");
           Cursor(0, 3);
-          print_o("pre9f2-1.0");
+          print_o("pre10f2-1.0");
         }if (s_ust == 3) {
           Cursor(0, 2);
           print("jezyk", "language");
@@ -773,6 +845,8 @@ Clear();
           print("Pliki", "Files");
           Cursor(0, 3);
           print("Notatnik", "Notes");
+          Cursor(0, 0);
+          print_o("Port");
         }
                 Cursor(15, kursor_y);
         print_o("<");
@@ -800,6 +874,8 @@ Clear();
               aplikacje[0] = 5;
             }if (kursor_y == 3) {
               aplikacje[0] = 6;
+            }if (kursor_y == 0) {
+              aplikacje[0] = 9;
             }
           }
         }if (klawisz == 16) {
@@ -820,6 +896,9 @@ Clear();
             }if (kursor_y == 3) {
               EEPROM.update(3, 6);
               ulubione1 = 6;
+            }if (kursor_y == 0) {
+              EEPROM.update(3, 9);
+              ulubione1 = 9;
             }
           }
         }if (klawisz == 18) {
@@ -840,6 +919,9 @@ Clear();
             }if (kursor_y == 3) {
               EEPROM.update(4, 6);
               ulubione2 = 6;
+            }if (kursor_y == 0) {
+              EEPROM.update(4, 9);
+              ulubione2 = 9;
             }
           }
         }
@@ -1933,6 +2015,174 @@ Clear();
          
         }
         i_kodu = i_kodu + 3;
+      }if (aplikacje[0] == 9) {
+        fullscreen = 1;
+        if (opcje_port == 0) {
+          EEPROM.update(10, port_u);
+        Cursor(0, 2);
+        print(F("1. Wykryj automatycznie"), F("1. Detect"));
+        Cursor(0, 3);
+        print("2. Ustaw", "2. Set");
+        Cursor(0, 0);
+        print_o("3. Test");
+        Cursor(0, 1);
+if (port_u == 0) {
+  pinMode(PIN1, INPUT);
+  pinMode(PIN2, INPUT);
+  pinMode(PIN3, INPUT_PULLUP);
+  print_o(F("tryb portu: joystick"));
+}if (port_u == 1) {
+  pinMode(PIN1, OUTPUT);
+  pinMode(PIN2, INPUT);
+  digitalWrite(PIN1, LOW);
+  print_o(F("tryb portu: czujnik odleglosci"));
+}if (port_u == 2) {
+  pinMode(PIN1, INPUT_PULLUP);
+  print_o(F("tryb portu: bali switch"));
+}if (port_u == 3) {
+  pinMode(PIN1, OUTPUT);
+  pinMode(PIN2, OUTPUT);
+  pinMode(PIN3, OUTPUT);
+  digitalWrite(PIN1, HIGH);
+  digitalWrite(PIN2, HIGH);
+  digitalWrite(PIN3, HIGH);
+  print_o(F("tryb portu: dioda RGB"));
+}if (port_u > 3) {
+  print_o(F("???"));
+}
+        int klawisz = input();
+        if (klawisz == 13) {
+          opcje_port = 1;
+        }if (klawisz == 14) {
+          opcje_port = 2;
+        }if (klawisz == 15) {
+          opcje_port = 3;
+        }}if (opcje_port == 1) {
+          port_u = 0;
+          if (port_u == 0) {
+            pinMode(PIN1, INPUT);
+            pinMode(PIN2, INPUT);
+            pinMode(PIN3, INPUT_PULLUP);
+            Serial.println(analogRead(PIN1) - 505);
+            Serial.println(analogRead(PIN2) - 521);
+          if (analogRead(PIN1) - 505 < 10 and analogRead(PIN2) - 521 < 10) {
+            port_u = 0;
+            opcje_port = 0;
+          }else {
+            port_u = 1;
+          }}if (port_u == 1) {
+  pinMode(PIN1, OUTPUT);
+  pinMode(PIN2, INPUT);
+  digitalWrite(PIN1, LOW);
+    int Time;
+double Distance;
+digitalWrite(A1, HIGH);
+delayMicroseconds(10);
+digitalWrite(A1, LOW);
+Time = pulseIn(A2, HIGH); 
+Distance = Time / 58;
+Serial.print("Dystans: ");
+Serial.print(Distance);
+Serial.println("cm");
+if (Distance > 170) {
+  port_u = 1;
+  opcje_port = 0;
+}else {
+  port_u = 2;
+}
+          }if (port_u == 2) {
+                pinMode(PIN1, INPUT_PULLUP);
+            if (digitalRead(PIN1) == 1) {
+              port_u = 2;
+              opcje_port = 0;
+            }else {
+                pinMode(PIN1, OUTPUT);
+  pinMode(PIN2, OUTPUT);
+  pinMode(PIN3, OUTPUT);
+  digitalWrite(PIN1, HIGH);
+  digitalWrite(PIN2, HIGH);
+  digitalWrite(PIN3, HIGH);
+              port_u = 3;
+              opcje_port = 0;
+            }
+          }
+        }if (opcje_port == 2) {
+            EEPROM.update(10, port_u);
+          if (klawisz == 13) {
+            port_u = 0;
+          }if (klawisz == 14) {
+            port_u = 1;
+          }if (klawisz == 15) {
+            port_u = 2;
+          }if (klawisz == 16) {
+            port_u = 3;
+          }Cursor(0, 0);
+if (port_u == 0) {
+  pinMode(PIN1, INPUT);
+  pinMode(PIN2, INPUT);
+  pinMode(PIN3, INPUT_PULLUP);
+  print_o(F("tryb portu: joystick"));
+}if (port_u == 1) {
+  pinMode(PIN1, OUTPUT);
+  pinMode(PIN2, INPUT);
+  digitalWrite(PIN1, LOW);
+  print_o(F("tryb portu: czujnik odleglosci"));
+}if (port_u == 2) {
+  pinMode(PIN1, INPUT_PULLUP);
+  print_o(F("tryb portu: bali switch"));
+}if (port_u == 3) {
+  pinMode(PIN1, OUTPUT);
+  pinMode(PIN2, OUTPUT);
+  pinMode(PIN3, OUTPUT);
+  digitalWrite(PIN1, HIGH);
+  digitalWrite(PIN2, HIGH);
+  digitalWrite(PIN3, HIGH);
+  print_o(F("tryb portu: dioda RGB"));
+}if (port_u > 3) {
+  print_o(F("???"));
+}
+        }if (opcje_port == 3) {
+          Cursor(0, 2);
+          print_o("test podlaczonego urzadzenia...");
+          Cursor(0, 3);
+          if (port_u == 0) {
+            print_o(analogRead(PIN1) - 505);
+            print_o(analogRead(PIN2) - 521);
+          }if (port_u == 1) {
+    int Time;
+double Distance;
+digitalWrite(PIN1, HIGH);
+delayMicroseconds(10);
+digitalWrite(PIN1, LOW);
+Time = pulseIn(PIN2, HIGH); 
+Distance = Time / 58;
+print("Dystans: ", "Distance: ");
+print_o(Distance);
+print_o("cm");
+          }if (port_u == 2) {
+            print_o(digitalRead(PIN1));
+          }if (port_u == 3) {
+            print_o("czerwony");
+            digitalWrite(PIN1, HIGH);
+            digitalWrite(PIN2, LOW);
+            digitalWrite(PIN3, LOW);
+            delay(200);
+            Clear();
+            print_o("zielony");
+            digitalWrite(PIN1, LOW);
+            digitalWrite(PIN2, HIGH);
+            digitalWrite(PIN3, LOW);
+            delay(200);
+            Clear();
+            print_o("niebieski");
+            digitalWrite(PIN1, LOW);
+            digitalWrite(PIN2, LOW);
+            digitalWrite(PIN3, HIGH);
+            delay(200);
+            Clear();
+            opcje_port = 0;
+          }
+        }
       }
 
 }}
