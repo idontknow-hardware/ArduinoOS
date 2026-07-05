@@ -93,7 +93,12 @@ Skrypt umożliwia tworzenie aplikacji.
 | 15 | load from port | wybrana zmienna(1-4), pin portu (1-3) | wczytuje dane z portu do określonej zmiennej
 | 16 | cursor_m | - | ustawia kursor na wartosc3 i wartosc4, dla współrzędnych odpowiednio: x i y
 | 17 | send to port | wybrana zmienna, pin portu | wysyła dane do portu
-
+inne:
+100+ - zapisywanie komendy, następna komenda
+CH- - poprzednia komenda
+PLAY/PAUSE - rozpocznij wprowadzanie danych
+EQ - zmiana wgrywania kod_x na kod_y i na odwrót
+NEXT - opcje uruchamiania
 ## Licencja
 
 Projekt jest dostępny na licencji **GNU General Public License w wersji 3 (GPLv3)**.  
