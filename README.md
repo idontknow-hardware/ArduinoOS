@@ -69,6 +69,14 @@ b) wczytywanie z komputera
 3. kliknij enter na komputerze
 4. wybierz opcję 'Załaduj plik'(2)
 5. poczekaj chwilę
+## skrypt
+Skrypt umożliwia tworzenie aplikacji. 
+
+| liczba wywołująca | komenda | wartości wymagane | opis komendy |
+| :--- | :---: | :---: | ---: |
+| 1 | print | znak | pisze pojedyncze znaki na ekranie |
+| 2 | set | wybrana zmienna(1-4), wartość | ustawia zmienne na wybraną wartość |
+
 ## Licencja
 
 Projekt jest dostępny na licencji **GNU General Public License w wersji 3 (GPLv3)**.  
