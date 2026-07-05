@@ -88,6 +88,9 @@ Skrypt umożliwia tworzenie aplikacji.
 | 12 | SUB | - | odejmuje tylko: wartosc1 - wartosc2 = wartosc3
 | 13 | * | - | mnoży tylko: wartosc1 * wartosc2 = wartosc3
 | 14 | / | - | dzieli tylko: wartosc1 / wartosc2 = wartosc3
+| 15 | load from port | wybrana zmienna(1-4), pin portu (1-3) | wczytuje dane z portu do określonej zmiennej
+| 16 | cursor_m | - | ustawia kursor na wartosc3 i wartosc4, dla współrzędnych odpowiednio: x i y
+| 17 | send to port | wybrana zmienna, pin portu | wysyła dane do portu
 
 ## Licencja
 
