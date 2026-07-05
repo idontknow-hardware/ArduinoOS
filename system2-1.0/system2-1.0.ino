@@ -15,6 +15,7 @@
 #define PIN1 A1
 #define PIN2 A2
 #define PIN3 A3
+uint8_t w_pin = 0;
 uint8_t opcje_port = 0;
 uint8_t powiadomienie = 0;
 uint8_t port_u = EEPROM.read(10);
@@ -155,23 +156,23 @@ uint8_t input() {
   }if (digitalRead(przycisk3) == 0) {
     nacisniety = przycisk3_z;
 
-  }  if (port_u == 0) {int wartoscX = analogRead(PIN1) - 505; 
+  }if (aplikacje[0] != 8) {
+  if (port_u == 0) {int wartoscX = analogRead(PIN1) - 505; 
   int wartoscY = analogRead(PIN2) - 521;
   int stanSW = digitalRead(PIN3);
-if (wartoscX < -420 and wartoscY > 720 and wartoscY < 900) {
+if (wartoscX < -420 and wartoscY > 0) {
     nacisniety = 1;
-  }if (wartoscX > 500 and wartoscY > 720 and wartoscY < 900) {
+  }if (wartoscX > 500 and wartoscY > 0) {
     nacisniety = 3;
-  }if (wartoscX < 0 and wartoscY > 900) {
+  }if (wartoscX > 0 and wartoscY > 490) {
     nacisniety = 2;
   }
-  Serial.println(wartoscX);
-  Serial.println(wartoscY);}
+}
   if (port_u == 2) {
     
     if (digitalRead(PIN1) == 0) {
     nacisniety = 2;}
-  }
+  }}
   // Sprawdzamy, czy odebrano jakiś sygnał
   if (IrReceiver.decode()) {
 
@@ -353,6 +354,7 @@ Serial.print(F("kompilacja: "));
 Serial.print(__DATE__);
 Serial.print(F(" "));
 Serial.println(__TIME__);
+
 if (port_u == 0) {
   pinMode(PIN1, INPUT);
   pinMode(PIN2, INPUT);
@@ -597,9 +599,7 @@ delayMicroseconds(10);
 digitalWrite(A1, LOW);
 Time = pulseIn(A2, HIGH); 
 Distance = Time / 58;
-Serial.print("Dystans: ");
-Serial.print(Distance);
-Serial.println("cm");
+
 if (Distance < 50) {
   powiadomienie = 1;
 }else {
@@ -672,6 +672,8 @@ printDate();
         print(F("4. Ustawienia przycisków"), F("4. Button Settings"));
         Cursor(0, 3);
         print(F("5. Czas dzialania"), F("5. Uptime"));
+        Cursor(0, 0);
+        print("6. Bateria", "6. Battery");
       }
       int klawisz = input();
       if (klawisz == 13) {
@@ -695,7 +697,11 @@ Clear();
       }if (klawisz == 17) {
         s_ust = 5; 
         Clear();
-      }if (klawisz == 1) {
+      }if (klawisz == 18) {
+        s_ust = 6;
+        Clear();
+      }
+      if (klawisz == 1) {
         Clear();
         s_w--;
 
@@ -776,7 +782,7 @@ Clear();
           Cursor(0, 2);
           print("Wersja:", "Version:");
           Cursor(0, 3);
-          print_o("pre10f2-1.0");
+          print_o("pre11f2-1.0");
         }if (s_ust == 3) {
           Cursor(0, 2);
           print("jezyk", "language");
@@ -830,6 +836,14 @@ Clear();
           Cursor(0, 3);
           print_o(millis());
           print_o("ms");
+          print_o('/');
+          print_o(millis() / 60);
+          print_o('s');
+        }if(s_ust == 6) {
+          Cursor(0, 0);
+          print(F("Napiecie: "), F("Voltage: "));
+          long n = readVcc();
+          print_o(n);
         }
 
       }if (aplikacje[0] == 3) {
@@ -1033,8 +1047,10 @@ Clear();
           if (naz_pliku == 0){
           Cursor(0, 2);
           if (EEPROM.read(plik + 1) == 1) {
-          print("1. Usun", "1. Delete");}else {
+          print("1. Usun", "1. Delete");}else if (EEPROM.read(plik + 1) == 2){
             print("1. Przywroc", "1. Restore");
+          }else {
+            print("1. Napraw", "1. Repair");
           }
           Cursor(0, 3);
           print("2. Zmien nazwe", "2. Change name");
@@ -1044,7 +1060,27 @@ Clear();
           if (klawisz == 13) {
             if (EEPROM.read(plik + 1) == 1) {
               EEPROM.update(plik + 1, 2);
+            }else if (EEPROM.read(plik + 1) == 2){
+              EEPROM.update(plik + 1, 1);
             }else {
+              for (int i = 3; i < 76; i++) {
+                uint8_t napraw = EEPROM.read(i + plik);
+                if (EEPROM.read(plik) == 1) {
+                  if (napraw < 30) {
+                    EEPROM.update(plik + i, napraw + 20);
+                  }
+                }
+
+              }
+              for (int i = 3; i < 76; i++) {
+                uint8_t napraw = EEPROM.read(i + plik);
+                if (EEPROM.read(plik) == 1) {
+                  if (napraw > 125) {
+                    EEPROM.update(plik + i, napraw - 30);
+                  }
+                }
+
+              }
               EEPROM.update(plik + 1, 1);
             }
           }if (klawisz == 14) {
@@ -1361,13 +1397,13 @@ Clear();
           }else if(EEPROM.read(i_kodu + plik - 3) == 14) {
             print_o("/");
           }else if(EEPROM.read(i_kodu + plik - 3) == 15) {
-          print_o(F("load from port"));
+          print_o(F("lfp"));
           print_o(' ');
           print_o(EEPROM.read(i_kodu + plik - 2));
           }else if(EEPROM.read(i_kodu + plik - 3) == 16) {
             print_o("cursor_m");
           }else if(EEPROM.read(i_kodu + plik - 3) == 17) {
-          print_o(F("send to port"));
+          print_o(F("stp"));
           print_o(' ');
           print_o(EEPROM.read(i_kodu + plik - 2));
           } }
@@ -1439,15 +1475,19 @@ Clear();
         }if (ob_kom == 14) {
           print_o("/");
         }if (ob_kom == 15) {
-          print_o(F("load from port"));
+          print_o(F("lfp"));
           print_o(' ');
           print_o(wybrana_w);
+          print_o(' ');
+          print_o(w_pin);
         }if (ob_kom == 16) {
           print_o("cursor_m");
         }if (ob_kom == 17) {
-          print_o("send to port");
+          print_o("stp");
           print_o(' ');
           print_o(wybrana_w);
+          print_o(' ');
+          print_o(w_pin);
         }
         int klawisz = input();
         /* lista komend:
@@ -1743,6 +1783,12 @@ Clear();
                 y_kod = y_kod * 10;
               }
           }
+        }if (ob_kom == 15 or ob_kom == 17) {
+          if (wybrana_w != 0) {
+              if (klawisz > 12) {
+              w_pin = klawisz - 12;}
+            
+          }
         }}
         if (klawisz == 1) {
           i_kodu = i_kodu - 3;
@@ -1828,12 +1874,14 @@ Clear();
           }if (ob_kom == 15) {
             EEPROM.update(i_kodu + plik, 15);
             EEPROM.update(i_kodu + plik + 1, wybrana_w);
+            EEPROM.update(i_kodu + plik + 2, w_pin);
             wybrana_w = 0;
           }if (ob_kom == 16) {
             EEPROM.update(i_kodu + plik, 16);
           }if (ob_kom == 17) {
             EEPROM.update(i_kodu + plik, 17);
             EEPROM.update(i_kodu + plik + 1, wybrana_w);
+            EEPROM.update(i_kodu + plik + 2, w_pin);
             wybrana_w = 0;
           }
           Clear();
@@ -2007,12 +2055,84 @@ Clear();
         }if (EEPROM.read(plik + i_kodu) == 14) {
           wartosc3 = wartosc1 / wartosc2;
 
-        }if (EEPROM.read(plik + i_kodu) == 15 or EEPROM.read(plik + i_kodu) == 17) {
-          print_o(F("function not useful yet"));
+        }if (EEPROM.read(plik + i_kodu) == 15) {
+          if (port_u == 0) {
+            if (EEPROM.read(plik + i_kodu + 1) == 1) {
+              if (EEPROM.read(plik + i_kodu + 2) == 1) {
+                wartosc1 = analogRead(PIN1);
+              }if (EEPROM.read(plik + i_kodu + 2) == 2) {
+                wartosc1 = analogRead(PIN2);
+              }if (EEPROM.read(plik + i_kodu + 2) == 3) {
+                wartosc1 = digitalRead(PIN3);
+              }
+            }            if (EEPROM.read(plik + i_kodu + 1) == 2) {
+              if (EEPROM.read(plik + i_kodu + 2) == 1) {
+                wartosc2 = analogRead(PIN1);
+              }if (EEPROM.read(plik + i_kodu + 2) == 2) {
+                wartosc2 = analogRead(PIN2);
+              }if (EEPROM.read(plik + i_kodu + 2) == 3) {
+                wartosc2 = digitalRead(PIN3);
+              }
+            }            if (EEPROM.read(plik + i_kodu + 1) == 3) {
+              if (EEPROM.read(plik + i_kodu + 2) == 1) {
+                wartosc3 = analogRead(PIN1);
+              }if (EEPROM.read(plik + i_kodu + 2) == 2) {
+                wartosc3 = analogRead(PIN2);
+              }if (EEPROM.read(plik + i_kodu + 2) == 3) {
+                wartosc3 = digitalRead(PIN3);
+              }
+            }            if (EEPROM.read(plik + i_kodu + 1) == 4) {
+              if (EEPROM.read(plik + i_kodu + 2) == 1) {
+                wartosc4 = analogRead(PIN1);
+              }if (EEPROM.read(plik + i_kodu + 2) == 2) {
+                wartosc4 = analogRead(PIN2);
+              }if (EEPROM.read(plik + i_kodu + 2) == 3) {
+                wartosc4 = digitalRead(PIN3);
+              }
+            }
+          }if (port_u == 1) {
+
+              int Time;
+              double Distance;
+              digitalWrite(A1, HIGH);
+              delayMicroseconds(10);
+              digitalWrite(A1, LOW);
+              Time = pulseIn(A2, HIGH); 
+              Distance = Time / 58;
+            if (EEPROM.read(plik + i_kodu + 1) == 1) {
+              wartosc1 = Distance;
+            }            if (EEPROM.read(plik + i_kodu + 1) == 2) {
+              wartosc2 = Distance;
+            }            if (EEPROM.read(plik + i_kodu + 1) == 3) {
+              wartosc3 = Distance;
+            }            if (EEPROM.read(plik + i_kodu + 1) == 4) {
+              wartosc4 = Distance;
+            }
+          }if (port_u == 2) {
+              if (EEPROM.read(plik + i_kodu + 1) == 1) {
+                wartosc1 = digitalRead(PIN1);
+              }
+              if (EEPROM.read(plik + i_kodu + 1) == 2) {
+                wartosc2 = digitalRead(PIN1);
+              }              if (EEPROM.read(plik + i_kodu + 1) == 3) {
+                wartosc3 = digitalRead(PIN1);
+              }              if (EEPROM.read(plik + i_kodu + 1) == 4) {
+                wartosc4 = digitalRead(PIN1);
+              }
+            }
         }if (EEPROM.read(plik + i_kodu) == 16) {
           Cursor(wartosc3, wartosc4);
         }if (EEPROM.read(plik + i_kodu) == 17) {
-         
+         if (port_u == 3) {
+
+            if (EEPROM.read(plik + i_kodu + 2) == 1) {
+              digitalWrite(PIN1, wartosc1);
+            }if (EEPROM.read(plik + i_kodu + 2) == 2) {
+              digitalWrite(PIN2, wartosc1);
+            }if (EEPROM.read(plik + i_kodu + 2) == 3) {
+              digitalWrite(PIN3, wartosc1);
+            }
+         }
         }
         i_kodu = i_kodu + 3;
       }if (aplikacje[0] == 9) {
@@ -2063,9 +2183,7 @@ if (port_u == 0) {
             pinMode(PIN1, INPUT);
             pinMode(PIN2, INPUT);
             pinMode(PIN3, INPUT_PULLUP);
-            Serial.println(analogRead(PIN1) - 505);
-            Serial.println(analogRead(PIN2) - 521);
-          if (analogRead(PIN1) - 505 < 10 and analogRead(PIN2) - 521 < 10) {
+          if (analogRead(PIN1) - 505 > -1 and analogRead(PIN2) - 521 > -1) {
             port_u = 0;
             opcje_port = 0;
           }else {
@@ -2081,9 +2199,7 @@ delayMicroseconds(10);
 digitalWrite(A1, LOW);
 Time = pulseIn(A2, HIGH); 
 Distance = Time / 58;
-Serial.print("Dystans: ");
-Serial.print(Distance);
-Serial.println("cm");
+
 if (Distance > 170) {
   port_u = 1;
   opcje_port = 0;
