@@ -7,7 +7,9 @@
 4. Instalacja: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#instalacja
 5. Co jeśli pilot nie działa?: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#co-je%C5%9Bli-m%C3%B3j-pilot-nie-dzia%C5%82a
 6. Pliki: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#pliki
-7. Licencja: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#licencja
+7. Instrukcja obsługi bakcupu: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#instrukcja-obs%C5%82ugi-backupu
+8. skrypt: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#skrypt
+9. Licencja: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#licencja
 ## ArduinoOS 2
 oficjalnje rozpoczynam prace nad ArduinoOS 2. Nowa wersja systemu będzie miała lepszy kod i wiele nowych funkcji!
 ## Wydania
