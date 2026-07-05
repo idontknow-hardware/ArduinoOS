@@ -99,6 +99,17 @@ CH- - poprzednia komenda
 PLAY/PAUSE - rozpocznij wprowadzanie danych
 EQ - zmiana wgrywania kod_x na kod_y i na odwrót
 NEXT - opcje uruchamiania
+## port
+Port umożliwia połączenie kilku dodatkowych urządzeń. Obecnie dostępne to:
+- joystick
+- czujnik odległości
+- bali switch
+- LED RGB
+podłączenie:
+- joystick: A1 - oś x, A2 - oś y, A3 - przycisk.
+- czujnik odległości: A1 - trig, A2 - echo
+- bali switch: A1 - wyjście
+- LED RGB: A1 - red, A2 - green, A3 - blue
 ## Licencja
 
 Projekt jest dostępny na licencji **GNU General Public License w wersji 3 (GPLv3)**.  
