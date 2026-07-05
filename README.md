@@ -76,6 +76,18 @@ Skrypt umożliwia tworzenie aplikacji.
 | :--- | :---: | :---: | ---: |
 | 1 | print | znak | pisze pojedyncze znaki na ekranie |
 | 2 | set | wybrana zmienna(1-4), wartość | ustawia zmienne na wybraną wartość |
+| 3 | if= | wybrana zmienna (1-4), wartość | porównuje zmienną z wartością, jeśli jest równa wykonuje kod, jeśli nie przeskakuje do endif |
+| 4 | endif | - | oznacza koniec warunku if= |
+| 5 | create file | - | tworzu plik zapisu nad plikiem z aplikacją / kodem. Jeśli ta pozycja jest zajęta prosi o usunięcie pliku |
+| 6 | load byte from file (lff) | wybrana zmienna (1-4), bajt | wczytuje wybrany bajt pliku zapisu do wybranej zmiennej |
+| 7 | write to file (w(t)f) | wybrana zmienna (1-4), bajt | zapisuje wybrany bajt pliku zapisu zmienną |
+| 8 | cursor_s | x, y | ustawia kursor w wybrane miejsce |
+| 9 | clear | - | czyści ekran |
+| 10 | input | wybrana zmienna (1-4) | czyta input() i zapisuje go w wybranej zmiennej |
+| 11 | ADD | - | dodaje tylko: wartosc1 + wartosc2 = wartosc3
+| 12 | SUB | - | odejmuje tylko: wartosc1 - wartosc2 = wartosc3
+| 13 | * | - | mnoży tylko: wartosc1 * wartosc2 = wartosc3
+| 14 | / | - | dzieli tylko: wartosc1 / wartosc2 = wartosc3
 
 ## Licencja
 
