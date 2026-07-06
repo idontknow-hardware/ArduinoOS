@@ -29,6 +29,7 @@ oficjalnje rozpoczynam prace nad ArduinoOS 2. Nowa wersja systemu będzie miała
 - pre10f2-1.0 - Dodano port wielofunkcyjny oraz aplikacje która go wykorzystuje (opcje dla portu w języku skryptowym nie są dostępne dalej) *Wydano: 4.07.2026*
 - pre11f2-1.0 - Dodano obsługę portu wielofunkcyjnego w skrypcie, dodano możliwość naprawy uszkodzonych plików *Wydano: 5.07.2026*
 - pre12f2-1.0 - Dodano ekrany błędów *Wydano: 6.07.2026*
+- pre13f2-1.0 - Dodano narzędzie diagnostyczne, dodano wskaźnik czasu na podstawie działania systemu jeśli RTC nie zostanie wykryty
 ## wymagania minimalne i zalecane
 **Uwaga! Jako że projekt jest w wersji beta wymagania mogą sie jeszcze zmienić!**
 **minimalne**
