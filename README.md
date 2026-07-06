@@ -33,7 +33,7 @@ oficjalnje rozpoczynam prace nad ArduinoOS 2. Nowa wersja systemu będzie miała
 - pre13f2-1.0 - Dodano narzędzie diagnostyczne, dodano wskaźnik czasu na podstawie działania systemu jeśli RTC nie zostanie wykryty*Wydano:06.07.2026* 
 - 2-1.0 - Dodano więcej miejsca na ulubione aplikacje*Wydano:06.07.2026*
 ## wymagania minimalne i zalecane
-**Uwaga! Jako że projekt jest w wersji beta wymagania mogą sie jeszcze zmienić!**
+
 **minimalne**
 - Arduino Uno
 - czujnik IR
