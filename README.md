@@ -26,6 +26,7 @@ oficjalnje rozpoczynam prace nad ArduinoOS 2. Nowa wersja systemu będzie miała
 - pre9f2-1.0 - Zooptymalizowano funkcje rysujące, Dodano informacje o czasie działania, Dodano tryb  fullscreen *Wydano 30.06.2026*
 - pre10f2-1.0 - Dodano port wielofunkcyjny oraz aplikacje która go wykorzystuje (opcje dla portu w języku skryptowym nie są dostępne dalej) *Wydano: 4.07.2026*
 - pre11f2-1.0 - Dodano obsługę portu wielofunkcyjnego w skrypcie, dodano możliwość naprawy uszkodzonych plików *Wydano: 5.07.2026*
+- pre12f2-1.0 - Dodano ekrany błędów *Wydano: 6.07.2026*
 ## wymagania minimalne i zalecane
 **Uwaga! Jako że projekt jest w wersji beta wymagania mogą sie jeszcze zmienić!**
 **minimalne**
