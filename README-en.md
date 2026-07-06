@@ -28,6 +28,7 @@ Officialy I begining work on ArduinoOS 2. New version of system will have better
 - pre10f2-1.0 - Added a multifunction port and an application that uses it (functions that use it in the scripting language are still unavailable) *Realesed: 4.07.2026*
 - pre11f2-1.0 - Added multifunction port support in scripting language, added option to fix corrupted files *Realesed: 5.07.2026*
 - pre12f2-1.0 - Added error screens *Realesed: 6.07.2026*
+- pre13f2-1.0 - Added diagnostic tool, added clock of uptime if the RTC is not wired
 ## Minimum and recommended requirements
 Note: As this project is in beta, the requirements may change! Minimum:
 
