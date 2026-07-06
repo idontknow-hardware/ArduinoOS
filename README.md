@@ -57,9 +57,10 @@ jeśli to nie zadziała:
 3. Znajdź przycisk który cię interesuje
 4. Otwórz Serial monitor w Arduino IDE
 5. Naciskaj przycisk
-6. Otrzymasz komunikat "Otrzymano kod przycisku:" oraz kod
+6. Otrzymasz komunikat "Odebrano komendę: " oraz kod
 7. Skopiuj kod
-8. Prześlij kod do Arduino
+8. wklej kod po case w input()
+9. Prześlij kod do Arduino
 ## Pliki
 system plików w ArduinoOS 2 umożliwia tworzenie do 13 plików (jeśli chodzi o Arduino Uno). Uwaga! Jeśli używałeś wcześniej wersji sprzed pre3f2-1.0 to uruchom wgrywanie-plikow aby stworzyć system plików w EEPROM. Jeśli nie używałeś starszych wersji to po prostu przejdź przez setup, a program w menu "konfiguracja zakonczona" zrobi system plików (dlatego trzeba tak długo czekać)
 ## Instrukcja obsługi backupu. 
