@@ -111,6 +111,10 @@ podłączenie:
 - czujnik odległości: A1 - trig, A2 - echo
 - bali switch: A1 - wyjście
 - LED RGB: A1 - red, A2 - green, A3 - blue
+## Błędy
+oto co oznaczają poszczególne kody błędów:
+Error 0x0 - zużycie RAMu jest za wysokie
+Error 0x1 - temperatura CPU jest za wysoka
 ## Licencja
 
 Projekt jest dostępny na licencji **GNU General Public License w wersji 3 (GPLv3)**.  
