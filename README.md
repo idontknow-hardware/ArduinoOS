@@ -9,7 +9,9 @@
 6. Pliki: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#pliki
 7. Instrukcja obsługi bakcupu: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#instrukcja-obs%C5%82ugi-backupu
 8. skrypt: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#skrypt
-9. Licencja: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#licencja
+9. Port - https://github.com/idontknow-hardware/ArduinoOS#port
+10. Błędy - https://github.com/idontknow-hardware/ArduinoOS#b%C5%82%C4%99dy
+11. Licencja: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README.md#licencja
 ## ArduinoOS 2
 oficjalnje rozpoczynam prace nad ArduinoOS 2. Nowa wersja systemu będzie miała lepszy kod i wiele nowych funkcji!
 ## Wydania
