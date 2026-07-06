@@ -16,6 +16,8 @@
 #define PIN1 A1
 #define PIN2 A2
 #define PIN3 A3
+bool RTC = 1;
+bool diagnostyka = 0;
 uint8_t blad = 0;
 uint8_t w_pin = 0;
 uint8_t opcje_port = 0;
@@ -35,7 +37,6 @@ bool n_plik = 0;
 bool e_plik = 0;
 bool mode = 0;
 bool opcje = 0;
-bool wyl = 0;
 uint8_t uruchamianie = 0;
 int t_pliku = 0;
 int s_pliku = 0;
@@ -44,7 +45,6 @@ int i_notka = 12;
 int i_kodu = 12;
 int i_kodu_p = 64;
 bool warunki = 0;
-char t_kodu = ' ';
 char t1_kodu = ' ';
 uint8_t wartosc1 = 0;
 uint8_t wartosc2 = 0;
@@ -58,27 +58,25 @@ uint8_t bajt = 0;
 uint8_t x_kod = 0;
 uint8_t y_kod = 0;
 bool naz_pliku = 0;
-int x = 0;
-int y = 0;
-int y_d = 3;
-int x_k = 0;
-int kursor_y = 0;
+uint8_t x = 0;
+uint8_t y = 0;
+uint8_t y_d = 3;
+uint8_t x_k = 0;
+uint8_t kursor_y = 0;
 uint8_t wynik = 0;
-int konfig = EEPROM.read(0);
-int strona = 0;
-int poz_u = 0;
-int s_keyboard = 0;
-int i_k = 0;
-int s_ust = 0;
-int s_info = 0;
-int ulubione1 = EEPROM.read(3);
-int ulubione2 = EEPROM.read(4);
+uint8_t konfig = EEPROM.read(0);
+uint8_t strona = 0;
+uint8_t s_keyboard = 0;
+uint8_t s_ust = 0;
+uint8_t s_info = 0;
+uint8_t ulubione1 = EEPROM.read(3);
+uint8_t ulubione2 = EEPROM.read(4);
 bool edycja = 0;
 bool keyboard = 0;
-int aplikacje[] = {};
-int poprawne = EEPROM.read(2);
+uint8_t aplikacje[] = {};
+uint8_t poprawne = EEPROM.read(2);
 bool ostrzezenie = EEPROM.read(6);
-int s_wa = 0;
+uint8_t s_wa = 0;
 const int RST_PIN = 4;
 const int DAT_PIN = 3;
 const int CLK_PIN = 5;
@@ -294,7 +292,7 @@ int procent() {
   
   
 
-  int percent = map(mv, 4000, 5161, 0, 100);
+  int percent = map(mv, 4000, 5181, 0, 100);
   percent = constrain(percent, 0, 100);
   return percent;
 }
@@ -317,6 +315,7 @@ int tempCPU() {
 void printDate() {
           Ds1302::DateTime now;
   rtc.getDateTime(&now);
+if (RTC == 1) {
   print_o(now.day);
   print_o(F("/"));
   print_o(now.month);
@@ -326,6 +325,20 @@ void printDate() {
   print_o(now.hour);
   print_o(F(":"));
   print_o(now.minute);
+  print_o(":");
+  print_o(now.second);}else{
+    print_o("?/?/? ");
+    print_o(millis() / 3600000);
+    print_o(":");
+    print_o(millis() / 60000);
+    print_o(":");
+    print_o(millis() / 1000);
+  }
+ if (now.minute == 85) {
+  RTC = 0;
+ }else {
+  RTC = 1;
+ }
 }
 double getDistance() {
     int Time;
@@ -405,7 +418,11 @@ for (int i = 65; i < EEPROM.length(); i = i + 76) {
     cor++;
   }}
 
-
+          Ds1302::DateTime now;
+  rtc.getDateTime(&now);
+  if (now.minute > 60) {
+    RTC = 0;
+  }
 Clear();
 print_o(ok);
 print(F(" plikow ok"), F(" files ok"));
@@ -415,7 +432,40 @@ print(F(" plikow wolnych"), F(" files free"));
 Cursor(0, 2);
 print_o(cor);
 print(F(" plikow uszkodzonych"), F(" files corrupted"));
-delay(3000);
+long czasD = millis();
+long ostatniD = 0;
+long roznicaD = czasD - ostatniD;
+while(roznicaD < 10000) {
+  czasD = millis();
+  roznicaD = czasD - ostatniD;
+  int klawisz = input();
+  if (klawisz == 13) {
+    diagnostyka = 1;
+    Clear();
+    roznicaD = 10000;
+  }
+}
+while(diagnostyka) {
+  Cursor(0, 2);
+  print("Diagnostyka", "Diagnostic");
+  delay(300);
+  Clear();
+  for (uint8_t i = 0; i < 254; i++) {
+    lcd.write(i);
+    lcd2.write(i);
+  }          Ds1302::DateTime now;
+  rtc.getDateTime(&now);
+  Clear();
+  if (now.minute > 60) {
+    print_o("NO RTC!!");
+    delay(500);
+  }
+
+  int klawisz = input();
+  if (klawisz == 13) {
+    diagnostyka = 0;
+  }
+}
   Clear();
 if (ostrzezenie == 1) {
 Cursor(0, 2);
@@ -431,14 +481,8 @@ for (int i = 0; i < 20; i++){
 lcd.scrollDisplayLeft();
 delay(500);}
 Clear();
-Cursor(0, 0);
-print(F("nie pokazuj ponownie?(5 - tak)"), F("dont show again?(5 - yes)"));
-for (int i = 0; i < 2000; i++) {
-int klawisz = input();
-if (klawisz == 17) {
-  EEPROM.update(6, 0);
-  break;
-}}
+EEPROM.update(6, 0);
+
 }
 procent_o = procent();
 
@@ -555,7 +599,7 @@ if(konfig != 255){
       opcje_port = 0;
     }
     int fRAM = freeRam();
-    if (2048 - fRAM > 1990) {
+    if (2048 - fRAM > 1990 and 2048 - fRAM < 2049) {
       blad = 1;
       aplikacje[0] = -1;
     }
@@ -794,7 +838,7 @@ Clear();
           Cursor(0, 2);
           print("Wersja:", "Version:");
           Cursor(0, 3);
-          print_o("pre12f2-1.0");
+          print_o("pre13f2-1.0");
         }if (s_ust == 3) {
           Cursor(0, 2);
           print("jezyk", "language");
@@ -802,6 +846,7 @@ Clear();
           if (klawisz == 13) {
             jezyk = 0;
             EEPROM.update(1, jezyk);
+
 
           }if (klawisz == 14) {
             jezyk = 1;
@@ -849,8 +894,15 @@ Clear();
           print_o(millis());
           print_o("ms");
           print_o('/');
-          print_o(millis() / 60);
+          print_o(millis() / 1000);
           print_o('s');
+          print_o('/');
+          Cursor(0, 0);
+          print_o(millis() / 60000);
+          print_o("min");
+          print_o('/');
+          print_o(millis() / 3600000);
+          print_o("h");
         }if(s_ust == 6) {
           Cursor(0, 0);
           print(F("Napiecie: "), F("Voltage: "));
@@ -2294,17 +2346,21 @@ print_o("cm");
         }
         if (blad == 1) {
         Cursor(0, 2);
-        print_o("Error 0x0!");}if (blad == 2) {
+        print_o("Error 0x0!");          
+
+}if (blad == 2) {
           Cursor(0, 2);
           print_o("Error 0x1!");
-          
+
         }
         Cursor(0, 3);
         unsigned long czas = millis() + 2000;
         wdt_enable(WDTO_2S);
         while(1) {
           Cursor(0, 0);
-          print_o(czas - millis());
+         print_o(czas - millis());
+        Cursor(0, 3);           
+        print_o(2048 - freeRam());
         
       }}
 
