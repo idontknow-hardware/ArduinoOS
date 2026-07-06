@@ -1,6 +1,16 @@
 ⚠️ NOTE: The project is not affiliated with Arduino and is not an official product.
 ## Contents
-
+1. ArduinoOS 2 - https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README-en.md#arduinoos-2
+2. Realeses - https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS2/README-en.md#realases
+3. Minimum and recomended requirments - https://github.com/idontknow-hardware/ArduinoOS/edit/ArduinoOS2/README-en.md#minimum-and-recommended-requirements
+4. instalation - https://github.com/idontknow-hardware/ArduinoOS/edit/ArduinoOS2/README-en.md#instalation
+5. What if my remote isn't working - https://github.com/idontknow-hardware/ArduinoOS/edit/ArduinoOS2/README-en.md#what-if-my-remote-isnt-working
+6. Files - https://github.com/idontknow-hardware/ArduinoOS/edit/ArduinoOS2/README-en.md#files
+7. https://github.com/idontknow-hardware/ArduinoOS/edit/ArduinoOS2/README-en.md#backup-user-guide
+8. Script - https://github.com/idontknow-hardware/ArduinoOS/edit/ArduinoOS2/README-en.md#script
+9. Port - https://github.com/idontknow-hardware/ArduinoOS/edit/ArduinoOS2/README-en.md#port
+10. https://github.com/idontknow-hardware/ArduinoOS/edit/ArduinoOS2/README-en.md#errors
+11. License - https://github.com/idontknow-hardware/ArduinoOS/edit/ArduinoOS2/README-en.md#license
 ## ArduinoOS 2
 Officialy I begining work on ArduinoOS 2. New version of system will have better code and lots of new features!
 ## Realases
@@ -51,7 +61,8 @@ If that doesn't work:
 8. Paste code after case in input()
 9. Upload the code to the Arduino
 ## Files
-The ArduinoOS 2 file system allows you to create up to 13 files (for Arduino Uno). Note: If you've used a version before pre3f2-1.0, run wgrywanie-plikow to create the file system. If you haven't used older versions, just go through setup and the program will create a file system in the "config ended" menu (that's why you have to wait so long)## Backup User Guide.
+The ArduinoOS 2 file system allows you to create up to 13 files (for Arduino Uno). Note: If you've used a version before pre3f2-1.0, run wgrywanie-plikow to create the file system. If you haven't used older versions, just go through setup and the program will create a file system in the "config ended" menu (that's why you have to wait so long)
+## Backup User Guide.
 
 a) Downloading to your computer.
 
@@ -102,7 +113,8 @@ Connection:
 - joystick: A1 - x-axis, A2 - y-axis, A3 - button.
 - Distance sensor: A1 - trig, A2 - echo
 - Bali switch: A1 - output
-- RGB LED: A1 - red, A2 - green, A3 - blue## Errors
+- RGB LED: A1 - red, A2 - green, A3 - blue
+## Errors
 Here's what each error code means:
 Error 0x0 - RAM usage is too high
 Error 0x1 - CPU temperature is too high
