@@ -16,6 +16,7 @@
 #define PIN1 A1
 #define PIN2 A2
 #define PIN3 A3
+uint8_t s_g = 0;
 bool RTC = 1;
 bool diagnostyka = 0;
 uint8_t blad = 0;
@@ -38,12 +39,12 @@ bool e_plik = 0;
 bool mode = 0;
 bool opcje = 0;
 uint8_t uruchamianie = 0;
-int t_pliku = 0;
-int s_pliku = 0;
-int i_pliku = 0;
-int i_notka = 12;
-int i_kodu = 12;
-int i_kodu_p = 64;
+uint8_t t_pliku = 0;
+uint8_t s_pliku = 0;
+uint8_t i_pliku = 0;
+uint8_t i_notka = 12;
+uint8_t i_kodu = 12;
+uint8_t i_kodu_p = 64;
 bool warunki = 0;
 char t1_kodu = ' ';
 uint8_t wartosc1 = 0;
@@ -71,6 +72,8 @@ uint8_t s_ust = 0;
 uint8_t s_info = 0;
 uint8_t ulubione1 = EEPROM.read(3);
 uint8_t ulubione2 = EEPROM.read(4);
+uint8_t ulubione3 = EEPROM.read(11);
+uint8_t ulubione4 = EEPROM.read(12);
 bool edycja = 0;
 bool keyboard = 0;
 uint8_t aplikacje[] = {};
@@ -243,6 +246,7 @@ int Keyboard() {
   return key;
 }
 void printAPPS(){
+  if (s_g == 0) {
   Cursor(3, 2);
   if (ulubione1 == 1) {
     print(F("Zegar"), F("Clock"));
@@ -270,8 +274,39 @@ void printAPPS(){
     print(F("Pliki"), F("Files"));
   }if (ulubione2 == 6) {
     print(F("Notatnik"), F("Notes"));
-  }if (ulubione1 == 9) {
+  }if (ulubione2 == 9) {
     print_o("Port");
+  }}if (s_g == 1) {
+  Cursor(3, 2);
+  if (ulubione3 == 1) {
+    print(F("Zegar"), F("Clock"));
+    
+  }if (ulubione3 == 2) {
+    print(F("Ustawienia"), F("Settings"));
+  }if (ulubione3 == 4) {
+    print(F("Dinozaur"), F("Dino"));
+  }if (ulubione3 == 5) {
+    print(F("Pliki"), F("Files"));
+  }if (ulubione3 == 6) {
+    print(F("Notatnik"), F("Notes"));
+  }if (ulubione3 == 9) {
+    print_o("Port");
+  }
+  Cursor(3, 3);
+  if (ulubione4 == 1) {
+    print(F("Zegar"), F("Clock"));
+    
+  }if (ulubione4 == 2) {
+    print(F("Ustawienia"), F("Settings"));
+  }if (ulubione4 == 4) {
+    print(F("Dinozaur"), F("Dino"));
+  }if (ulubione4 == 5) {
+    print(F("Pliki"), F("Files"));
+  }if (ulubione4 == 6) {
+    print(F("Notatnik"), F("Notes"));
+  }if (ulubione4 == 9) {
+    print_o("Port");
+  }
   }
 }
 long readVcc() {
@@ -435,14 +470,14 @@ print(F(" plikow uszkodzonych"), F(" files corrupted"));
 long czasD = millis();
 long ostatniD = 0;
 long roznicaD = czasD - ostatniD;
-while(roznicaD < 10000) {
+while(roznicaD < 5000) {
   czasD = millis();
   roznicaD = czasD - ostatniD;
   int klawisz = input();
   if (klawisz == 13) {
     diagnostyka = 1;
     Clear();
-    roznicaD = 10000;
+    roznicaD = 5000;
   }
 }
 while(diagnostyka) {
@@ -460,6 +495,7 @@ while(diagnostyka) {
     print_o("NO RTC!!");
     delay(500);
   }
+  diagnostyka = 0;
 
   int klawisz = input();
   if (klawisz == 13) {
@@ -565,6 +601,8 @@ if(konfig != 255){
   EEPROM.update(2, 1);
   EEPROM.update(3, 1);
   EEPROM.update(4, 2);
+  EEPROM.update(11, 5);
+  EEPROM.update(12, 9);
   EEPROM.update(6, 1);
   EEPROM.update(7, 1);
   EEPROM.update(8, 2);
@@ -681,14 +719,29 @@ if (Distance < 50) {
     s_info++;
   }}
     if (aplikacje[0] == 0) {
+      if (s_g == 0) {
       Cursor(0, 2);
       print_o(F("1."));
       Cursor(0, 3);
-      print_o(F("2."));
+      print_o(F("2."));}
+      if (s_g == 1) {
+        Cursor(0, 2);
+        print_o("4.");
+        Cursor(0, 3);
+        print_o("5.");
+      }
       printAPPS();
       Cursor(0, 0);
       print(F("3. Wszystkie apki"), F("3. All apps"));
       int klawisz = input();
+      if (klawisz == 1) {
+        s_g--;
+        Clear();
+      }if (klawisz == 3) {
+        s_g++;
+        Clear();
+
+      }
       if (klawisz == 13) {
         aplikacje[0] = ulubione1;
         Clear();
@@ -699,6 +752,10 @@ if (Distance < 50) {
       }if (klawisz == 15) {
         aplikacje[0] = 3;
         Clear();
+      }if (klawisz == 16) {
+        aplikacje[0] = ulubione3;
+      }if (klawisz == 17) {
+        aplikacje[0] = ulubione4;
       }
     }if (aplikacje[0] == 1) {
       czas = millis();
@@ -838,7 +895,7 @@ Clear();
           Cursor(0, 2);
           print("Wersja:", "Version:");
           Cursor(0, 3);
-          print_o("pre13f2-1.0");
+          print_o("2-1.0");
         }if (s_ust == 3) {
           Cursor(0, 2);
           print("jezyk", "language");
@@ -1000,6 +1057,52 @@ Clear();
             }if (kursor_y == 0) {
               EEPROM.update(4, 9);
               ulubione2 = 9;
+            }
+          }
+        }if (klawisz == 13) {
+          if (s_wa == 0) {
+            if (kursor_y == 2) {
+            ulubione3 = 1;
+            EEPROM.update(11, 1);
+          }if (kursor_y == 3) {
+            ulubione3 = 2;
+            EEPROM.update(11, 2);
+          }if (kursor_y == 0) {
+            ulubione3 = 4;
+            EEPROM.update(11, 4);
+          }}if (s_wa == 1) {
+            if (kursor_y == 2) {
+              EEPROM.update(11, 5);
+              ulubione3 = 5;
+            }if (kursor_y == 3) {
+              EEPROM.update(11, 6);
+              ulubione3 = 6;
+            }if (kursor_y == 0) {
+              EEPROM.update(11, 9);
+              ulubione3 = 9;
+            }
+          }          
+        }if (klawisz == 15) {
+          if (s_wa == 0) {
+            if (kursor_y == 2) {
+            ulubione4 = 1;
+            EEPROM.update(12, 1);
+          }if (kursor_y == 3) {
+            ulubione4 = 2;
+            EEPROM.update(12, 2);
+          }if (kursor_y == 0) {
+            ulubione4 = 4;
+            EEPROM.update(12, 4);
+          }}if (s_wa == 1) {
+            if (kursor_y == 2) {
+              EEPROM.update(12, 5);
+              ulubione4 = 5;
+            }if (kursor_y == 3) {
+              EEPROM.update(12, 6);
+              ulubione4 = 6;
+            }if (kursor_y == 0) {
+              EEPROM.update(12, 9);
+              ulubione4 = 9;
             }
           }
         }
