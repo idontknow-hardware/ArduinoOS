@@ -5,7 +5,7 @@ English readme: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS3/
 ArduinoOS 3 to kolejna wersja mojego projektu ArduinoOS
 ## Wydania
 1. pre1f3-1.0 - rozpoczęto prace nad ArduinoOS 3! *Wydano: 28.09.2026*
-2. pre2f3-1.0 - dodano grę dinozaur oraz optymalizacje stworzone przez @chackAJMCPE. *Wydano: 3.10.2026*
+2. pre2f3-1.0 - dodano grę dinozaur oraz optymalizacje stworzone przez @chackAJMCPE oraz dodano obsługę buzzera i możliwość jego wyciszenia w ustawieniach*Wydano: 3.10.2026*
 ## Wymagania
 **Wymagania minimalne**:
 1. Arduino Uno
