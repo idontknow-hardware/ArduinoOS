@@ -5,15 +5,19 @@ English readme: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS3/
 ArduinoOS 3 to kolejna wersja mojego projektu ArduinoOS
 ## Wydania
 1. pre1f3-1.0 - rozpoczęto prace nad ArduinoOS 3! *Wydano: 28.09.2026*
+2. pre2f3-1.0 - dodano grę dinozaur oraz optymalizacje stworzone przez @chackAJMCPE. *Wydano: 3.10.2026*
 ## Wymagania
 **Wymagania minimalne**:
 1. Arduino Uno
 2. OLED 128x64
 3. Keypad 16x16
+4. RTC
 **Wymagania zalecane**:
 1. Arduino Uno
 2. OLED 128x64
 3. Keypad 16x16
+4. RTC
+5. Buzzer
 ## Licencja
 
 Projekt jest dostępny na licencji **GNU General Public License w wersji 3 (GPLv3)**.  
