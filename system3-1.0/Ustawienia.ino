@@ -1,5 +1,5 @@
-String appNamePL2 = "Ustawienia";
-String appNameEN2 = "Settings  ";
+#include "defines.h"
+
 uint8_t set_min = 0;
 uint8_t set_h = 0;
 uint8_t set_day = 0;
@@ -24,6 +24,7 @@ if (i == 'C') {
  DrawButtonLang(16, scroll + 80, 0, 1, 1, "Jezyk   ", "Language");
  DrawButtonLang(16, scroll + 96, 0, 1, 1, "Info o systemie", "System info    ");
  DrawButtonLang(16, scroll + 112, 0, 1, 1, "Czulosc myszy  ", "Mouse sensivity");
+ DrawButtonLang(16, scroll + 128, 0, 1, 1, "Ustawienia buzzera", "Buzzer settings");
 }if (stru == 1) {
  u8g2.setCursor(16, 16);
  printo(set_min);
@@ -48,16 +49,16 @@ if (i == 'C') {
  u8g2.drawButtonUTF8(113, 48, U8G2_BTN_BW1, 0, 1, 1, "-");
 }if (stru == 2) {
   u8g2.setCursor(0, 32);
-  print("Urzadzenie dziala przez: ", "System works for: ");
+  print(F("Urzadzenie dziala przez: "), F("System works for: "));
   u8g2.setCursor(0, 48);
   printo(millis());
-  printo("ms/");
+  printo(F("ms/"));
   printo(millis() / 1000);
-  printo("s/");
+  printo(F("s/"));
   printo(millis() / 60000);
-  printo("min/");
+  printo(F("min/"));
   printo(millis() / 3600000);
-  printo("h");
+  printo(F("h"));
 }if (stru == 3) {
   Keyboard(i);
   u8g2.setCursor(64, 8);
@@ -90,7 +91,7 @@ if (i == 'C') {
   u8g2.setCursor(0, 48);
   print("Wersja systemu:", "System version:");
   u8g2.setCursor(0, 56);
-  printo("ArduinoOS 3 v. pre1f3-1.0");
+  printo("ArduinoOS 3 v. pre2f3-1.0");
 }if (stru == 7) {
   u8g2.setCursor(0, 16);
   print("Ustaw czulosc myszy", "Set mouse sensivity");
@@ -98,6 +99,8 @@ if (i == 'C') {
   printo(sens);
   u8g2.drawButtonUTF8(16, 48, U8G2_BTN_BW1, 0, 1, 1, "+");
   u8g2.drawButtonUTF8(32, 48, U8G2_BTN_BW1, 0, 1, 1, "-");
+}if (stru == 8) {
+  DrawButtonLang(16, 16, 0, 1, 1, "Wycisz", "Mute  ");
 }
   DrawMouse();}
 void Sett() {
@@ -137,6 +140,11 @@ if (stru == 0) {
     stru = 7;
   }
  }
+ if (X > 14 and Y > scroll + 120 and X < 106 and Y < scroll + 130) {
+  if (i == '5') {
+    stru = 8;
+  }
+ }
 }if (stru == 1) {
   if (i == '5') {
   if (X > 14 and Y > 24 and X < 21 and Y < 34) {
@@ -170,16 +178,9 @@ if (stru == 0) {
     set_year--;
   }
   }if (i == '#') {
-          Ds1302::DateTime dt = {
-  .year = set_year,
-   .month = set_month,
-   .day = set_day,
-  .hour = set_h,
-   .minute = set_min,
-    .second = 0,
-   .dow = 1
- };
-  rtc.setDateTime(&dt);
+    unixSet((uint32_t)daysFromCivil(2000 + set_year, set_month, set_day) * 86400UL
+          + (uint32_t)set_h * 3600UL
+          + (uint32_t)set_min * 60UL);
   }
 }if (stru == 3) {
   if (i == '5') {
@@ -233,10 +234,11 @@ if (stru == 0) {
       EEPROM.update(11, sens);
     }
   }
+}if (stru == 8) {
+  if (X > 14 and Y > 10 and X < 44 and Y < 18) {
+    if (i == '5') {
+      wycisz = !wycisz;
+      EEPROM.update(13, wycisz);
+    }
+  }
 }}
-String GetNamePLU() {
- return appNamePL2;
-}
-String GetNameENU() {
-  return appNameEN2;
-}

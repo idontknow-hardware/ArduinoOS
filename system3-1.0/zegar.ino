@@ -1,30 +1,31 @@
-String appNamePL = "Zegar";
-String appNameEN = "Clock";
 void ClockScreen() {
   // kod dla ekranu / code for screen
 
-  UpdateTime();
-  uint8_t sec = Time(0);
-  uint8_t min = Time(1);
-  uint8_t h = Time(2);
-  uint8_t d = Time(3);
-  uint8_t m = Time(4);
-  uint8_t y = Time(5);
+  uint32_t t = unixNow();
+  int32_t days = (int32_t)(t / 86400UL);
+  uint32_t rem = (uint32_t)(t % 86400UL);
+  int y;
+  unsigned m, d;
+  civilFromDays(days, y, m, d);
+  uint8_t h = rem / 3600;
+  uint8_t mi = (rem % 3600) / 60;
+  uint8_t se = rem % 60;
+
   u8g2.setCursor(0, 32);
   if (h < 10) {
     printo('0');
   }
   printo(h);
   printo(':');
-  if (min < 10) {
+  if (mi < 10) {
     printo('0');
   }
-  printo(min);
+  printo(mi);
   printo(':');
-  if (sec < 10) {
+  if (se < 10) {
     printo('0');
   }
-  printo(sec);
+  printo(se);
   printo(' ');
   if (d < 10) {
     printo('0');
@@ -36,16 +37,9 @@ void ClockScreen() {
   }
   printo(m);
   printo('.');
-  printo("20");
   printo(y);
   DrawMouse();
 }
 void Clock() {
   // twój kod / your code
-}
-String GetNamePLC() {
- return appNamePL;
-}
-String GetNameENC() {
-  return appNameEN;
 }
