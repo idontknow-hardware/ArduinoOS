@@ -71,9 +71,9 @@ void DinoScreen() {
   }
   u8g2.drawXBMP(16, y_player, 16, 16, dino);
   u8g2.setCursor(16, 8);
-  print("Wynik: ", "Score: ");
+  print(F("Wynik: "), F("Score: "));
   printo(wynik);
-  print(" Naj wynik: ", " Best score: ");
+  print(F("Naj wynik: "), F("Best score: "));
   printo(naj_wynik);
 }
 
@@ -94,7 +94,6 @@ void Dino() {
       for (int ik2 = 0; ik2 < 3; ik2++) {
        if (x_kaktus[ik2] > x_kaktus[ik] - 32 and x_kaktus[ik2] < x_kaktus[ik] + 1) {
         x_kaktus[ik2] = x_kaktus[ik2] + 32;
-        Serial.println("DZIALA!!!!");
        }
       }
     } else {

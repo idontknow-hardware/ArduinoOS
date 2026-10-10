@@ -4,7 +4,7 @@
 #include <EEPROM.h>
 #include <Keypad.h> //biblioteka od klawiatury
 #include <Ds1302.h>
-#include "defines.h"
+
 
 void Clock();
 void ClockScreen();
@@ -12,7 +12,10 @@ void Sett();
 void SettScreen();
 void Dino();
 void DinoScreen();
-
+void Przeg();
+void PrzegScreen();
+void Not();
+void NotScreen();
 const unsigned char zegar[] PROGMEM = {
 0xf8,0x1f,0x84,0x20,0x82,0x40,0x81,0x80,0x81,0x80,0x81,0x80,
  0x81,0x80,0x81,0xff,0x01,0x80,0x01,0x80,0x02,0x40,0xfc,0x3f,
@@ -27,6 +30,14 @@ const unsigned char dinozaur[] PROGMEM = {
  0x7c,0x00,0xc4,0x00,0x94,0x00,0xc4,0x00,0x7c,0x00,0x3c,0x0c,
  0xe4,0x0c,0xa4,0x8c,0x24,0xcc,0xe4,0x6c,0xa4,0x3e,0x3c,0x0c,
  0x24,0x0c,0x24,0x0c,0x24,0x0c,0x6c,0x0c};
+const unsigned char przegladarka[] PROGMEM = {
+ 0x00,0x00,0x00,0x00,0x00,0x00,0x1f,0x00,0x11,0x00,0xf1,0x1f,
+ 0x81,0x18,0x81,0x18,0x81,0x19,0xc1,0x1e,0x31,0x10,0x19,0x10,
+ 0x01,0x10,0xff,0x1f,0x00,0x00,0x00,0x00};
+const unsigned char notatnik[] PROGMEM = {
+ 0xc0,0x01,0xf8,0x1f,0xcc,0x31,0xc4,0x21,0xc4,0x21,0x84,0x20,
+ 0xfc,0x3f,0x04,0x20,0xcc,0x39,0x74,0x2e,0x04,0x20,0x7c,0x3e,
+ 0xc4,0x23,0xfc,0x2d,0x0c,0x33,0xfc,0x3f};
 Ds1302 rtc(12, 10, 11);
 const byte ROWS = 4; // ile wierszy
 const byte COLS = 4; //ile kolumn
@@ -41,7 +52,7 @@ char keys[ROWS][COLS] = { //mapowanie klawiatury
 Keypad klawiatura = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 
 U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
-
+#include "defines.h"
 char i = ' ';
 int8_t app = -1;
 char name[9];
@@ -68,6 +79,8 @@ const App apps[] = {
   { "Zegar",      "Clock",    Clock, ClockScreen, zegar       },
   { "Ustawienia", "Settings", Sett,  SettScreen,  ustawienia  },
   { "Dinozaur", "Dinosaur", Dino, DinoScreen, dinozaur},
+  { "Przegladarka plikow", "File explorer", Przeg, PrzegScreen, przegladarka},
+  { "Notatnik", "Notes", Not, NotScreen, notatnik}
 };
 const uint8_t APP_COUNT = sizeof(apps) / sizeof(apps[0]);
 
@@ -85,9 +98,9 @@ void DrawLauncher() {
 
   u8g2.setFont(u8g2_font_5x7_tr);
   u8g2.setCursor(60, 60);
-  u8g2.print((unsigned)(selApp + 1));
-  u8g2.print('/');
-  u8g2.print((unsigned)APP_COUNT);
+  printo((unsigned)(selApp + 1));
+  printo('/');
+  printo((unsigned)APP_COUNT);
 
   u8g2.drawButtonUTF8(  2, 30, U8G2_BTN_BW1, 0, 1, 1, "<");
   u8g2.drawButtonUTF8(120, 30, U8G2_BTN_BW1, 0, 1, 1, ">");
@@ -109,7 +122,7 @@ void setup() {
   for (int iu = 0; iu < 5; iu++) {
     u8g2.firstPage();
     do {
-      u8g2.setFont(u8g2_font_9x15_tf);       
+      u8g2.setFont(u8g2_font_9x15_tr);       
       u8g2.setCursor(32, 32);  
       print(F("WITAM"), F("WELCOME"));
       u8g2.setFont(u8g2_font_5x7_tr);
@@ -298,21 +311,11 @@ void loop() {
       }
     }
     if (str == 2) {
-      if (X > 29 and Y > 32 and X < 99 and Y < 41) {
+      if (X > 29 && Y > 32 && X < 99 && Y < 41) {
         if (i == '5') {
           ClearEEPROM();
-          for (int i = 64; i < EEPROM.length(); i = i + 81) {
-            for (int i_P = 0; i_P < 80; i_P++) {
-              if (i_P == 0) {
-                EEPROM.update(i + i_P, 1);
-              }
-            }
-          }
-          for(int i = 0; i < EEPROM.length(); i++) {
-            Serial.print(i);
-            Serial.print(" ");
-            Serial.print(EEPROM.read(i));
-            Serial.println("");
+          for (int address = StartFile; address < EEPROM.length(); address += FileLength) {
+            EEPROM.update(address, 1); 
           }
           str = 3;
         }
