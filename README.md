@@ -13,6 +13,7 @@ ArduinoOS 3 to kolejna wersja mojego projektu ArduinoOS
 2. OLED 128x64
 3. Keypad 16x16
 4. RTC
+
 **Wymagania zalecane**:
 1. Arduino Uno
 2. OLED 128x64
