@@ -99,7 +99,7 @@ void SettScreen() {
     u8g2.setCursor(0, 48);
     print(F("Wersja systemu:"), F("System version:"));
     u8g2.setCursor(0, 56);
-    printo(F("ArduinoOS 3 v. pre3f3-1.0"));
+    printo(F("ArduinoOS 3 v. pre6f3-1.0"));
   }
   
   if (stru == 7) {
