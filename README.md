@@ -21,7 +21,7 @@ ArduinoOS 3 to kolejna wersja mojego projektu ArduinoOS
 2. OLED 128x64
 3. Keypad 4x4
 4. RTC
-5. Buzzer
+5. Jedno z urządzeń które można podłączyć do portu wielofunkcyjnego (buzzer, joytsick, czujnik odleglości dioda RGB)
 ## Licencja
 
 Projekt jest dostępny na licencji **GNU General Public License w wersji 3 (GPLv3)**.  
