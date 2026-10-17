@@ -5,7 +5,7 @@ bool wczytane = 0;
 void NotScreen() {
   u8g2.setFont(u8g2_font_5x7_tr);
   Keyboard(i);
-  u8g2.setCursor(0, 16);
+  u8g2.setCursor(o_n * -5 + 5, 16);
   for (int x = 0; x < 64; x++) {
     printo(loaded[x]);
   }
@@ -16,6 +16,9 @@ void Not() {
   obecny = plikMenu;
   LoadNote();
 }
+if(o_n > 64) {
+  o_n = 0;
+}
   if (i == '5') {
     loaded[o_n] = getKeyboard();
     o_n++;
@@ -25,6 +28,9 @@ void Not() {
   }
   if (i == '*') {
     wczytane = 0;
+  }
+  if (i == '#') {
+    o_n--;
   }
 }
 void LoadNote() {

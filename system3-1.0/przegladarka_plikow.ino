@@ -30,7 +30,7 @@ void PrzegScreen() {
   u8g2.setFont(u8g2_font_5x7_tr);
   if (n_file == 0) {
     if (menu == 0) {
-  DrawButtonLang(16, 16, 0, 1, 1, "Nowy plik", "New file ");
+  DrawButtonLang(16, 16, 9, "Nowy plik", "New file ");
   plikPodMyszka = -1;
 
 for (int x = 0; x < 11; x++) {
@@ -103,17 +103,17 @@ if (plikPodMyszka != -1) {
   
 }
     }else {
-     DrawButtonLang(16, 12, 0, 1, 1, "Usun  ", "Delete");
-     DrawButtonLang(16, 28, 0, 1, 1, "Odzyskaj", "Restore ");
-     DrawButtonLang(16, 44, 0, 1, 1, "Otworz", "Open  ");
-     DrawButtonLang(16, 60, 0, 1, 1, "Zamknij", "Close  ");
+     DrawButtonLang(16, 12, 9, "Usun  ", "Delete");
+     DrawButtonLang(16, 28, 9, "Odzyskaj", "Restore ");
+     DrawButtonLang(16, 44, 9, "Otworz", "Open  ");
+     DrawButtonLang(16, 60, 9, "Zamknij", "Close  ");
     }
   DrawMouse();}else {
     if (s_file == 0) {
-    DrawButtonLang(16, 12, 0, 1, 1, "Notatka", "Note   ");
-    DrawButtonLang(16, 28, 0, 1, 1, "Dane", "Data");
-    DrawButtonLang(16, 44, 0, 1, 1, "Animacja ", "Animation");
-    DrawButtonLang(16, 60, 0, 1, 1, "Animacja+ ", "Animation+");}
+    DrawButtonLang(16, 12, 9, "Notatka", "Note   ");
+    DrawButtonLang(16, 28, 9, "Dane", "Data");
+    DrawButtonLang(16, 44, 9, "Animacja ", "Animation");
+    DrawButtonLang(16, 60, 9, "Animacja+ ", "Animation+");}
     if (s_file == 1) {
       u8g2.setCursor(16, 16);
       for (int r = 0; r < 8; r++) {
@@ -124,33 +124,33 @@ if (plikPodMyszka != -1) {
   }
 }
 void Przeg() {
-  Serial.println(type);
+  DEBUG_PRINTLN(type);
 if (n_file == 0) {
   if (menu == 0) {
-if (X > 14 and Y > 8 and X < 60 and Y < 18) {
+if (X > 14 && Y > 8 && X < 60 && Y < 18) {
   if (i == '5') {
   n_file = 1;}}
 if (i == '5' && menu == 0 && plikPodMyszka != -1) {
   plikMenu = plikPodMyszka;
   menu = 1;
-  Serial.println("HALO!");
+  DEBUG_PRINTLN("HALO!");
 
 }
 }else {
-  if (X > 14 and Y > 4 and X < 45 and Y < 13) {
+  if (X > 14 && Y > 4 && X < 45 && Y < 13) {
     if (i == '5') {
     setFileFlag(plikMenu, FLAG_DELETE);
-    Serial.println("USUNIĘTO");}
+    DEBUG_PRINTLN("USUNIĘTO");}
   }
-  if (X > 14 and Y > 22 and X < 55 and Y < 30) {
+  if (X > 14 && Y > 22 && X < 55 && Y < 30) {
     if (i == '5') {
     setFileFlag(plikMenu, FLAG_IS);}
   }
-  if (X > 14 and Y > 53 and X < 51 and Y < 61) {
+  if (X > 14 && Y > 53 && X < 51 && Y < 61) {
     if (i == '5') {
     menu = 0;}
   }
-  if (X > 14 and Y > 36 and X < 46 and Y < 46) {
+  if (X > 14 && Y > 36 && X < 46 && Y < 46) {
     if (i == '5') {
       app = 4;
     }
@@ -159,23 +159,23 @@ if (i == '5' && menu == 0 && plikPodMyszka != -1) {
   uint8_t freef = FirstFree();
   if (s_file == 0) {
     GetFileName(freef);
-  if (X > 15 and Y > 6 and X < 50 and Y < 13) {
+  if (X > 15 && Y > 6 && X < 50 && Y < 13) {
     if (i == '5') {
     type = TYPE_NOTE;
     s_file = 1;}
   }
-  if (X > 15 and Y > 20 and X < 35 and Y < 30) {
+  if (X > 15 && Y > 20 && X < 35 && Y < 30) {
     if (i == '5') {
     type = TYPE_DATA;
     s_file = 1;}
   }
-  if (X > 15 and Y > 36 and X < 61 and Y < 46) {
+  if (X > 15 && Y > 36 && X < 61 && Y < 46) {
     if (i == '5') {
       type = TYPE_ANIMATION;
       s_file = 1;
     }
   }
-  if (X > 15 and Y > 53 and X < 66 and Y < 61) {
+  if (X > 15 && Y > 53 && X < 66 && Y < 61) {
     if (i == '5') {
       type = TYPE_BANIMATION;
       s_file = 1;

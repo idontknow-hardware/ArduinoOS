@@ -16,14 +16,14 @@ void SettScreen() {
     if (i == 'B') scroll--;
     if (i == 'C') scroll++;
     
-    DrawButtonLang(16, scroll + 16,  0, 1, 1, "Czas", "Time");
-    DrawButtonLang(16, scroll + 32,  0, 1, 1, "Czas dzialania", "Work time      ");
-    DrawButtonLang(16, scroll + 48,  0, 1, 1, "Zmien nazwe", "Change nick");
-    DrawButtonLang(16, scroll + 64,  0, 1, 1, "Opcje Admina   ", "Admin Settings");
-    DrawButtonLang(16, scroll + 80,  0, 1, 1, "Jezyk   ", "Language");
-    DrawButtonLang(16, scroll + 96,  0, 1, 1, "Info o systemie", "System info    ");
-    DrawButtonLang(16, scroll + 112, 0, 1, 1, "Czulosc myszy  ", "Mouse sensivity");
-    DrawButtonLang(16, scroll + 128, 0, 1, 1, "Ustawienia buzzera", "Buzzer settings");
+    DrawButtonLang(16, scroll + 16, 9, "Czas", "Time");
+    DrawButtonLang(16, scroll + 32, 9, "Czas dzialania", "Work time      ");
+    DrawButtonLang(16, scroll + 48, 9, "Zmien nazwe", "Change nick");
+    DrawButtonLang(16, scroll + 64, 9, "Opcje Admina   ", "Admin Settings");
+    DrawButtonLang(16, scroll + 80, 9, "Jezyk   ", "Language");
+    DrawButtonLang(16, scroll + 96, 9, "Info o systemie", "System info    ");
+    DrawButtonLang(16, scroll + 112,9, "Czulosc myszy  ", "Mouse sensivity");
+    DrawButtonLang(16, scroll + 128,9, "Ustawienia portu", "Port settings");
   }
   
   if (stru == 1) {
@@ -34,17 +34,17 @@ void SettScreen() {
     printo(set_month); printo(F(" mn "));
     printo(set_year);  printo(F(" y"));
     
-    // Zoptymalizowane przyciski znakowe za pomocą pamięci Flash/Char
-    u8g2.drawButtonUTF8(16,  32, U8G2_BTN_BW1, 0, 1, 1, "+");
-    u8g2.drawButtonUTF8(16,  48, U8G2_BTN_BW1, 0, 1, 1, "-");
-    u8g2.drawButtonUTF8(47,  32, U8G2_BTN_BW1, 0, 1, 1, "+");
-    u8g2.drawButtonUTF8(47,  48, U8G2_BTN_BW1, 0, 1, 1, "-");
-    u8g2.drawButtonUTF8(68,  32, U8G2_BTN_BW1, 0, 1, 1, "+");
-    u8g2.drawButtonUTF8(68,  48, U8G2_BTN_BW1, 0, 1, 1, "-");
-    u8g2.drawButtonUTF8(89,  32, U8G2_BTN_BW1, 0, 1, 1, "+");
-    u8g2.drawButtonUTF8(89,  48, U8G2_BTN_BW1, 0, 1, 1, "-");
-    u8g2.drawButtonUTF8(113, 32, U8G2_BTN_BW1, 0, 1, 1, "+");
-    u8g2.drawButtonUTF8(113, 48, U8G2_BTN_BW1, 0, 1, 1, "-");
+
+    DrawButton(16, 32, 9, "+");
+    DrawButton(16, 48, 9, "-");
+    DrawButton(47, 32, 9, "+");
+    DrawButton(47, 48, 9, "-");
+    DrawButton(68, 32, 9, "+");
+    DrawButton(68, 48, 9, "-");
+    DrawButton(89,  32, 9, "+");
+    DrawButton(89,  48, 9, "-");
+    DrawButton(113, 32, 9, "+");
+    DrawButton(113, 48, 9, "-");
   }
   
   if (stru == 2) {
@@ -71,18 +71,18 @@ void SettScreen() {
     u8g2.setCursor(0, 6);
     printo(F("Admin: "));
     printo(admin);
-    DrawButtonLang(0, 16, 0, 1, 1, "Artefakty graficzne", "Grafphic artefacts");
+    DrawButtonLang(0, 16,9, "Artefakty graficzne", "Grafphic artefacts");
     u8g2.setCursor(0, 32);
     printo(liczbaart);
-    DrawButtonLang(0, 48, 0, 1, 1, "Zmien Admin", "Change Admin");
-    DrawButtonLang(0, 60, 0, 1, 1, "Wyczysc EEPROM", "Erase EEPROM");
+    DrawButtonLang(0, 48,9, "Zmien Admin", "Change Admin");
+    DrawButtonLang(0, 60,9, "Wyczysc EEPROM", "Erase EEPROM");
   }
   
   if (stru == 5) {
     u8g2.setCursor(16, 16);
     print(F("Zmien jezyk"), F("Change Language"));
-    u8g2.drawButtonUTF8(16, 32, U8G2_BTN_BW1, 0, 1, 1, "PL");
-    u8g2.drawButtonUTF8(32, 32, U8G2_BTN_BW1, 0, 1, 1, "EN");
+    DrawButton(16, 32, 9, "PL");
+    DrawButton(32, 32, 9, "EN");
   }
   
   if (stru == 6) {
@@ -107,19 +107,41 @@ void SettScreen() {
     print(F("Ustaw czulosc myszy"), F("Set mouse sensivity"));
     u8g2.setCursor(0, 32);
     printo(sens);
-    u8g2.drawButtonUTF8(16, 48, U8G2_BTN_BW1, 0, 1, 1, "+");
-    u8g2.drawButtonUTF8(32, 48, U8G2_BTN_BW1, 0, 1, 1, "-");
+    DrawButton(16, 48, 9, "+");
+    DrawButton(32, 48, 9, "-");
   }
   
   if (stru == 8) {
-    DrawButtonLang(16, 16, 0, 1, 1, "Wycisz", "Mute  ");
-  }
+    if (urz == PORT_BUZZER) {
+    DrawButtonLang(16, 16,9, "Wycisz", "Mute  ");}
+    if (urz == PORT_DISTANCE) {
+      if (distMode == DIST_MODE_SAVER) {
+      DrawButtonLang(16, 16,9, "Odleglosc: wygaszacz", "Distance: saver");}else {
+        DrawButtonLang(16, 16,9, "Odleglosc: scroll", "Distance: scroll");
+      }
+    }
+  
+  if (urz == PORT_NOTHING) {
+    DrawButtonLang(16, 32,9, "Nic        ", "Nothing    ");
+  }if (urz == PORT_BUZZER) {
+    DrawButtonLang(16, 32,9, "Buzzer     ", "Buzzer     ");    
+  }if (urz == PORT_JOYSTICK) {
+    DrawButtonLang(16, 32,9, "Joystick   ", "Joystick   ");    
+  }if (urz == PORT_DISTANCE) {
+    DrawButtonLang(16, 32,9, "Odleglosc  ", "Distance   ");    
+  }if (urz == PORT_BALI) {
+    DrawButtonLang(16, 32,9, "Bali Switch", "Bali Switch");    
+  }if (urz == PORT_RGB) {
+    DrawButtonLang(16, 32,9, "dioda RGB  ", "RGB diode  ");    
+  }if (urz == PORT_BUTTONS) {
+    DrawButtonLang(16, 32,9, "Przyciski  ", "Buttons    ");    
+  }}
   
   DrawMouse();
 }
 
 void Sett() {
-  Serial.println(scroll);
+  DEBUG_PRINTLN(scroll);
   if (i == 'A') {
     stru = 0;
   }
@@ -208,10 +230,29 @@ void Sett() {
   }
   
   if (stru == 8) {
+
     if (X > 14 && Y > 10 && X < 44 && Y < 18) {
       if (i == '5') {
+        if (urz == PORT_BUZZER) {
         wycisz = !wycisz;
-        EEPROM.update(13, wycisz);
+        EEPROM.update(13, wycisz);} if (urz == PORT_DISTANCE) {
+          distMode = !distMode;
+          EEPROM.update(15, distMode);
+          DEBUG_PRINTLN(distMode);
+        }
+      }
+    }
+
+      
+    
+    if (X > 14 && Y > 24 && X < 72 && Y < 34) {
+      if (i == '5') {
+        urz++;
+        EEPROM.update(14, urz);
+        UpdatePort();
+        if (urz > 6) {
+          urz = 0;
+        }
       }
     }
   }

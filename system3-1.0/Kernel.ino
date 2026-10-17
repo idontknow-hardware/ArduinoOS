@@ -1,5 +1,7 @@
-
-uint8_t urz = 1;
+bool joystick = 0;
+bool distMode = EEPROM.read(15);
+unsigned long OstatniPomiar = 0; 
+uint8_t urz = EEPROM.read(14);
 bool wycisz = EEPROM.read(13);
 int jezyk = EEPROM.read(1);
 bool admin = EEPROM.read(2);
@@ -18,8 +20,17 @@ uint8_t sens = EEPROM.read(11);
 uint8_t o = 0;
 bool p = 0;
 
+void print(const __FlashStringHelper* pl, const __FlashStringHelper* en) {
+  if (jezyk == 0) u8g2.print(pl);
+  else            u8g2.print(en);
+}
+void print(const char* pl, const char* en) {
+  if (jezyk == 0) u8g2.print(pl);
+  else            u8g2.print(en);
+}
 
-const char keyboard[4][10] = {
+
+const char keyboard[4][10] PROGMEM = {
   {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'},
   {'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'},
   {'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ' '},
@@ -34,6 +45,8 @@ void moveMouse(char i) {
   if (sens == 0) {
     sens = 1;
   }
+  
+
   if (i == '4') mouseX -= sens; 
   if (i == '6') mouseX += sens; 
   if (i == '2') mouseY -= sens; 
@@ -43,17 +56,29 @@ void moveMouse(char i) {
     mouseX = TABX[TABidx];
     mouseY = TABY[TABidx];
     TABidx++;
-    if (TABidx >= sizeof(TABX) / sizeof(TABX[0])) {
+    if (TABidx >= 3) {
       TABidx = 0;
     }
   }
+  if (i == 'D') {
+    joystick = !joystick;
+  }
+  if (joystick == 1) {
+  if (urz == PORT_JOYSTICK) {
+  mouseX = mouseX + ((analogRead(A1) - 503) / 20);
+  mouseY = mouseY + ((analogRead(A2) - 519) / 20);
+    DEBUG_PRINTLN("Przesunięcie X, Y:");
+    DEBUG_PRINT(analogRead(A1));
+    DEBUG_PRINT(" ");
+    DEBUG_PRINT(analogRead(A2));
+  }}
 }
 
-void DrawButtonLang(uint8_t X, uint8_t Y, uint8_t w, uint8_t padding_h, uint8_t padding_v, const char *pl, const char *en) {
+void DrawButtonLang(uint8_t X, uint8_t Y, uint8_t h, const char *pl, const char *en) {
   if (jezyk == 0) {
-    u8g2.drawButtonUTF8(X, Y, U8G2_BTN_BW1, 0, 1, 1, pl);
+    DrawButton(X, Y, h, pl);
   } else {
-    u8g2.drawButtonUTF8(X, Y, U8G2_BTN_BW1, 0, 1, 1, en);    
+    DrawButton(X, Y, h, en);    
   }
 }
 
@@ -77,16 +102,18 @@ void Keyboard(char i) {
         if (c == 7) u8g2.print(F("_"));
         break; 
       }
-      u8g2.print(keyboard[r][c]);
+
+      u8g2.print((char)pgm_read_byte(&(keyboard[r][c])));
     }
   }
 }
 
-
 char getKeyboard() {
   int WX = round(float(mouseX + 5) / 8); 
   int WY = round(float(mouseY - 32 + 5) / 9); 
-  return keyboard[WY - 1][WX - 1];}
+
+  return (char)pgm_read_byte(&(keyboard[WY - 1][WX - 1]));
+}
 
 uint16_t GetFileAddress(uint8_t plik) {
   return StartFile + (plik * FileLength);
@@ -101,7 +128,7 @@ uint8_t FreeFiles() {
       freefiles++;
     }
   } 
-  Serial.println(freefiles);
+  DEBUG_PRINTLN(freefiles);
   return freefiles;
 }
 
@@ -180,10 +207,12 @@ uint8_t getFileFlag(uint8_t plik) {
   uint16_t addr = GetFileAddress(plik);
   return EEPROM.read(addr);
 }
+
 uint8_t LoadFileByte(uint8_t plik, uint8_t idx) {
   uint16_t addr = GetFileAddress(plik);
   return EEPROM.read(addr + DataStart + idx);
 }
+
 uint8_t SetFileByte(uint8_t plik, uint8_t idx, uint8_t war) {
   uint16_t addr = GetFileAddress(plik);
   EEPROM.update(addr + DataStart + idx, war);
@@ -194,17 +223,48 @@ void WriteAll() {
   EEPROM.update(1, jezyk);
   EEPROM.update(2, admin);
   
-
   for (uint8_t k = 0; k < 8; k++) {
     EEPROM.update(3 + k, name[k]);
   }
 
+  #if DEBUG
+    DEBUG_PRINT(EEPROM.read(0));
+    DEBUG_PRINT(EEPROM.read(1));
+    DEBUG_PRINT(EEPROM.read(2));
+  #endif
+}
 
-    Serial.print(EEPROM.read(0));
-    Serial.print(EEPROM.read(1));
-    Serial.print(EEPROM.read(2));
+void UpdatePort() {
+  pinMode(A0, INPUT);
+  pinMode(A1, INPUT);
+  pinMode(A2, INPUT);
+  
+
+  if (urz == PORT_BUZZER) { 
+    pinMode(A0, OUTPUT);
+  }
+  if (urz == PORT_JOYSTICK) {
+    pinMode(A1, INPUT);
+    pinMode(A2, INPUT);
+    pinMode(A0, INPUT_PULLUP);
+  }
+  if (urz == PORT_DISTANCE) { 
+    pinMode(A0, OUTPUT);
+    pinMode(A1, INPUT);
+  }
+  if (urz == PORT_BALI || urz == PORT_BUTTONS) {
+    pinMode(A0, INPUT_PULLUP);
+    pinMode(A1, INPUT_PULLUP);
+    pinMode(A2, INPUT_PULLUP);
+  }
+  if (urz == PORT_RGB) { 
+    pinMode(A0, OUTPUT);
+    pinMode(A1, OUTPUT);
+    pinMode(A2, OUTPUT);
+  }
 
 }
+
 int32_t daysFromCivil(int y, unsigned m, unsigned d) {
   y -= m <= 2;
   const int32_t  era = (y >= 0 ? y : y - 399) / 400;
@@ -230,6 +290,9 @@ void civilFromDays(int32_t z, int &y, unsigned &m, unsigned &d) {
 uint32_t unixNow() {
   Ds1302::DateTime dt;
   rtc.getDateTime(&dt);
+  if (dt.year > 30 || dt.month == 0 || dt.month > 12 || dt.day == 0 || dt.day > 31) {
+    return 820108800UL;
+  }
   return (uint32_t)daysFromCivil(2000 + dt.year, dt.month, dt.day) * 86400UL
        + dt.hour   * 3600UL
        + dt.minute * 60UL
@@ -258,3 +321,39 @@ void Buzz(uint16_t dur, uint16_t freq) {
     tone(A0, freq, dur);
   }
 }
+uint16_t ReadDistance() {
+  if (urz != PORT_DISTANCE) return 0;
+
+  digitalWrite(A0, LOW);
+  delayMicroseconds(2);
+  digitalWrite(A0, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(A0, LOW);
+
+  unsigned long duration = pulseIn(A1, HIGH, 20000UL); 
+  
+
+  if (duration == 0) {
+    return 999; 
+  }
+
+  uint16_t wynik = duration / 58;
+  
+
+  if (wynik == 0) {
+    return 1;
+  }
+
+  #if DEBUG
+    Serial.println(wynik);
+  #endif
+
+  return wynik; 
+}
+void RGB(uint8_t r, uint8_t g, uint8_t b) {
+  if (urz == PORT_RGB) {
+    digitalWrite(A0, r);
+    digitalWrite(A1, g);
+    digitalWrite(A2, b);
+  }
+} 
