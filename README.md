@@ -5,7 +5,9 @@ English readme: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS3/
 ArduinoOS 3 to kolejna wersja mojego projektu ArduinoOS
 Możesz przetestować demo w serwisie Wokwi: https://wokwi.com/projects/478123317363453953
 
-UWAGA! JEST TO DEMO PROJEKTU! WIELE FUNKCJI ZWYCZAJNIE NIE JEST DOSTĘPNE! (np. RTC, EEPROM)
+UWAGA! JEST TO DEMO PROJEKTU! WIELE FUNKCJI ZWYCZAJNIE NIE JEST DOSTĘPNE! 
+RTC - niedostępny ten konkretny moduł na platformię
+EEPROM - działa ale do restartu symulacji
 ## Wydania
 1. pre1f3-1.0 - rozpoczęto prace nad ArduinoOS 3! *Wydano: 28.09.2026*
 2. pre2f3-1.0 - dodano grę dinozaur oraz optymalizacje stworzone przez @chackAJMCPE oraz dodano obsługę buzzera i możliwość jego wyciszenia w ustawieniach *Wydano: 3.10.2026*
