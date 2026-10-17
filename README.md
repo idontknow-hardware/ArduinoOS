@@ -6,7 +6,9 @@ ArduinoOS 3 to kolejna wersja mojego projektu ArduinoOS
 Możesz przetestować demo w serwisie Wokwi: https://wokwi.com/projects/478123317363453953
 
 UWAGA! JEST TO DEMO PROJEKTU! WIELE FUNKCJI ZWYCZAJNIE NIE JEST DOSTĘPNE! 
-RTC - niedostępny ten konkretny moduł na platformię
+
+RTC - na platformie Wokwi niedostępny jest konkretny moduł zegara używany przez projekt
+
 EEPROM - działa ale do restartu symulacji
 ## Wydania
 1. pre1f3-1.0 - rozpoczęto prace nad ArduinoOS 3! *Wydano: 28.09.2026*
