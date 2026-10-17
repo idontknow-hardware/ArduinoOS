@@ -16,6 +16,7 @@ EEPROM - działa ale do restartu symulacji
 3. pre3f3-1.0 - dodano przeglądarkę plików oraz notatnik *Wydano: 10.10.2026*
 4. pre4f3-1.0 - dodano port wielofunkcyjny (można podłączyć joystick, czujnik odległości i LED RGB. Dodano także brakujące funkcje w notatniku (prosimy nie przejmować się definicjami-duchami innych funkcji portu wielofunkcyjnego, zostaną dodane w swoim czasie) *Wydano: 17.10.2026*
 5. pre5f3-1.0 - dodano menu pomocy (nie martwcie się tym że w ustawieniach pisze że dalej mamy ArduinoOS 3 v. pre3f3-1.0, zapomniałem zaktualizować) *Wydano: 17.10.2026*
+6. pre6f3-1.0 - dodano multitasking (max. 3 aplikacje w tle) *Wydano: 17.10.2026*
 ## Wymagania
 **Wymagania minimalne**:
 1. Arduino Uno
