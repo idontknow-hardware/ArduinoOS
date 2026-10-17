@@ -48,7 +48,8 @@ struct App {
   void (*screen)();
   const uint8_t *icon;
 };
-
+uint8_t works = 0;
+uint8_t working[3] = {};
 const App apps[] PROGMEM = {
   { "Zegar",      "Clock",    Clock, ClockScreen, zegar       },
   { "Ustawienia", "Settings", Sett,  SettScreen,  ustawienia  },
@@ -396,12 +397,18 @@ if (app > -1) {
         }
       if (i == '5') {
         app = selApp; 
+        working[works] = selApp;
+        works++;
       }
     }
+    for (uint8_t x = 0; x < sizeof(working); x++) {
+      void (*runFunc)() = (void (*)())pgm_read_ptr(&(apps[working[x]].run));
+    if (runFunc) runFunc();
+    }
+
     if (app > -1) {
   void (*runFunc)() = (void (*)())pgm_read_ptr(&(apps[app].run));
   if (runFunc) runFunc(); 
- 
       if (i == '*') {
         app = -1; 
       }
