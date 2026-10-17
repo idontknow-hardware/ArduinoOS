@@ -30,6 +30,29 @@ EEPROM - działa ale do restartu symulacji
 3. Keypad 4x4
 4. RTC
 5. Jedno z urządzeń które można podłączyć do portu wielofunkcyjnego (buzzer, joytsick, czujnik odleglości dioda RGB)
+
+## Podłączenie:
+2-5 -> R1-R4 keypada
+6-9 -> C1-C4 keypada
+SCL -> SCL ekranu
+SDA -> SDA ekranu
+10,11,12 -> RTC
+i oczywiście GND i VCC gdzie jest potrzebne.
+
+## Port wielofunkcyjny
+port wielofunkcyjny pozwala podłączać różne urządzenia. Obsługiwane:
+1. joystick (A0 - przycisk, A1 - X, A2 - Y)
+2. czujnik odległości (A0 - trig, A1 - echo)
+3. Dioda RGB (A0 - R, A1 - G, A2 - B)
+
+## Własne aplikacje
+1. Tworzysz nowy plik w folderze
+2. Tworzysz 2 funkcje: xScreen() i x() (to są zalecane nazwy gdzie x to nazwa / skrót dla twojej aplikacji)
+3. przechodzisz do pliku system3-1.x gdzie x to obecna wersja
+4. tutaj w miejscu gdzie są inne funkcje ponownie wpisujesz nazwy swoich funkcji (bez definiowania ponieważ są zdefiniowane w innym pliku)
+5. Następnie odnajdujesz tablicę apps[]. Otwierasz nowy nawias w tablicy (nie zapomnij o przecinku na zakończeniu starego)
+6. w nawias wpisujesz następujące dane: nazwa aplikacji pl, nazwa aplikacji ang, nazwa twojej funkcji bez Screen, nazwa twojej funkcji z Screen, nazwa ikony (jeśli nie chce ci się stworzyć swojej możesz użyć wbudowane w system)
+
 ## Licencja
 
 Projekt jest dostępny na licencji **GNU General Public License w wersji 3 (GPLv3)**.  
