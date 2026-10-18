@@ -61,6 +61,7 @@ ZNAJDZIESZ TAM TEŻ URZĄDZENIA KTÓRE JESZCZE NIE MAJĄ ŻADNYCH FUNKCJI, ONE Z
 4. tutaj w miejscu gdzie są inne funkcje ponownie wpisujesz nazwy swoich funkcji (bez definiowania ponieważ są zdefiniowane w innym pliku)
 5. Następnie odnajdujesz tablicę apps[]. Otwierasz nowy nawias w tablicy (nie zapomnij o przecinku na zakończeniu starego)
 6. w nawias wpisujesz następujące dane: nazwa aplikacji pl, nazwa aplikacji ang, nazwa twojej funkcji bez Screen, nazwa twojej funkcji z Screen, nazwa ikony (przykład zdefiniowanej ikony: const unsigned char nazwa[] PROGMEM = {}, można użyć edytora bitmap który pokazuje też wynik jako tablicę np strony https://xbm.jazzychad.net (rozmiar 16x16), jeśli nie chce ci się stworzyć swojej możesz użyć wbudowane w system). Przykład (kalkulator, aplikacja nie istnieje w systemie, to przykład): {"Kalkulator", "Calculator", "Calc", "CalcScreen", kalkulator}
+!UWAGA! Sam ArduinoOS 3 zajmuje dużo pamięci Flash! Jeśli chcesz stworzyć własną aplikację rozważ usunięcie części funkcji systemu!
 
 ## System plików
 Dane plików zaczynają się od 65 bajtu, poniżej są dane dla systemu.
