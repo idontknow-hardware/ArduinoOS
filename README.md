@@ -13,12 +13,18 @@ EEPROM - działa ale do restartu symulacji
 ## Znane błędy
 Legenda:
 🟩 - błąd o małej ważności dla działania systemu (literówki, błędy w funkcjach informacyjnych)
+
 🟧 - błąd o średniej wartości dla działania funkcji systemu (małe błędy w funkcjach nieczęsto używanych)
+
 🟥 - błąd o wysokiej ważności dla działania systemu (błędy w funkcjach które są wymagane do działania systemu)
+
 Statusy:
 Podejrzenie - nie sprawdzony błąd, jednak jest podejrzenie że jest taki problem
+
 Potwierdzone - błąd istnieje, nie naprawiony
+
 Naprawiony - błąd został naprawiony
+
 1. Funkcja zwracająca liczbę wolnych plików nie uwzględnia plików usuniętych.
  a) Ważność: 🟩
  b) Skutki: użytkownik w trakcie uruchamiania jest informowany tylko o plikach które nie zostały jeszcze zapisane, a pliki usunięte są przez funkcje liczone jako pliki normalnie istniejące
