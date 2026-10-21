@@ -10,6 +10,20 @@ UWAGA! JEST TO DEMO PROJEKTU! WIELE FUNKCJI ZWYCZAJNIE NIE JEST DOSTĘPNE!
 RTC - na platformie Wokwi niedostępny jest konkretny moduł zegara używany przez projekt
 
 EEPROM - działa ale do restartu symulacji
+## Znane błędy
+Legenda:
+🟩 - błąd o małej ważności dla działania systemu (literówki, błędy w funkcjach informacyjnych)
+🟧 - błąd o średniej wartości dla działania funkcji systemu (małe błędy w funkcjach nieczęsto używanych)
+🟥 - błąd o wysokiej ważności dla działania systemu (błędy w funkcjach które są wymagane do działania systemu)
+Statusy:
+Podejrzenie - nie sprawdzony błąd, jednak jest podejrzenie że jest taki problem
+Potwierdzone - błąd istnieje, nie naprawiony
+Naprawiony - błąd został naprawiony
+1. Funkcja zwracająca liczbę wolnych plików nie uwzględnia plików usuniętych.
+ a) Ważność: 🟩
+ b) Skutki: użytkownik w trakcie uruchamiania jest informowany tylko o plikach które nie zostały jeszcze zapisane, a pliki usunięte są przez funkcje liczone jako pliki normalnie istniejące
+ c) Status: podejrzenie
+ d) wersja systemu która naprawia błąd: - (błąd dalej obecny)
 ## Plan rozwoju
 UWAGA! NIE JEST TO OBIETNICA, JEŚLI STWIERDZĘ ŻE COŚ JEST ZA TRUDNE DO ZAIMPLEMENTOWANIA TO ZWYCZAJNIE NIE ZOSTANIE DODANE!
 1. Dodanie importu i eksportu plików oraz całego EEPROMu przez Serial Port
