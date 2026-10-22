@@ -96,7 +96,7 @@ case 6: {
     u8g2.setCursor(0, 48);
     print(F("Wersja systemu:"), F("System version:"));
     u8g2.setCursor(0, 56);
-    printo(F("ArduinoOS 3 v. pre7f3-1.0"));
+    printo(F("ArduinoOS 3 v. pre7af3-1.0"));
     break;}
 case 7: { 
     u8g2.setCursor(0, 16);

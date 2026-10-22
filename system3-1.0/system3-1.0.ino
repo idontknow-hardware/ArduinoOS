@@ -55,7 +55,7 @@ uint8_t works = 0;
 uint8_t working[3] = {};
 const App apps[] PROGMEM = {
   { "Zegar",      "Clock",    Clock, ClockScreen, zegar       },
-  { "Ustawienia", "Settings", Sett,  SettScreen,  ustawienia  },
+  { "Ustawienia",   "Settings", Sett,  SettScreen,  ustawienia  },
   { "Dinozaur",   "Dinosaur", Dino,  DinoScreen,  dinozaur    },
   { "Pliki", "Files", Przeg, PrzegScreen, przegladarka},
   { "Notatnik",   "Notes",    Not,   NotScreen,   notatnik    },
@@ -82,7 +82,7 @@ void DrawLauncher() {
   u8g2.print((const __FlashStringHelper *)nmPtr);
 
   u8g2.setFont(u8g2_font_5x7_tr);
-  u8g2.setCursor(60, 60);
+  u8g2.setCursor(60, 50);
   printo((unsigned)(selApp + 1));
   printo('/');
   printo((unsigned)APP_COUNT);

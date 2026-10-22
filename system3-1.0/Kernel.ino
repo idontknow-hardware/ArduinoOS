@@ -128,7 +128,8 @@ uint8_t FreeFiles() {
   for (uint8_t i = 0; i < 11; i++) {
     uint16_t addr = GetFileAddress(i);
     uint8_t fType = EEPROM.read(addr + Type);
-    if (fType == 0 || fType == 255) {
+    uint8_t fFlag = EEPROM.read(addr + Flag);
+    if (fType == 0 || fType == 255 || fFlag == FLAG_DELETE) {
       freefiles++;
     }
   } 
