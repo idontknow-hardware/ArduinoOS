@@ -67,12 +67,14 @@ UWAGA! NIE JEST TO OBIETNICA, JEŚLI STWIERDZĘ ŻE COŚ JEST ZA TRUDNE DO ZAIMP
 3. Keypad 4x4
 4. RTC
 
+
 **Wymagania zalecane**:
 1. Arduino Uno
 2. OLED 128x64
 3. Keypad 4x4
 4. RTC
 5. Jedno z urządzeń które można podłączyć do portu wielofunkcyjnego (buzzer, joytsick, czujnik odleglości dioda RGB)
+6. Termometr kompatybilny z DS18B20 do pomiaru temperatury (Jeśli nie dodany pasek informacyjny w sekcji temperatury pokazuje 48)
 
 ## Podłączenie:
 2-5 -> R1-R4 keypada
