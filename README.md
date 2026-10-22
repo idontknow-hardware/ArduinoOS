@@ -25,6 +25,8 @@ Potwierdzone - błąd istnieje, nie naprawiony
 
 Naprawiony - błąd został naprawiony
 
+Błąd nigdy nie istniał (podejrzenia się nie sprawdziły)
+
 1. Funkcja zwracająca liczbę wolnych plików nie uwzględnia plików usuniętych.
  a) Ważność: 🟩
  b) Skutki: użytkownik w trakcie uruchamiania jest informowany tylko o plikach które nie zostały jeszcze zapisane, a pliki usunięte są przez funkcje liczone jako pliki normalnie istniejące
