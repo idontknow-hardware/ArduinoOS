@@ -29,7 +29,20 @@ Naprawiony - błąd został naprawiony
  a) Ważność: 🟩
  b) Skutki: użytkownik w trakcie uruchamiania jest informowany tylko o plikach które nie zostały jeszcze zapisane, a pliki usunięte są przez funkcje liczone jako pliki normalnie istniejące
  c) Status: podejrzenie
- d) wersja systemu która naprawia błąd: - (błąd dalej obecny)
+ d) Od: ?
+ e) wersja systemu która naprawia błąd: - (błąd dalej obecny)
+2. Liczba aplikacji w menu nachodzi na pasek informacyjny
+ a) Ważność: 🟩
+ b) Skutki: Użytkownik nie może odczytać którą aplikację z koleji wybiera (nazwa dalej widoczna)
+ c) Status: potwierdzenie
+ d) Od: pre7f3-1.0
+ e) wersja systemu która naprawia błąd: - (błąd dalej obecny)
+3. Ustawienia z niewiadomych przyczyn wyświetlają swoją nazwę po polsku i po angielsku naraz
+ a) Ważność: 🟩
+ b) Skutki: Znikome, użytkownik dalej może odczytać aplikacje
+ c) Status: potwierdzenie
+ d) Od: ?
+ e) wersja systemu która naprawia błąd: - (błąd dalej obecny)
 ## Plan rozwoju
 UWAGA! NIE JEST TO OBIETNICA, JEŚLI STWIERDZĘ ŻE COŚ JEST ZA TRUDNE DO ZAIMPLEMENTOWANIA TO ZWYCZAJNIE NIE ZOSTANIE DODANE!
 1. Statystyki systemowe
