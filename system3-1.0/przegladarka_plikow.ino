@@ -6,26 +6,21 @@ uint8_t poz = 0;
 int plikPodMyszka = -1;
 int plikMenu = 0;
 bool menu = 0;
+uint8_t kod = 0;
+uint8_t liczba = 0;
+int i_p = 0;
+bool menus = 0;
+uint16_t importAddr = 0;
 const unsigned char NOTKA[] PROGMEM = {
- 0xfc,0x3f,0x04,0x20,0x84,0x27,0xfc,0x3f,0x04,0x26,0xfc,0x2f,
- 0x04,0x38,0x74,0x23,0xd4,0x27,0xe4,0x3c,0xb4,0x26,0x94,0x3f,
- 0x14,0x3e,0xf4,0x3c,0x14,0x30,0xfc,0x3f};
+ 0x7e,0x6a,0x56,0x56,0x6a,0x6a,0x56,0x7e};
  const unsigned char DANE[] PROGMEM = {
-  0xa7,0x13,0xb5,0x1a,0xa5,0x12,0xa5,0x12,0xa7,0x13,0xa7,0x13,
-  0xb5,0x1a,0xa5,0x12,0xa5,0x12,0xa7,0x13,0xa7,0x13,0xb5,0x1a,
-  0xa5,0x12,0xa5,0x12,0xa7,0x13};
+ 0xf7,0xbd,0xf7,0xf7,0xbd,0xf7,0xf7,0xbd};
 const unsigned char ANIMACJA[] PROGMEM = {
- 0xff,0x07,0xad,0x05,0x21,0x04,0xb3,0x05,0x6d,0x06,0xff,0x07,
- 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
- 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+ 0x0f,0x0f,0x0f,0x0f,0x00,0x00,0x00,0x00};
 const unsigned char ANIMACJAL[] PROGMEM = {
- 0xff,0x03,0x49,0x02,0x49,0x02,0x85,0x02,0x79,0x02,0xff,0x03,
- 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
- 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+ 0xff,0xff,0xff,0xff,0x00,0x00,0x00,0x00};
 const unsigned char KOSZ[] PROGMEM = {
- 0xe0,0x03,0xf0,0x07,0xf8,0x1f,0xff,0xff,0xf8,0x1f,0xf8,0x1f,
- 0xf8,0x1f,0xf8,0x1f,0xf8,0x1f,0xf8,0x1f,0xf8,0x1f,0xf8,0x1f,
- 0xf8,0x1f,0xf8,0x1f,0xf8,0x1f,0xf8,0x1f};
+ 0x08,0x1c,0x3e,0x3e,0x3e,0x3e,0x3e,0x3e};
 void PrzegScreen() {
   u8g2.setFont(u8g2_font_5x7_tr);
   if (n_file == 0) {
@@ -42,25 +37,25 @@ for (int x = 0; x < 11; x++) {
   if (prawidlowyTyp) {
 
     if (flag == FLAG_DELETE) {
-      u8g2.drawXBMP(x * 16, 32, 16, 16, KOSZ);
+      u8g2.drawXBMP(x * 8, 32, 8, 8, KOSZ);
     } 
     else if (flag >= FLAG_CORRUPTED) {
 
-      u8g2.drawXBMP(x * 16, 32, 16, 16, KOSZ); 
+      u8g2.drawXBMP(x * 8, 32, 8, 8, KOSZ); 
     } 
     else {
 
-      if (type == TYPE_NOTE) u8g2.drawXBMP(x * 16, 32, 16, 16, NOTKA);
-      if (type == TYPE_DATA) u8g2.drawXBMP(x * 16, 32, 16, 16, DANE);
-      if (type == TYPE_ANIMATION) u8g2.drawXBMP(x * 16, 32, 16, 16, ANIMACJA);
-      if (type == TYPE_BANIMATION) u8g2.drawXBMP(x * 16, 32, 16, 16, ANIMACJAL);
+      if (type == TYPE_NOTE) u8g2.drawXBMP(x * 8, 32, 8, 8, NOTKA);
+      if (type == TYPE_DATA) u8g2.drawXBMP(x * 8, 32, 8, 8, DANE);
+      if (type == TYPE_ANIMATION) u8g2.drawXBMP(x * 8, 32, 8, 8, ANIMACJA);
+      if (type == TYPE_BANIMATION) u8g2.drawXBMP(x * 8, 32, 8, 8, ANIMACJAL);
     }
 
 
-    int xStart = x * 16;
-    int xEnd = xStart + 16;
+    int xStart = x * 8;
+    int xEnd = xStart + 8;
     int yStart = 32; 
-    int yEnd = yStart + 16;
+    int yEnd = yStart + 8;
     
     if (mouseX >= xStart && mouseX < xEnd && mouseY >= yStart && mouseY < yEnd) {
       plikPodMyszka = x;
@@ -70,6 +65,53 @@ for (int x = 0; x < 11; x++) {
 
 
 if (plikPodMyszka != -1) {
+  if (i == 'A') {
+    int addr = GetFileAddress(plikPodMyszka);
+    for (int ad = addr; ad < addr + FileLength; ad++) {
+      if (ad == addr) {
+        Serial.println("D");
+      }
+      if (EEPROM.read(ad) < 100) {
+        Serial.print('0');
+      }
+      if (EEPROM.read(ad) < 10) {
+        Serial.print('0');
+      }
+      Serial.print(EEPROM.read(ad));
+    }
+  }
+if (Serial.available()) {
+  int c = Serial.read();
+
+  if (c == 'D' && menus == 0) {
+    int8_t f = FirstFree();
+
+    if (f >= 0) {
+      importAddr = GetFileAddress(f);
+      menus = 1;
+      i_p = 0;
+      liczba = 0;
+      kod = 0;
+    }
+  }
+  else if (menus == 1 && c >= '0' && c <= '9') {
+    kod = kod * 10 + c - '0';
+    liczba++;
+
+    if (liczba == 3) {
+      EEPROM.update(importAddr + i_p, kod);
+      i_p++;
+      kod = 0;
+      liczba = 0;
+
+      if (i_p >= FileLength) {
+        EEPROM.update(importAddr + Flag, FLAG_IS);
+        menus = 0;
+        i_p = 0;
+      }
+    }
+  }
+}
   u8g2.setCursor(16, 56);
   print(F("Nazwa: "), F("Name: "));
   GetFileName(plikPodMyszka);
@@ -124,6 +166,11 @@ if (plikPodMyszka != -1) {
   }
 }
 void Przeg() {
+  if (i == '*') {
+    menu = 0;
+    return;
+  }
+
   DEBUG_PRINTLN(type);
 if (n_file == 0) {
   if (menu == 0) {
@@ -137,6 +184,10 @@ if (i == '5' && menu == 0 && plikPodMyszka != -1) {
 
 }
 }else {
+if (i == '5' && X >= 16 && X < 53 && Y >= 54 && Y <= 63) {
+  menu = 0;
+  return;
+}
   if (X > 14 && Y > 4 && X < 45 && Y < 13) {
     if (i == '5') {
     setFileFlag(plikMenu, FLAG_DELETE);
@@ -146,10 +197,7 @@ if (i == '5' && menu == 0 && plikPodMyszka != -1) {
     if (i == '5') {
     setFileFlag(plikMenu, FLAG_IS);}
   }
-  if (X > 14 && Y > 53 && X < 51 && Y < 61) {
-    if (i == '5') {
-    menu = 0;}
-  }
+
   if (X > 14 && Y > 36 && X < 46 && Y < 46) {
     if (i == '5') {
       app = 4;

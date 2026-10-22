@@ -92,7 +92,7 @@ void Dino() {
       }
       x_kaktus[ik] = random(16, 128);
       for (int ik2 = 0; ik2 < 3; ik2++) {
-       if (x_kaktus[ik2] > x_kaktus[ik] - 32 and x_kaktus[ik2] < x_kaktus[ik] + 1) {
+       if (x_kaktus[ik2] > x_kaktus[ik] - 32 && x_kaktus[ik2] < x_kaktus[ik] + 1) {
         x_kaktus[ik2] = x_kaktus[ik2] + 32;
        }
       }

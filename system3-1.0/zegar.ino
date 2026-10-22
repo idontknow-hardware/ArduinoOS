@@ -1,15 +1,14 @@
 void ClockScreen() {
   // kod dla ekranu / code for screen
 
-  uint32_t t = unixNow();
-  int32_t days = (int32_t)(t / 86400UL);
-  uint32_t rem = (uint32_t)(t % 86400UL);
-  int y;
-  unsigned m, d;
-  civilFromDays(days, y, m, d);
-  uint8_t h = rem / 3600;
-  uint8_t mi = (rem % 3600) / 60;
-  uint8_t se = rem % 60;
+  Ds1302::DateTime dt;
+  rtc.getDateTime(&dt);
+  uint8_t h = dt.hour;
+  uint8_t mi = dt.minute;
+  uint8_t se = dt.second;
+  uint8_t d = dt.day;
+  uint8_t m = dt.month;
+  uint8_t y = dt.year;
 
   u8g2.setCursor(0, 32);
   if (h < 10) {
@@ -37,6 +36,7 @@ void ClockScreen() {
   }
   printo(m);
   printo('.');
+  printo("20");
   printo(y);
   DrawMouse();
 }

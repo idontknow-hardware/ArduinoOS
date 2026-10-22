@@ -19,7 +19,10 @@ char namef[8] = {};
 uint8_t sens = EEPROM.read(11);
 uint8_t o = 0;
 bool p = 0;
-
+uint8_t blad = 0;
+int8_t temp = 0;
+long czasT;
+long czasZT;
 void print(const __FlashStringHelper* pl, const __FlashStringHelper* en) {
   if (jezyk == 0) u8g2.print(pl);
   else            u8g2.print(en);
@@ -106,11 +109,12 @@ void Keyboard(char i) {
       u8g2.print((char)pgm_read_byte(&(keyboard[r][c])));
     }
   }
+
 }
 
 char getKeyboard() {
-  int WX = round(float(mouseX + 5) / 8); 
-  int WY = round(float(mouseY - 32 + 5) / 9); 
+  int WX = round(float((mouseX + 5) / 8)); 
+  int WY = round(float((mouseY - 32 + 5) / 9)); 
 
   return (char)pgm_read_byte(&(keyboard[WY - 1][WX - 1]));
 }
@@ -264,58 +268,6 @@ void UpdatePort() {
   }
 
 }
-
-int32_t daysFromCivil(int y, unsigned m, unsigned d) {
-  y -= m <= 2;
-  const int32_t  era = (y >= 0 ? y : y - 399) / 400;
-  const uint32_t yoe = y - era * 400;
-  const uint32_t doy = (153 * (m + (m > 2 ? -3 : 9)) + 2) / 5 + d - 1;
-  const uint32_t doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
-  return era * 146097 + (int32_t)doe - 719468;
-}
-
-void civilFromDays(int32_t z, int &y, unsigned &m, unsigned &d) {
-  z += 719468;
-  const int32_t  era = (z >= 0 ? z : z - 146096) / 146097;
-  const uint32_t doe = z - era * 146097;
-  const uint32_t yoe = (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365;
-  const int      yy  = (int)yoe + era * 400;
-  const uint32_t doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
-  const uint32_t mp  = (5 * doy + 2) / 153;
-  d = doy - (153 * mp + 2) / 5 + 1;
-  m = mp + (mp < 10 ? 3 : -9);
-  y = yy + (m <= 2);
-}
-
-uint32_t unixNow() {
-  Ds1302::DateTime dt;
-  rtc.getDateTime(&dt);
-  if (dt.year > 30 || dt.month == 0 || dt.month > 12 || dt.day == 0 || dt.day > 31) {
-    return 820108800UL;
-  }
-  return (uint32_t)daysFromCivil(2000 + dt.year, dt.month, dt.day) * 86400UL
-       + dt.hour   * 3600UL
-       + dt.minute * 60UL
-       + dt.second;
-}
-
-void unixSet(uint32_t t) {
-  const int32_t  days = (int32_t)(t / 86400UL);
-  const uint32_t rem  = (uint32_t)(t % 86400UL);
-  int y; unsigned m, d;
-  civilFromDays(days, y, m, d);
-
-  Ds1302::DateTime dt;
-  dt.year   = y - 2000;
-  dt.month  = m;
-  dt.day    = d;
-  dt.hour   = rem / 3600;
-  dt.minute = (rem % 3600) / 60;
-  dt.second = rem % 60;
-  dt.dow    = 1;
-  rtc.setDateTime(&dt);
-}
-
 void Buzz(uint16_t dur, uint16_t freq) {
   if (wycisz == 0 && urz == 1) { 
     tone(A0, freq, dur);
@@ -357,3 +309,71 @@ void RGB(uint8_t r, uint8_t g, uint8_t b) {
     digitalWrite(A2, b);
   }
 } 
+int8_t temperature() {
+  byte data[9];
+  byte addr[8];
+  int8_t celsius;
+  if (!ds.search(addr)) {
+    ds.reset_search();
+    delay(2);
+    return;
+  }
+  if (OneWire::crc8(addr, 7) != addr[7]) {
+    blad = 1;
+      //Serial.println("Blad: Niepoprawna suma kontrolna adresu CRC!");
+      return;
+  }
+  if (addr[0] != 0x28) {
+    blad = 2;
+      //Serial.println("Blad: Znalezione urzadzenie to nie DS18B20.");
+      return;
+  }
+  ds.reset();
+  ds.select(addr);
+  ds.write(0x44);
+  delay(2);         
+  
+
+  ds.reset();
+  ds.select(addr);    
+  ds.write(0xBE);      
+
+  for (int i = 0; i < 9; i++) {           
+    data[i] = ds.read();
+  }
+int16_t raw = (data[1] << 8) | data[0];
+celsius = raw / 16; 
+  return celsius;
+}
+int Battery() {
+  ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
+  delay(2);
+  ADCSRA |= _BV(ADSC);
+  while (bit_is_set(ADCSRA, ADSC));
+  
+  long result = ADCL;
+  result |= ADCH << 8;
+  result = 1125300L / result;
+  int percent = map(result, 4000, 5181, 0, 100);
+  return constrain(percent, 0, 100);
+}
+int freeRam () {
+  extern int __heap_start, *__brkval; 
+  int v; 
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+}
+void Info() {
+  czasT = millis();
+  u8g2.drawLine(0, 55, 128, 55);
+  u8g2.setCursor(1, 64);
+  if (czasT - czasZT > 1000) {
+    temp = temperature();
+    czasZT = czasT;
+  }
+  printo("Temp: ");
+  printo(temp);
+  printo(" Batt: ");
+  printo(Battery());
+  printo(" RAM: ");
+  printo(2048 - freeRam());
+}

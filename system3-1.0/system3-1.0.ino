@@ -3,6 +3,9 @@
 #include <Wire.h>
 #include <EEPROM.h>
 #include <Ds1302.h>
+#include <OneWire.h>
+#define ONE_WIRE_BUS 13
+OneWire ds(ONE_WIRE_BUS);
 void Clock(); 
 void ClockScreen(); 
 void Sett(); 
@@ -42,8 +45,8 @@ bool t = 0;
 bool swiatlo = 0;
 unsigned long ostatniRuchMyszy = 0;
 struct App {
-  char namePL[24]; 
-  char nameEN[24]; 
+  char namePL[10]; 
+  char nameEN[10]; 
   void (*run)();
   void (*screen)();
   const uint8_t *icon;
@@ -54,7 +57,7 @@ const App apps[] PROGMEM = {
   { "Zegar",      "Clock",    Clock, ClockScreen, zegar       },
   { "Ustawienia", "Settings", Sett,  SettScreen,  ustawienia  },
   { "Dinozaur",   "Dinosaur", Dino,  DinoScreen,  dinozaur    },
-  { "Przegladarka plikow", "File explorer", Przeg, PrzegScreen, przegladarka},
+  { "Pliki", "Files", Przeg, PrzegScreen, przegladarka},
   { "Notatnik",   "Notes",    Not,   NotScreen,   notatnik    },
   { "Pomoc", "Help", pomoc, pomocScreen, pytajnik}
 };
@@ -252,6 +255,7 @@ if (app > -1) {
     } else {
       if (app == -1) {
         DrawLauncher(); 
+        Info();
       }
     }
     if (app == -1) {
@@ -323,7 +327,7 @@ if (app > -1) {
       }
     }
     if (str == 3) {
-        if (lcz > 8) {
+        if (lcz > 7) {
           str = 4; 
         }
         char l = getKeyboard(); 
@@ -374,11 +378,11 @@ if (app > -1) {
             u8g2.setPowerSave(0);
           }
         }else {
-          if (obecnaOdleglosc > 3 and obecnaOdleglosc < 13) {
+          if (obecnaOdleglosc > 3 && obecnaOdleglosc < 13) {
             i = 'B';
-          }if (obecnaOdleglosc > 16 and obecnaOdleglosc < 23) {
+          }if (obecnaOdleglosc > 16 && obecnaOdleglosc < 23) {
             i = '5';
-          }if (obecnaOdleglosc > 27 and obecnaOdleglosc < 40) {
+          }if (obecnaOdleglosc > 27 && obecnaOdleglosc < 40) {
             i = 'C';
           }
         }

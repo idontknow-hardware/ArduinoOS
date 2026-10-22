@@ -96,12 +96,6 @@ char input() {
   if (urz == PORT_JOYSTICK && digitalRead(A0) == 0) {
     return '5';
   }
-  if (Serial.available() > 0) {
-    char uartKey = Serial.read();
-    if (uartKey != '\n' && uartKey != '\r') {
-      return uartKey;
-    }
-  }
 
   return keypad();
 }
