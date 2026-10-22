@@ -32,16 +32,16 @@ Błąd nigdy nie istniał (podejrzenia się nie sprawdziły)
  b) Skutki: użytkownik w trakcie uruchamiania jest informowany tylko o plikach które nie zostały jeszcze zapisane, a pliki usunięte są przez funkcje liczone jako pliki normalnie istniejące
  c) Status: potwierdzenie
  d) Od: ?
- e) wersja systemu która naprawia błąd: - (błąd dalej obecny)
+ e) wersja systemu która naprawia błąd: pre7af3-1.0
 2. Liczba aplikacji w menu nachodzi na pasek informacyjny
  a) Ważność: 🟩
  b) Skutki: Użytkownik nie może odczytać którą aplikację z koleji wybiera (nazwa dalej widoczna)
  c) Status: potwierdzenie
  d) Od: pre7f3-1.0
- e) wersja systemu która naprawia błąd: - (błąd dalej obecny)
+ e) wersja systemu która naprawia błąd: pre7af3-1.0
 3. Ustawienia z niewiadomych przyczyn wyświetlają swoją nazwę po polsku i po angielsku naraz
  a) Ważność: 🟩
- b) Skutki: Znikome, użytkownik dalej może odczytać aplikacje
+ b) Skutki: Znikome, użytkownik dalej może odczytać aplikacje, Uwagi: przyczyna nieznana
  c) Status: potwierdzenie
  d) Od: ?
  e) wersja systemu która naprawia błąd: - (błąd dalej obecny)
@@ -58,6 +58,7 @@ UWAGA! NIE JEST TO OBIETNICA, JEŚLI STWIERDZĘ ŻE COŚ JEST ZA TRUDNE DO ZAIMP
 5. pre5f3-1.0 - dodano menu pomocy (nie martwcie się tym że w ustawieniach pisze że dalej mamy ArduinoOS 3 v. pre3f3-1.0, zapomniałem zaktualizować) *Wydano: 17.10.2026*
 6. pre6f3-1.0 - dodano multitasking (max. 3 aplikacje w tle) *Wydano: 17.10.2026*
 7. pre7f3-1.0 - dodano import i eksport plików przez Serial oraz pasek informacyjny *Wydano: 22.10.2026*
+8. pre7af3-1.0 - naprawiono błędy 1 i 2 *Wydano: 22.10.2026*
 
 ## Wymagania
 **Wymagania minimalne**:
