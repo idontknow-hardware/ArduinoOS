@@ -30,7 +30,7 @@ Błąd nigdy nie istniał (podejrzenia się nie sprawdziły)
 1. Funkcja zwracająca liczbę wolnych plików nie uwzględnia plików usuniętych.
  a) Ważność: 🟩
  b) Skutki: użytkownik w trakcie uruchamiania jest informowany tylko o plikach które nie zostały jeszcze zapisane, a pliki usunięte są przez funkcje liczone jako pliki normalnie istniejące
- c) Status: podejrzenie
+ c) Status: potwierdzenie
  d) Od: ?
  e) wersja systemu która naprawia błąd: - (błąd dalej obecny)
 2. Liczba aplikacji w menu nachodzi na pasek informacyjny
