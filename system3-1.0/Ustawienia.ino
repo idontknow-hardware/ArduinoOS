@@ -25,7 +25,6 @@ case 0: {
     DrawButtonLang(16, scroll + 96,  9, "Info o systemie", "System info    ");
     DrawButtonLang(16, scroll + 112, 9, "Czulosc myszy  ", "Mouse sensivity");
     DrawButtonLang(16, scroll + 128, 9, "Ustawienia portu", "Port settings");
-    DrawButton(16, scroll + 144, 9, "Backup");
     break;}
  case 1: {
     u8g2.setCursor(16, 16);
@@ -96,7 +95,7 @@ case 6: {
     u8g2.setCursor(0, 48);
     print(F("Wersja systemu:"), F("System version:"));
     u8g2.setCursor(0, 56);
-    printo(F("ArduinoOS 3 v. pre7af3-1.0"));
+    printo(F("ArduinoOS 3 v. pre8f3-1.0"));
     break;}
 case 7: { 
     u8g2.setCursor(0, 16);

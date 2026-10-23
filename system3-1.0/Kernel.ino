@@ -86,8 +86,8 @@ void DrawButtonLang(uint8_t X, uint8_t Y, uint8_t h, const char *pl, const char 
 }
 
 void ClearEEPROM() {
-  for (int I = 0; I < EEPROM.length(); I++) {
-    EEPROM.update(I, 0);
+  for (int i = 0; i < EEPROM.length(); i++) {
+    EEPROM.update(i, 0);
   }
 }
 
@@ -358,10 +358,14 @@ int Battery() {
   int percent = map(result, 4000, 5181, 0, 100);
   return constrain(percent, 0, 100);
 }
-int freeRam () {
-  extern int __heap_start, *__brkval; 
-  int v; 
-  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+int freeRam() {
+  extern int __heap_start;
+  extern int *__brkval;
+
+  char v;
+  return (int)(&v - (__brkval == 0
+      ? (char*)&__heap_start
+      : (char*)__brkval));
 }
 void Info() {
   czasT = millis();

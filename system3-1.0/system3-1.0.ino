@@ -18,6 +18,8 @@ void Not();
 void NotScreen(); 
 void pomocScreen();
 void pomoc();
+void statScreen();
+void stat();
 const unsigned char zegar[] PROGMEM = {0xf8,0x1f,0x84,0x20,0x82,0x40,0x81,0x80,0x81,0x80,0x81,0x80, 0x81,0x80,0x81,0xff,0x01,0x80,0x01,0x80,0x02,0x40,0xfc,0x3f, 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}; const unsigned char ustawienia[] PROGMEM = { 0x0c,0x63,0x8c,0x73,0xff,0x3f,0x0f,0x30,0x07,0x20,0x07,0x60, 0x04,0x40,0x0c,0x40,0x08,0x40,0x38,0x60,0xf8,0x7d,0x18,0xff, 0x0c,0xf0,0x00,0x60,0x00,0x00,0x00,0x00}; 
 const unsigned char dinozaur[] PROGMEM = { 0x7c,0x00,0xc4,0x00,0x94,0x00,0xc4,0x00,0x7c,0x00,0x3c,0x0c, 0xe4,0x0c,0xa4,0x8c,0x24,0xcc,0xe4,0x6c,0xa4,0x3e,0x3c,0x0c, 0x24,0x0c,0x24,0x0c,0x24,0x0c,0x6c,0x0c}; 
 const unsigned char przegladarka[] PROGMEM = { 0x00,0x00,0x00,0x00,0x00,0x00,0x1f,0x00,0x11,0x00,0xf1,0x1f, 0x81,0x18,0x81,0x18,0x81,0x19,0xc1,0x1e,0x31,0x10,0x19,0x10, 0x01,0x10,0xff,0x1f,0x00,0x00,0x00,0x00}; 
@@ -27,6 +29,11 @@ const unsigned char pytajnik[] PROGMEM = {
  0x00,0x08,0x00,0x0c,0x00,0x04,0x00,0x04,0x00,0x04,0x00,0x04,
  0x00,0x04,0x00,0x00,0x00,0x04,0x00,0x00};
 Ds1302 rtc(12, 10, 11); 
+const unsigned char statystyki[] PROGMEM = {
+ 0xff,0xff,0x00,0x00,0x00,0x18,0x00,0x0e,0x80,0x03,0xc0,0x00,
+ 0x60,0x00,0x30,0x00,0x18,0x00,0x08,0x00,0x0c,0x00,0x06,0x00,
+ 0x00,0x00,0x00,0x00,0x00,0x00,0xff,0xff};
+
 U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE); 
 #include "defines.h"
 char i = ' '; 
@@ -44,9 +51,11 @@ uint8_t str = 0;
 bool t = 0; 
 bool swiatlo = 0;
 unsigned long ostatniRuchMyszy = 0;
+int cycles = 0;
+long lastCycles = 0;
 struct App {
-  char namePL[10]; 
-  char nameEN[10]; 
+  char namePL[11]; 
+  char nameEN[11]; 
   void (*run)();
   void (*screen)();
   const uint8_t *icon;
@@ -59,7 +68,8 @@ const App apps[] PROGMEM = {
   { "Dinozaur",   "Dinosaur", Dino,  DinoScreen,  dinozaur    },
   { "Pliki", "Files", Przeg, PrzegScreen, przegladarka},
   { "Notatnik",   "Notes",    Not,   NotScreen,   notatnik    },
-  { "Pomoc", "Help", pomoc, pomocScreen, pytajnik}
+  { "Pomoc", "Help", pomoc, pomocScreen, pytajnik},
+  { "Statystyki", "Stats", stat, statScreen, statystyki}
 };
 const uint8_t APP_COUNT = sizeof(apps) / sizeof(apps[0]);
  
@@ -178,7 +188,8 @@ if (app > -1) {
   if (screenFunc) screenFunc();
 }
     if (s == 1) {
-      if (str == 0) {
+      switch(str) {
+        case 0: {
         u8g2.setCursor(10, 15); 
         u8g2.setFont(u8g2_font_6x10_tr); 
         printo(F("CONFIG(0/5)")); 
@@ -192,8 +203,9 @@ if (app > -1) {
         u8g2.setCursor(0, 67); 
         printo(F("'NEXT'")); 
         DrawButton(30, 40, 9, "NEXT"); 
-      }
-      if (str == 1) {
+        break;
+        }
+        case 1: {
         u8g2.setCursor(10, 15); 
         u8g2.setFont(u8g2_font_6x10_tr); 
         print(F("KONFIGURACJA(1/5)"), F("CONFIG(1/5)")); 
@@ -203,8 +215,9 @@ if (app > -1) {
         DrawButton(30, 40, 9, "PL"); 
         DrawButton(60, 40, 9, "EN"); 
         DrawButton(60, 60, 9,  "NEXT"); 
-      }
-      if (str == 2) {
+        break;
+        }
+        case 2: {
         u8g2.setCursor(10, 15); 
         u8g2.setFont(u8g2_font_6x10_tr); 
         print(F("KONFIGURACJA(2/5)"), F("CONFIG(2/5)"));   
@@ -218,8 +231,9 @@ if (app > -1) {
         print(F("TA OPCJE CALY EEPROM"), F("this option, the entire EEPROM")); 
         u8g2.setCursor(0, 64); 
         print(F("ZOSTANIE WYKASOWANY!"), F("will be erased!")); 
-      }
-      if (str == 3) {
+        break;
+        }
+        case 3: {
         u8g2.setCursor(10, 10); 
         u8g2.setFont(u8g2_font_6x10_tr); 
         print(F("KONFIGURACJA(3/5)"), F("CONFIG(3/5)"));   
@@ -232,8 +246,9 @@ if (app > -1) {
             u8g2.setFont(u8g2_font_5x7_tr); 
             printo(name[id]); 
           }
-      }
-      if (str == 4) {
+          break;
+        }
+        case 4: {
         u8g2.setCursor(10, 10); 
         u8g2.setFont(u8g2_font_6x10_tr); 
         print(F("KONFIGURACJA(4/5)"), F("CONFIG(4/5)"));   
@@ -243,14 +258,8 @@ if (app > -1) {
         DrawButton(30, 40, 9,  "ON"); 
         DrawButton(60, 40, 9,  "OFF"); 
         DrawButton(60, 60, 9, "NEXT"); 
-      }
-      if (str == 5) {
-        u8g2.setCursor(10, 10); 
-        u8g2.setFont(u8g2_font_6x10_tr); 
-        print(F("KONFIGURACJA(5/5)"), F("CONFIG(5/5)"));   
-        u8g2.setFont(u8g2_font_5x7_tr); 
-        u8g2.setCursor(0, 20); 
-        print(F("Koniec konfiguracji"), F("End of config"));      
+        break;
+        }
       }
     } else {
       if (app == -1) {
@@ -260,6 +269,8 @@ if (app > -1) {
     }
     if (app == -1) {
       DrawMouse(); 
+      u8g2.setCursor(16, 16);
+      printo(cycles);
     }
     
     for (int a = 0;  a < liczbaart;  a++) {
@@ -291,14 +302,16 @@ if (app > -1) {
     s = 1; 
   }
   if (s == 1) {
-    if (str == 0) {
+    switch(str) {
+      case 0: {
       if (X > 30 && Y > 29 && X < 50 && Y < 42) {
         if (i == '5') {
           str = 1; 
         }
       }
-    }
-    if (str == 1) {
+      break;
+      }
+      case 1: {
       if (X > 29 && Y > 30 && X < 39 && Y < 43) {
         if (i == '5') {
           SetLanguage(0); 
@@ -314,8 +327,9 @@ if (app > -1) {
           str = 2; 
         }
       }
-    }
-    if (str == 2) {
+      break;
+      }
+      case 2: {
       if (X > 29  &&  Y > 32  &&  X < 99  &&  Y < 41) {
         if (i == '5') {
           ClearEEPROM(); 
@@ -325,8 +339,9 @@ if (app > -1) {
           str = 3; 
         }
       }
-    }
-    if (str == 3) {
+      break;
+      }
+      case 3: {
         if (lcz > 7) {
           str = 4; 
         }
@@ -338,8 +353,9 @@ if (app > -1) {
           lcz++; 
 
         }}
-    }
-    if (str == 4) {
+        break;
+      }
+      case 4: {
       if (X > 29 && Y > 30 && X < 39 && Y < 43) {
         if (i == '5') {
           SetAdmin(1); 
@@ -354,13 +370,20 @@ if (app > -1) {
         if (i == '5') {
           str = 5; 
         }
-      }      
-    }
-    if (str == 5) {
+      }  
+      break;    
+      }
+      case 5: {
       WriteAll(); 
       delay(3000); 
       s = 0; 
+      break;
+      }
     }
+
+
+
+
   } else {
     if (swiatlo) {
       RGB(0, 1, 0);
@@ -417,5 +440,10 @@ if (app > -1) {
         app = -1; 
       }
     }
+  }
+  cycles++;
+  if (millis() - lastCycles > 1000) {
+    cycles = 0;
+    lastCycles = millis();
   }
 }
