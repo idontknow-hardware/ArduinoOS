@@ -44,7 +44,7 @@ Błąd nigdy nie istniał (podejrzenia się nie sprawdziły)
  b) Skutki: Znikome, użytkownik dalej może odczytać aplikacje, Uwagi: przyczyna nieznana
  c) Status: potwierdzenie
  d) Od: ?
- e) wersja systemu która naprawia błąd: - (błąd dalej obecny)
+ e) wersja systemu która naprawia błąd: pre8f3-1.0
 ## Plan rozwoju
 UWAGA! NIE JEST TO OBIETNICA, JEŚLI STWIERDZĘ ŻE COŚ JEST ZA TRUDNE DO ZAIMPLEMENTOWANIA TO ZWYCZAJNIE NIE ZOSTANIE DODANE!
 1. Statystyki systemowe
@@ -59,6 +59,7 @@ UWAGA! NIE JEST TO OBIETNICA, JEŚLI STWIERDZĘ ŻE COŚ JEST ZA TRUDNE DO ZAIMP
 6. pre6f3-1.0 - dodano multitasking (max. 3 aplikacje w tle) *Wydano: 17.10.2026*
 7. pre7f3-1.0 - dodano import i eksport plików przez Serial oraz pasek informacyjny *Wydano: 22.10.2026*
 8. pre7af3-1.0 - naprawiono błędy 1 i 2 *Wydano: 22.10.2026*
+9. pre8f3-1.0 - naprawiono błąd 3, dodano statystyki systemowe *Wydano: 23.10.2026*
 
 ## Wymagania
 **Wymagania minimalne**:
