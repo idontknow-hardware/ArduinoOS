@@ -54,7 +54,7 @@ UWAGA! NIE JEST TO OBIETNICA, JEŚLI STWIERDZĘ ŻE COŚ JEST ZA TRUDNE DO ZAIMP
 1. pre1f3-1.0 - rozpoczęto prace nad ArduinoOS 3! *Wydano: 28.09.2026*
 2. pre2f3-1.0 - dodano grę dinozaur oraz optymalizacje stworzone przez @chackAJMCPE oraz dodano obsługę buzzera i możliwość jego wyciszenia w ustawieniach *Wydano: 3.10.2026*
 3. pre3f3-1.0 - dodano przeglądarkę plików oraz notatnik *Wydano: 10.10.2026*
-4. pre4f3-1.0 - dodano port wielofunkcyjny (można podłączyć joystick, czujnik odległości i LED RGB. Dodano także brakujące funkcje w notatniku (prosimy nie przejmować się definicjami-duchami innych funkcji portu wielofunkcyjnego, zostaną dodane w swoim czasie) *Wydano: 17.10.2026*
+4. pre4f3-1.0 - dodano port wielofunkcyjny (można podłączyć joystick, czujnik odległości, buzzer i LED RGB. Dodano także brakujące funkcje w notatniku (prosimy nie przejmować się definicjami-duchami innych funkcji portu wielofunkcyjnego, zostaną dodane w swoim czasie) *Wydano: 17.10.2026*
 5. pre5f3-1.0 - dodano menu pomocy (nie martwcie się tym że w ustawieniach pisze że dalej mamy ArduinoOS 3 v. pre3f3-1.0, zapomniałem zaktualizować) *Wydano: 17.10.2026*
 6. pre6f3-1.0 - dodano multitasking (max. 3 aplikacje w tle) *Wydano: 17.10.2026*
 7. pre7f3-1.0 - dodano import i eksport plików przez Serial oraz pasek informacyjny *Wydano: 22.10.2026*
@@ -88,8 +88,9 @@ i oczywiście GND i VCC gdzie jest potrzebne.
 ## Port wielofunkcyjny
 port wielofunkcyjny pozwala podłączać różne urządzenia. Obsługiwane:
 1. joystick (A0 - przycisk, A1 - X, A2 - Y)
-2. czujnik odległości (A0 - trig, A1 - echo)
-3. Dioda RGB (A0 - R, A1 - G, A2 - B), dla diody RGB wymagane są rezystory!
+2. buzzer (A0)
+3. czujnik odległości (A0 - trig, A1 - echo)
+4. Dioda RGB (A0 - R, A1 - G, A2 - B), dla diody RGB wymagane są rezystory!
 UWAGA! W USTAWIENIACH MOŻNA ZMIENIAĆ TRYB PORTU, SYSTEM NIE ROBI TEGO AUTOMATYCZNIE!
 ZNAJDZIESZ TAM TEŻ URZĄDZENIA KTÓRE JESZCZE NIE MAJĄ ŻADNYCH FUNKCJI, ONE ZOSTAWIONE SĄ NA PRZYSZŁY ROZWÓJ.
 
