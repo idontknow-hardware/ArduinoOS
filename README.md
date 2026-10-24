@@ -1,5 +1,10 @@
-⚠️ UWAGA: Projekt nie jest powiązany z firmą Arduino i nie jest oficjalnym produktem.
-⚠️ NOTE: The project is not affiliated with Arduino and is not an official product.
+⚠️ **UWAGA**
+
+ArduinoOS jest niezależnym projektem i nie jest powiązany z firmą Arduino ani nie stanowi jej oficjalnego produktu. Nie jest również powiązany z innymi projektami systemów operacyjnych przeznaczonych dla Arduino.
+⚠️ **DISCLAIMER**
+
+ArduinoOS is an independent project. It is not affiliated with Arduino or an official Arduino product. It is also not affiliated with other operating system projects for Arduino.
+
 English readme: https://github.com/idontknow-hardware/ArduinoOS/blob/ArduinoOS3/README-en.md
 ## Informacje
 ArduinoOS 3 to kolejna wersja mojego projektu ArduinoOS.
