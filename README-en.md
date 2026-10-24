@@ -1,4 +1,7 @@
-⚠️ NOTE: The project is not affiliated with Arduino and is not an official product.
+⚠️ **DISCLAIMER**
+
+ArduinoOS is an independent project. It is not affiliated with Arduino or an official Arduino product. It is also not affiliated with other operating system projects for Arduino.
+
 ## About
 ArduinoOS 3 is next version of my project ArduinoOS. You can try demo on Wokwi: https://wokwi.com/projects/478123317363453953
 CAUTION! THIS IS DEMO OF PROJECT! SOME FEATURES DIDN'T EXSIST!
