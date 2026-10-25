@@ -40,6 +40,7 @@ NOTE: THIS IS NOT A PROMISE. IF I FIND SOMETHING TOO DIFFICULT TO IMPLEMENT, IT 
 7. pre7f3-1.0 - added file import/export via Serial and an information bar. *Released: 22.10.2026*
 8. pre7af3-1.0 - fixed bugs 1 and 2. *Released: 22.10.2026*
 9. pre8f3-1.0 - fixed bug 3, added system statistics. *Released: 23.10.2026*
+10. 1.0 - added animations and better animations *Released: 25.10.2026*
 ## Requirements
 Minimum requirements:
 
