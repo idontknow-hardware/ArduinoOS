@@ -27,9 +27,9 @@ The bug never existed (suspicions were not confirmed)
 ## Development plan
 NOTE: THIS IS NOT A PROMISE. IF I FIND SOMETHING TOO DIFFICULT TO IMPLEMENT, IT SIMPLY WON'T BE ADDED!
 
-1. System Statistics
-2. Animations (4x4, 4 frames per file)
-3. Improved Animation (8x4, 16 frames per file)
+1. System Statistics☑️
+2. Animations (4x4, 4 frames per file)☑️
+3. Improved Animation (8x4, 16 frames per file)☑️
 ## Releases
 1. pre1f3-1.0 - work on ArduinoOS 3 has begun! *Released: 28.09.2026*
 2. pre2f3-1.0 - added a dinosaur game and optimizations created by @chackAJMCPE; added buzzer support with an option to mute it in the settings. *Released: 3.10.2026*
