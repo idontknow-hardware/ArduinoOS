@@ -15,8 +15,6 @@ void SettScreen() {
 case 0: {
     if (i == 'B') scroll--;
     if (i == 'C') scroll++;
-    u8g2.setCursor(8, 56);
-    u8g2.print(scroll);
     DrawButtonLang(16, scroll + 16,  9, "Czas", "Time");
     DrawButtonLang(16, scroll + 32,  9, "Czas dzialania", "Work time      ");
     DrawButtonLang(16, scroll + 48,  9, "Zmien nazwe", "Change nick");
@@ -95,7 +93,7 @@ case 6: {
     u8g2.setCursor(0, 48);
     print(F("Wersja systemu:"), F("System version:"));
     u8g2.setCursor(0, 56);
-    printo(F("ArduinoOS 3 v. pre8f3-1.0"));
+    printo(F("ArduinoOS 3 v. 1.0"));
     break;}
 case 7: { 
     u8g2.setCursor(0, 16);

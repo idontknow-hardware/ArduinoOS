@@ -232,11 +232,7 @@ void WriteAll() {
     EEPROM.update(3 + k, name[k]);
   }
 
-  #if DEBUG
-    DEBUG_PRINT(EEPROM.read(0));
-    DEBUG_PRINT(EEPROM.read(1));
-    DEBUG_PRINT(EEPROM.read(2));
-  #endif
+
 }
 
 void UpdatePort() {
@@ -244,29 +240,43 @@ void UpdatePort() {
   pinMode(A1, INPUT);
   pinMode(A2, INPUT);
   
-
-  if (urz == PORT_BUZZER) { 
+  switch(urz) {
+    case PORT_BUZZER: {
     pinMode(A0, OUTPUT);
-  }
-  if (urz == PORT_JOYSTICK) {
+    break;
+    }
+    case PORT_JOYSTICK: {
     pinMode(A1, INPUT);
     pinMode(A2, INPUT);
     pinMode(A0, INPUT_PULLUP);
-  }
-  if (urz == PORT_DISTANCE) { 
+    break;
+    }
+    case PORT_DISTANCE: {
     pinMode(A0, OUTPUT);
     pinMode(A1, INPUT);
-  }
-  if (urz == PORT_BALI || urz == PORT_BUTTONS) {
+    }
+    case PORT_BALI: {
     pinMode(A0, INPUT_PULLUP);
     pinMode(A1, INPUT_PULLUP);
     pinMode(A2, INPUT_PULLUP);
-  }
-  if (urz == PORT_RGB) { 
+    break;
+    }
+    case PORT_BUTTONS: {
+    pinMode(A0, INPUT_PULLUP);
+    pinMode(A1, INPUT_PULLUP);
+    pinMode(A2, INPUT_PULLUP);
+    break;
+    }
+    case PORT_RGB: {
     pinMode(A0, OUTPUT);
     pinMode(A1, OUTPUT);
     pinMode(A2, OUTPUT);
+    break;
+    }
   }
+
+
+
 
 }
 void Buzz(uint16_t dur, uint16_t freq) {
@@ -297,9 +307,7 @@ uint16_t ReadDistance() {
     return 1;
   }
 
-  #if DEBUG
-    Serial.println(wynik);
-  #endif
+
 
   return wynik; 
 }
@@ -356,7 +364,6 @@ int Battery() {
   result |= ADCH << 8;
   result = 1125300L / result;
   int percent = map(result, 4000, 5181, 0, 100);
-  return constrain(percent, 0, 100);
 }
 int freeRam() {
   extern int __heap_start;

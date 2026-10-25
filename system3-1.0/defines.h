@@ -1,4 +1,4 @@
-extern bool mouse;
+
 extern uint8_t mouseX;
 extern uint8_t mouseY;
 extern int jezyk;
@@ -46,7 +46,6 @@ char keypad() {
 }
 #define printo(tekst)  u8g2.print(tekst)
 
-#define changeMouse() mouse = !mouse
 #define GetMouseX() mouseX
 #define GetMouseY() mouseY
 #define SetLanguage(j) jezyk = j

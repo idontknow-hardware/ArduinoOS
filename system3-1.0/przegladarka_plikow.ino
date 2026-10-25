@@ -4,7 +4,7 @@ bool n_file = 0;
 uint8_t type = 0;
 uint8_t poz = 0;
 int plikPodMyszka = -1;
-int plikMenu = 0;
+int plikMenu = -1;
 bool menu = 0;
 uint8_t kod = 0;
 uint8_t liczba = 0;
@@ -25,7 +25,7 @@ void PrzegScreen() {
   u8g2.setFont(u8g2_font_5x7_tr);
   if (n_file == 0) {
     if (menu == 0) {
-  DrawButtonLang(16, 16, 9, "Nowy plik", "New file ");
+  DrawButton(16, 16, 9, "New file ");
   plikPodMyszka = -1;
 
 for (int x = 0; x < 11; x++) {
@@ -145,17 +145,17 @@ if (Serial.available()) {
   
 }
     }else {
-     DrawButtonLang(16, 12, 9, "Usun  ", "Delete");
-     DrawButtonLang(16, 28, 9, "Odzyskaj", "Restore ");
-     DrawButtonLang(16, 44, 9, "Otworz", "Open  ");
-     DrawButtonLang(16, 60, 9, "Zamknij", "Close  ");
+     DrawButton(16, 12, 9, "Delete");
+     DrawButton(16, 28, 9, "Restore ");
+     DrawButton(16, 44, 9, "Open  ");
+     DrawButton(16, 60, 9, "Close  ");
     }
   DrawMouse();}else {
     if (s_file == 0) {
-    DrawButtonLang(16, 12, 9, "Notatka", "Note   ");
-    DrawButtonLang(16, 28, 9, "Dane", "Data");
-    DrawButtonLang(16, 44, 9, "Animacja ", "Animation");
-    DrawButtonLang(16, 60, 9, "Animacja+ ", "Animation+");}
+    DrawButton(16, 12, 9, "Note   ");
+    DrawButton(16, 28, 9, "Data");
+    DrawButton(16, 44, 9, "Animation");
+    DrawButton(16, 60, 9, "Animation+");}
     if (s_file == 1) {
       u8g2.setCursor(16, 16);
       for (int r = 0; r < 8; r++) {
@@ -200,7 +200,10 @@ if (i == '5' && X >= 16 && X < 53 && Y >= 54 && Y <= 63) {
 
   if (X > 14 && Y > 36 && X < 46 && Y < 46) {
     if (i == '5') {
-      app = 4;
+      if (GetFileType(plikMenu) == TYPE_NOTE){
+      app = 4;}else {
+        app = 7;
+      }
     }
   }
 }}else {

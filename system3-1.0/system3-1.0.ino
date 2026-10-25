@@ -20,6 +20,10 @@ void pomocScreen();
 void pomoc();
 void statScreen();
 void stat();
+void edytorScreen();
+void edytor();
+void odtwarz();
+void odtwarzScreen();
 const unsigned char zegar[] PROGMEM = {0xf8,0x1f,0x84,0x20,0x82,0x40,0x81,0x80,0x81,0x80,0x81,0x80, 0x81,0x80,0x81,0xff,0x01,0x80,0x01,0x80,0x02,0x40,0xfc,0x3f, 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}; const unsigned char ustawienia[] PROGMEM = { 0x0c,0x63,0x8c,0x73,0xff,0x3f,0x0f,0x30,0x07,0x20,0x07,0x60, 0x04,0x40,0x0c,0x40,0x08,0x40,0x38,0x60,0xf8,0x7d,0x18,0xff, 0x0c,0xf0,0x00,0x60,0x00,0x00,0x00,0x00}; 
 const unsigned char dinozaur[] PROGMEM = { 0x7c,0x00,0xc4,0x00,0x94,0x00,0xc4,0x00,0x7c,0x00,0x3c,0x0c, 0xe4,0x0c,0xa4,0x8c,0x24,0xcc,0xe4,0x6c,0xa4,0x3e,0x3c,0x0c, 0x24,0x0c,0x24,0x0c,0x24,0x0c,0x6c,0x0c}; 
 const unsigned char przegladarka[] PROGMEM = { 0x00,0x00,0x00,0x00,0x00,0x00,0x1f,0x00,0x11,0x00,0xf1,0x1f, 0x81,0x18,0x81,0x18,0x81,0x19,0xc1,0x1e,0x31,0x10,0x19,0x10, 0x01,0x10,0xff,0x1f,0x00,0x00,0x00,0x00}; 
@@ -33,10 +37,17 @@ const unsigned char statystyki[] PROGMEM = {
  0xff,0xff,0x00,0x00,0x00,0x18,0x00,0x0e,0x80,0x03,0xc0,0x00,
  0x60,0x00,0x30,0x00,0x18,0x00,0x08,0x00,0x0c,0x00,0x06,0x00,
  0x00,0x00,0x00,0x00,0x00,0x00,0xff,0xff};
-
+const unsigned char Edytor[] PROGMEM = {
+ 0x00,0x00,0x00,0x00,0x00,0x06,0xf0,0x07,0x90,0x03,0xd0,0x03,
+ 0xd0,0x02,0x10,0x02,0xf0,0x03,0x00,0x00,0x00,0x00,0x00,0x00,
+ 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+const unsigned char odtwarzacz[] = {
+ 0x00,0x00,0x00,0x00,0xfc,0x3f,0x04,0x20,0x04,0x20,0x04,0x20,
+ 0x04,0x20,0x44,0x20,0xc4,0x20,0xc4,0x21,0xc4,0x20,0x44,0x20,
+ 0x04,0x20,0x04,0x20,0xfc,0x3f,0x00,0x00};
 U8G2_SH1106_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE); 
 #include "defines.h"
-char i = ' '; 
+char i = ' ';
 int8_t app = -1; 
 char name[9]; 
 uint8_t lcz = 0; 
@@ -44,15 +55,10 @@ uint8_t liczbaart = 0;
 uint8_t op = 0; 
 uint8_t X = 0; 
 uint8_t Y = 0; 
-uint8_t xk = 0; 
-uint8_t yk = 0; 
 bool s = 0; 
 uint8_t str = 0; 
-bool t = 0; 
 bool swiatlo = 0;
 unsigned long ostatniRuchMyszy = 0;
-int cycles = 0;
-long lastCycles = 0;
 struct App {
   char namePL[11]; 
   char nameEN[11]; 
@@ -69,7 +75,9 @@ const App apps[] PROGMEM = {
   { "Pliki", "Files", Przeg, PrzegScreen, przegladarka},
   { "Notatnik",   "Notes",    Not,   NotScreen,   notatnik    },
   { "Pomoc", "Help", pomoc, pomocScreen, pytajnik},
-  { "Statystyki", "Stats", stat, statScreen, statystyki}
+  { "Statystyki", "Stats", stat, statScreen, statystyki},
+  { "Animacje", "Animations", edytor, edytorScreen, Edytor},
+  { "Odtwarzacz", "Player", odtwarz, odtwarzScreen, odtwarzacz}
 };
 const uint8_t APP_COUNT = sizeof(apps) / sizeof(apps[0]);
  
@@ -115,11 +123,9 @@ pinMode(2, INPUT_PULLUP);
 pinMode(3, INPUT_PULLUP);
 pinMode(4, INPUT_PULLUP);
 pinMode(5, INPUT_PULLUP);
+EEPROM.update(15, 1);
   Serial.begin(9600); 
   rtc.init(); 
-  Ds1302::DateTime now; 
-  rtc.getDateTime(&now); 
-  DEBUG_PRINTLN(now.hour); 
   for (int i = 0;  i < 9;  i++) {
     name[i] = EEPROM.read(i + 3); 
   }
@@ -129,7 +135,7 @@ pinMode(5, INPUT_PULLUP);
   for (int iu = 0;  iu < 5;  iu++) {
     u8g2.firstPage(); 
     do {
-      u8g2.setFont(u8g2_font_9x15_tr);        
+      u8g2.setFont(u8g2_font_6x10_tr);        
       u8g2.setCursor(32, 32);   
       print(F("WITAM"), F("WELCOME")); 
       u8g2.setFont(u8g2_font_5x7_tr); 
@@ -145,18 +151,19 @@ pinMode(5, INPUT_PULLUP);
       if (op == 1) {
         u8g2.setCursor(0, 50); 
         print(F("sprawdzanie danych..."), F("checking data...")); 
-        u8g2.drawBox(0, 55, 12, 5); 
+        u8g2.drawBox(32, 55, 12, 5); 
         printo(check); 
       }
       if (op == 2) {
         u8g2.setCursor(0, 50); 
-        print(F("Wolne pliki..."), F("Free Files...")); 
+        print(F("Wolne pliki: "), F("Free Files: ")); 
         u8g2.drawBox(32, 55, 24, 5); 
         printo(free); 
       }
       if (op == 3) {
         u8g2.setCursor(0, 50); 
-        print(F("I/O: keypad"), F("I/O: keypad")); 
+        print(F("I/O: "), F("I/O: "));
+        printo(urz);
         u8g2.drawBox(32, 55, 64, 5); 
       }                 
     } 
@@ -195,11 +202,9 @@ if (app > -1) {
         printo(F("CONFIG(0/5)")); 
         u8g2.setCursor(0, 46); 
         u8g2.setFont(u8g2_font_5x7_tr); 
-        printo(F("Use '0' to activate mouse")); 
-        u8g2.setCursor(0, 53); 
-        printo(F("mode on keypad, then move")); 
+        printo(F("Move")); 
         u8g2.setCursor(0, 60); 
-        printo(F("mouse (circle) to button")); 
+        printo(F("circle to button")); 
         u8g2.setCursor(0, 67); 
         printo(F("'NEXT'")); 
         DrawButton(30, 40, 9, "NEXT"); 
@@ -226,11 +231,7 @@ if (app > -1) {
         printo(F("EEPROM")); 
         DrawButtonLang(30, 40, 9, "WYCZYSC EEPROM", "ERASE EEPROM"); 
         u8g2.setCursor(0, 50); 
-        print(F("UWAGA! JESLI WYBIERZESZ"), F("WARNING! If you select")); 
-        u8g2.setCursor(0, 57); 
-        print(F("TA OPCJE CALY EEPROM"), F("this option, the entire EEPROM")); 
-        u8g2.setCursor(0, 64); 
-        print(F("ZOSTANIE WYKASOWANY!"), F("will be erased!")); 
+        print(F("UWAGA! STRACISZ DANE!"), F("WARNING! DATA LOS!")); 
         break;
         }
         case 3: {
@@ -270,7 +271,6 @@ if (app > -1) {
     if (app == -1) {
       DrawMouse(); 
       u8g2.setCursor(16, 16);
-      printo(cycles);
     }
     
     for (int a = 0;  a < liczbaart;  a++) {
@@ -283,12 +283,7 @@ if (app > -1) {
   i = input(); 
   DEBUG_PRINTLN(i); 
   DEBUG_PRINTLN(str); 
-  if(i == '0') {
-    if (t == 0) {
-      t = changeMouse(); 
-    }
-    DEBUG_PRINT(t); 
-  }     if (millis() - ostatniRuchMyszy >= 20UL) {
+     if (millis() - ostatniRuchMyszy >= 20UL) {
       ostatniRuchMyszy = millis();
       moveMouse(i);
       X = GetMouseX();
@@ -375,7 +370,6 @@ if (app > -1) {
       }
       case 5: {
       WriteAll(); 
-      delay(3000); 
       s = 0; 
       break;
       }
@@ -392,7 +386,7 @@ if (app > -1) {
     }
     if (urz == PORT_DISTANCE) {
       if (millis() - OstatniPomiar > 250UL) {
-        OstatniPomiar = millis();
+
     uint16_t obecnaOdleglosc = ReadDistance();
         if (distMode == DIST_MODE_SAVER) {
           if (obecnaOdleglosc > 150) {
@@ -409,7 +403,9 @@ if (app > -1) {
             i = 'C';
           }
         }
+                OstatniPomiar = millis();
       }
+      
     }
     if (app == -1) {
       if (i == 'B') {
@@ -440,10 +436,5 @@ if (app > -1) {
         app = -1; 
       }
     }
-  }
-  cycles++;
-  if (millis() - lastCycles > 1000) {
-    cycles = 0;
-    lastCycles = millis();
   }
 }
