@@ -52,9 +52,9 @@ Błąd nigdy nie istniał (podejrzenia się nie sprawdziły)
  e) wersja systemu która naprawia błąd: pre8f3-1.0
 ## Plan rozwoju
 UWAGA! NIE JEST TO OBIETNICA, JEŚLI STWIERDZĘ ŻE COŚ JEST ZA TRUDNE DO ZAIMPLEMENTOWANIA TO ZWYCZAJNIE NIE ZOSTANIE DODANE!
-1. Statystyki systemowe
-2. Animacje (4x4, 4 klatki na plik)
-3. Lepsza animacja (8x4, 16 klatek na plik)
+1. Statystyki systemowe☑️
+2. Animacje (4x4, 4 klatki na plik)☑️
+3. Lepsza animacja (8x4, 16 klatek na plik)☑️
 ## Wydania
 1. pre1f3-1.0 - rozpoczęto prace nad ArduinoOS 3! *Wydano: 28.09.2026*
 2. pre2f3-1.0 - dodano grę dinozaur oraz optymalizacje stworzone przez @chackAJMCPE oraz dodano obsługę buzzera i możliwość jego wyciszenia w ustawieniach *Wydano: 3.10.2026*
